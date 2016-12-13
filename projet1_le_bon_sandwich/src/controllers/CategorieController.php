@@ -16,15 +16,13 @@ class CategorieController extends AbstractController{
   }
 
   static public function listCategories(){
-    $categories = Categorie::select("id", "nom", "description")->get();
+    $categories = Categorie::select("id", "nom")->get();
     $nb_categories = $categories->count();
 
     $categories_tab = [];
     foreach($categories as $c){
       $lien = array(
-                  "id" => $c->id,
                   "nom" => $c->nom,
-                  "description" => $c->description, 
                   "lien" => "/categories/$c->id");
       array_push($categories_tab, $lien);
     }
@@ -32,6 +30,17 @@ class CategorieController extends AbstractController{
     $chaine = [
                 "nombre_de_categories" => $nb_categories,
                 "categories" => $categories_tab
+              ];
+    return $chaine;
+  }
+
+  static public function detailCategory($id){
+    $category = Categorie::findOrFail($id);
+    $chaine = [
+                "id" => $category->id,
+                "nom" => $category->nom,
+                "description" => $category->description,
+                "lien" => "/categories/$category->id/ingredients",
               ];
     return $chaine;
   }
