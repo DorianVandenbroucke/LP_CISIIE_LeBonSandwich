@@ -62,6 +62,11 @@ $app->get("/ingredients[/]",function(Request $req, Response $resp, $args){
   return (new IngredientController($this))->listIngredients();
 });
 
+$app->post("/ingredients[/]",function(Request $req, Response $resp, $args){
+  $parsedBody = $req->getParsedBody();
+  return (new IngredientController($this))->addIngredient($parsedBody);
+});
+
 $app->get("/ingredients/{id}",function(Request $req, Response $resp, $args){
   return (new IngredientController($this))->findIngredient($args['id']);
 });

@@ -61,4 +61,24 @@ class IngredientController extends AbstractController{
         }
     }
 
+    public function addIngredient($ingredient){
+        $nom= filter_var($ingredient["nom"], FILTER_SANITIZE_STRING);
+        $cat_id = filter_var($ingredient["cat_id"], FILTER_SANITIZE_STRING);
+        $description = filter_var($ingredient["description"], FILTER_SANITIZE_STRING);
+        $fournisseur = filter_var($ingredient["fournisseur"], FILTER_SANITIZE_STRING);
+        $img = filter_var($ingredient["img"], FILTER_SANITIZE_STRING);
+
+        $newIngredient = new Ingredient();
+        $newIngredient->nom = $nom;
+        $newIngredient->cat_id = $cat_id;
+        $newIngredient->description = $description;
+        $newIngredient->fournisseur = $fournisseur;
+        $newIngredient->img = $img;
+
+        $newIngredient->save();
+
+        return $this->responseToJSON($newIngredient,201);
+
+    }
+
 }
