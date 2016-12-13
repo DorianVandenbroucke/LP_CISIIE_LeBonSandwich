@@ -7,6 +7,7 @@ use \Psr\Http\Message\ServerRequestInterface as Request;
 use \Psr\Http\Message\ResponseInterface as Response;
 
 use src\controllers\CategorieController as CategorieController;
+use src\controllers\IngredientController as IngredientController;
 
 $app = new \Slim\App;
 
@@ -38,5 +39,17 @@ $app->get(
     return $resp;
   }
 );
+
+$app->get("/ingredients[/]",function(Request $req, Response $resp, $args){
+  return (new IngredientController($this))->listIngredients();
+});
+
+$app->get("/ingredients/{id}",function(Request $req, Response $resp, $args){
+  return (new IngredientController($this))->findIngredient($args['id']);
+});
+
+$app->get("/ingredients/{id}/categorie",function(Request $req, Response $resp, $args){
+  return (new IngredientController($this))->getCategorie($args['id']);
+});
 
 $app->run();

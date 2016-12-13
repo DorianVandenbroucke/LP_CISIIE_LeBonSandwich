@@ -12,7 +12,7 @@ class Ingredient extends Model{
   public $timestamps = false;
 
   public function getCategory(){
-    return $this->belongsTo("src\models\Category", "cat_id");
+    return $this->belongsTo("\src\models\Categorie", "cat_id");
   }
 
 }
