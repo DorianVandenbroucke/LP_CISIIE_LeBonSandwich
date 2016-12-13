@@ -47,11 +47,28 @@ class CategorieController extends AbstractController{
 
   static public function ingredientsByCategorie($id){
     $categorie = Categorie::findOrFail($id);
-    $ingredients = Ingredient::where("cat_id", $id)->get();
+    $ingredients = Ingredient::where("cat_id", $id)->orderBy("nom")->get();
     $nb_ingredients = $ingredients->count();
+
+    $ingredients_tab = [];
+    foreach($ingredients as $i){
+      array_push(
+                  $ingredients_tab,
+                  [
+                    "id" => $i->id,
+                    "nom" => $i->nom,
+                    "cat_id" => $i->cat_id,
+                    "description" => $i->description,
+                    "fournisseur" => $i->fournisseur,
+                    "img" => $i->img,
+                    "lien" => "/ingredients/$i->id"
+                  ]
+                );
+    }
+
     $chaine = [
                 "nombre_d_ingredient " => $nb_ingredients,
-                "ingredients" => $ingredients
+                "ingredients" => $ingredients_tab
               ];
     return $chaine;
   }
