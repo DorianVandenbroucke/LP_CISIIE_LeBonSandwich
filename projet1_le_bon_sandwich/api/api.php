@@ -67,11 +67,12 @@ $app->post("/ingredients[/]",function(Request $req, Response $resp, $args){
   return (new IngredientController($this))->addIngredient($parsedBody);
 });
 
-$app->get("/ingredients/{id}",function(Request $req, Response $resp, $args){
+$app->get("/ingredients/{id}[/]",function(Request $req, Response $resp, $args){
+
   return (new IngredientController($this))->findIngredient($args['id']);
 });
 
-$app->get("/ingredients/{id}/categorie",function(Request $req, Response $resp, $args){
+$app->get("/ingredients/{id}/categorie[/]",function(Request $req, Response $resp, $args){
   return (new IngredientController($this))->getCategory($args['id']);
 });
 
