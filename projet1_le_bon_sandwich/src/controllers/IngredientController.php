@@ -32,8 +32,7 @@ class IngredientController extends AbstractController{
         return($ingredient);
     }
   
-  function responseToJSON($data,$status)
-    {
+  function responseToJSON($data,$status){
         $result = $this->request->response->withStatus($status)
                                  ->withHeader('Content-Type','application/json');
         $result->getBody()->write(json_encode($data));
@@ -41,6 +40,7 @@ class IngredientController extends AbstractController{
         echo json_encode($data);
     }
 
+  
   public function listIngredients()
   {
       try
@@ -55,11 +55,11 @@ class IngredientController extends AbstractController{
       }
       catch(\Illuminate\Database\Eloquent\ModelNotFoundException $e)
       {
-        $message = "erreur lors de la selection des donées";
+        $data =  ["Error" => "Erreur lors de la sélection des données"];
         return $this->responseToJSON($data,404);
       }
   }
-    public function findIngredient($id)
+    public function getIngredient($id)
     {
         try{
             $ingredient = Ingredient::findOrFail($id);
@@ -68,25 +68,14 @@ class IngredientController extends AbstractController{
         }
         catch(\Illuminate\Database\Eloquent\ModelNotFoundException $e)
         {
-            $data =  "element introuvable";
+            $data =  ["Error" => "Ingredient $id introuvable"];
             return $this->responseToJson($data,404);
         }
     }
 
-    public function getCategorie($id)
+    //Create
+    public function addIngredient($ingredient)
     {
-        try{
-            $data =  Ingredient::findOrFail($id)->getCategory;
-            return $this->responseToJSON($data,200);
-        }
-        catch(\Illuminate\Database\Eloquent\ModelNotFoundException $e)
-        {
-            $data =  "element introuvable";
-            return $this->responseToJson($data,404);
-        }
-    }
-
-    public function addIngredient($ingredient){
         $ingredient = $this->issetIngredient($ingredient);
         $ingredient = $this->filterIngredient($ingredient);
         $newIngredient = new Ingredient();
@@ -103,8 +92,62 @@ class IngredientController extends AbstractController{
         catch(\Illuminate\Database\Eloquent\ModelNotFoundException $e){
             return$this->responseToJSON($e,500);
         }
-
-
     }
 
+    //Read 
+    public function getCategorie($id)
+    {
+        try{
+            $data =  Ingredient::findOrFail($id)->getCategory;
+            return $this->responseToJSON($data,200);
+        }
+        catch(\Illuminate\Database\Eloquent\ModelNotFoundException $e)
+        {
+           $data =  ["Error" => "Ingredient $id introuvable"];
+            return $this->responseToJson($data,404);
+        }
+    }
+
+
+    //Update
+    public function updateIngredient($id, $requestbody)
+    {
+        $data = [];
+        try{
+            $ingredient = Ingredient::findOrFail($id);
+            foreach ($requestbody as $key => $value) {
+                if(in_array($key,$ingredient->getFillable()))
+                {
+                    $ingredient->$key = filter_var($value, FILTER_SANITIZE_STRING);
+                }
+                else
+                {
+                    $data[] =  ["Warring" => "Ingredient ne possede pas l'attribut $key"];
+                }
+            }
+            $ingredient->save();
+            if(!empty($data))
+                return $this->responseToJSON($data,200);
+            return $this->responseToJSON(NULL,204);     
+        }
+        catch(\Illuminate\Database\Eloquent\ModelNotFoundException $e)
+        {
+            $data =  ["Error" => "Ingredient $id introuvable"];
+            return $this->responseToJson($data,404);
+        }
+    }       
+
+    //Delete
+    public function deleteIngredient($id)
+    {
+        try{
+            Ingredient::findOrFail($id)->delete();
+            return $this->responseToJSON(NULL,204);
+        }
+        catch(\Illuminate\Database\Eloquent\ModelNotFoundException $e)
+        {
+            $data =  ["Error" => "Ingredient $id introuvable"];
+            return $this->responseToJson($data,404);
+        }
+    }
 }

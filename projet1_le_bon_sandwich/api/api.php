@@ -69,8 +69,17 @@ $app->post("/ingredients[/]",function(Request $req, Response $resp, $args){
 });
 
 $app->get("/ingredients/{id}[/]",function(Request $req, Response $resp, $args){
-  return (new IngredientController($this))->findIngredient($args['id']);
+  return (new IngredientController($this))->getIngredient($args['id']);
 })->setName('ingredient');
+
+$app->delete("/ingredients/{id}[/]",function(Request $req, Response $resp, $args){
+  return (new IngredientController($this))->deleteIngredient($args['id']);
+});
+
+$app->put("/ingredients/{id}[/]",function(Request $req, Response $resp, $args){
+  $parsedBody = $req->getParsedBody();
+  return (new IngredientController($this))->updateIngredient($args['id'],$parsedBody);
+});
 
 $app->get("/ingredients/{id}/categorie[/]",function(Request $req, Response $resp, $args){
   return (new IngredientController($this))->getCategorie($args['id']);
