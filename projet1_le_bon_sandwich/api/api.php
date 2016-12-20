@@ -58,9 +58,10 @@ $app->get(
   }
 );
 
+
 $app->get("/ingredients[/]",function(Request $req, Response $resp, $args){
   return (new IngredientController($this))->listIngredients();
-});
+})->setName('ingredients');
 
 $app->post("/ingredients[/]",function(Request $req, Response $resp, $args){
   $parsedBody = $req->getParsedBody();
@@ -68,12 +69,11 @@ $app->post("/ingredients[/]",function(Request $req, Response $resp, $args){
 });
 
 $app->get("/ingredients/{id}[/]",function(Request $req, Response $resp, $args){
-
   return (new IngredientController($this))->findIngredient($args['id']);
-});
+})->setName('ingredient');
 
 $app->get("/ingredients/{id}/categorie[/]",function(Request $req, Response $resp, $args){
-  return (new IngredientController($this))->getCategory($args['id']);
-});
+  return (new IngredientController($this))->getCategorie($args['id']);
+})->setName('ingredientCategories');
 
 $app->run();

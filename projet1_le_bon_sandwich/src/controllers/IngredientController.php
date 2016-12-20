@@ -14,19 +14,43 @@ class IngredientController extends AbstractController{
     $this->request = $http_req;
   }
 
-  public function responseToJSON($data,$status)
+  function issetIngredient($ingredient){
+        $ingredient["nom"] = (isset($ingredient["nom"])) ? $ingredient["nom"] : NULL;
+        $ingredient["cat_id"] = (isset($ingredient["cat_id"])) ? $ingredient["cat_id"] : NULL;
+        $ingredient["description"] = (isset($ingredient["description"])) ? $ingredient["description"] : NULL;
+        $ingredient["fournisseur"] = (isset($ingredient["fournisseur"])) ? $ingredient["fournisseur"] : NULL;
+        $ingredient["img"] = (isset($ingredient["img"])) ? $ingredient["img"] : NULL;
+        return $ingredient;
+    }
+
+  function filterIngredient($ingredient){
+        $ingredient["nom"] = filter_var($ingredient["nom"], FILTER_SANITIZE_STRING);
+        $ingredient["cat_id"] = filter_var($ingredient["cat_id"], FILTER_SANITIZE_STRING);
+        $ingredient["description"] = filter_var($ingredient["description"], FILTER_SANITIZE_STRING);
+        $ingredient["fournisseur"] = filter_var($ingredient["fournisseur"], FILTER_SANITIZE_STRING);
+        $ingredient["img"] = filter_var($ingredient["img"], FILTER_SANITIZE_STRING);
+        return($ingredient);
+    }
+  
+  function responseToJSON($data,$status)
     {
         $result = $this->request->response->withStatus($status)
                                  ->withHeader('Content-Type','application/json');
         $result->getBody()->write(json_encode($data));
         return $result;
+        echo json_encode($data);
     }
 
   public function listIngredients()
   {
       try
       {
-        $data = Ingredient::all();
+        $data = [];
+        $ingredients = Ingredient::all();
+        foreach ($ingredients as $ingredient) {
+            array_push($data, ["ingredient" => $ingredient , 
+                                "links" => ["self" => ["href" => $this->request->router->PathFor('ingredient',array('id' => $ingredient->id))]] ]);
+        }
         return $this->responseToJSON($data,200);
       }
       catch(\Illuminate\Database\Eloquent\ModelNotFoundException $e)
@@ -38,7 +62,8 @@ class IngredientController extends AbstractController{
     public function findIngredient($id)
     {
         try{
-            $data = Ingredient::findOrFail($id);
+            $ingredient = Ingredient::findOrFail($id);
+            $data = ["ingredient" => $ingredient , "href" => $this->request->router->PathFor('ingredientCategories',array('id' => $ingredient->id))];
             return $this->responseToJSON($data,200);
         }
         catch(\Illuminate\Database\Eloquent\ModelNotFoundException $e)
@@ -62,12 +87,8 @@ class IngredientController extends AbstractController{
     }
 
     public function addIngredient($ingredient){
-        $nom= filter_var($ingredient["nom"], FILTER_SANITIZE_STRING);
-        $cat_id = filter_var($ingredient["cat_id"], FILTER_SANITIZE_STRING);
-        $description = filter_var($ingredient["description"], FILTER_SANITIZE_STRING);
-        $fournisseur = filter_var($ingredient["fournisseur"], FILTER_SANITIZE_STRING);
-        $img = filter_var($ingredient["img"], FILTER_SANITIZE_STRING);
-
+        $ingredient = $this->issetIngredient($ingredient);
+        $ingredient = $this->filterIngredient($ingredient);
         $newIngredient = new Ingredient();
         $newIngredient->nom = $nom;
         $newIngredient->cat_id = $cat_id;
@@ -75,9 +96,14 @@ class IngredientController extends AbstractController{
         $newIngredient->fournisseur = $fournisseur;
         $newIngredient->img = $img;
 
-        $newIngredient->save();
+        try{
+            $newIngredient->save();
+            return $this->responseToJSON($newIngredient,201);
+        }
+        catch(\Illuminate\Database\Eloquent\ModelNotFoundException $e){
+            return$this->responseToJSON($e,500);
+        }
 
-        return $this->responseToJSON($newIngredient,201);
 
     }
 
