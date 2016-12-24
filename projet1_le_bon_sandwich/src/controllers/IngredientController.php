@@ -16,7 +16,7 @@ class IngredientController extends AbstractController{
 
   function issetIngredient($ingredient){
         $ingredient["nom"] = (isset($ingredient["nom"])) ? $ingredient["nom"] : NULL;
-        $ingredient["cat_id"] = (isset($ingredient["cat_id"])) ? $ingredient["cat_id"] : NULL;
+        $ingredient["cat_id"] = (isset($ingredient["cat_id"])) ? $ingredient["cat_id"] : 0;
         $ingredient["description"] = (isset($ingredient["description"])) ? $ingredient["description"] : NULL;
         $ingredient["fournisseur"] = (isset($ingredient["fournisseur"])) ? $ingredient["fournisseur"] : NULL;
         $ingredient["img"] = (isset($ingredient["img"])) ? $ingredient["img"] : NULL;
@@ -63,7 +63,7 @@ class IngredientController extends AbstractController{
     {
         try{
             $ingredient = Ingredient::findOrFail($id);
-            $data = ["ingredient" => $ingredient , "href" => $this->request->router->PathFor('ingredientCategories',array('id' => $ingredient->id))];
+            $data = ["ingredient" => $ingredient , "categorie" => $this->request->router->PathFor('ingredientCategories',array('id' => $ingredient->id))];
             return $this->responseToJSON($data,200);
         }
         catch(\Illuminate\Database\Eloquent\ModelNotFoundException $e)
@@ -79,11 +79,11 @@ class IngredientController extends AbstractController{
         $ingredient = $this->issetIngredient($ingredient);
         $ingredient = $this->filterIngredient($ingredient);
         $newIngredient = new Ingredient();
-        $newIngredient->nom = $nom;
-        $newIngredient->cat_id = $cat_id;
-        $newIngredient->description = $description;
-        $newIngredient->fournisseur = $fournisseur;
-        $newIngredient->img = $img;
+        $newIngredient->nom = $ingredient["nom"];
+        $newIngredient->cat_id = $ingredient["cat_id"];
+        $newIngredient->description = $ingredient["description"];
+        $newIngredient->fournisseur = $ingredient["fournisseur"];
+        $newIngredient->img = $ingredient["img"];
 
         try{
             $newIngredient->save();
