@@ -92,11 +92,10 @@ class CommandeController extends AbstractController{
       $commandes = Commande::orderBy('date_de_livraison','desc')
                             ->orderBy('ordre_creation','desc')	
                             ->get();
-
-      $result = $this->request->response->withStatus(200)
-                             ->withHeader('Content-Type','application/json');
+      $result = $this->request->response->withStatus(200)->withHeader('Content-Type','application/json');
       $result->getBody()->write(json_encode($commandes));
       return $result;
+  }
 
   static public function addSandwichToCommande($id_commande, $id_sandwich){
     $sandwich = Sandwich::findOrFail($id_sandwich);
@@ -107,5 +106,21 @@ class CommandeController extends AbstractController{
               ];
     return $chaine;
   }
+
+  public function filtrageCommandes($etat, $date)
+  {
+      if(!isset($date)){
+        $commandes = Commande::where('etat','=',$etat)->get();
+      }
+      else{
+        $date = strtotime($date);
+        $date = date('Y-m-d',$date);
+        $commandes = Commande::where('etat','=',$etat)->where('date_de_livraison','=',$date)->get();
+      }
+      $result = $this->request->response->withStatus(200)
+                             ->withHeader('Content-Type','application/json');
+      $result->getBody()->write(json_encode($commandes));
+      return $result;
+    }
 
 }

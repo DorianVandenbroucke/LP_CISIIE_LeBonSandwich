@@ -154,9 +154,16 @@ $app->get("/ingredients/{id}/categorie[/]",function(Request $req, Response $resp
 })->setName('ingredientCategories');
 
 
-//liste des commandes triées par date de livraison et ordre de creation
 $app->get("/commandes[/]", function(Request $req, Response $res, $args){
-  return (new CommandeController($this))->listCommandes();
-});
+  $_GET['date'] = (!isset($_GET['date'])) ? NULL : $_GET['date'];
+  if(isset($_GET['etat']))
+    //Filtrage des commandes par etat & date de livraison
+    return (new CommandeController($this))->filtrageCommandes($_GET['etat'], $_GET['date']);
+  else
+    //liste des commandes triées par date de livraison et ordre de creation
+    return (new CommandeController($this))->listCommandes();
+})->setName('commandes');
+
+
 
 $app->run();
