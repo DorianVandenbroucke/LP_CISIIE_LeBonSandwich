@@ -7,6 +7,7 @@ use \Psr\Http\Message\ServerRequestInterface as Request;
 use \Psr\Http\Message\ResponseInterface as Response;
 
 use src\controllers\CategorieController as CategorieController;
+use src\controllers\CommandeController as CommandeController;
 use src\controllers\IngredientController as IngredientController;
 
 $app = new \Slim\App;
