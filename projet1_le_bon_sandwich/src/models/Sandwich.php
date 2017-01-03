@@ -11,4 +11,12 @@ class Sandwich extends Model{
   protected $fillable = ["nom"];
   public $timestamps = false;
 
+  public function commandes(){
+    return $this->belongsToMany(
+                                  "src\models\Sandwich",
+                                  "sandwich_commande",
+                                  "id_sandwich", "id_commande"
+                               );
+  }
+
 }

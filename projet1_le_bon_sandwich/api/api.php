@@ -108,6 +108,24 @@ $app->get(
   }
 );
 
+$app->post(
+  "/sandwichs/{id_sandwich}/commandes/{id_commande}/add[/]",
+  function(Request $req, Response $resp, $args){
+    try{
+      $id_commande = $args['id_commande'];
+      $id_sandwich = $args['id_sandwich'];
+      $chaine = CommandeController::addSandwichToCommande($id_sandwich, $id_commande);
+      $resp = $resp->withStatus(200)->withHeader('Content-type', 'application/json, charset=utf-8');
+      $resp->getBody()->write(json_encode($chaine));
+    }catch(Illuminate\Database\Eloquent\ModelNotFoundException $e){
+      $chaine = ["Erreur", "Ressource sandwich ou commande introuvable."];
+      $resp = $resp->withStatus(404)->withHeader('Content-type', 'application/json, charset=utf-8');
+      $resp->getBody()->write(json_encode($chaine));
+    }
+    return $resp;
+  }
+);
+
 
 $app->get("/ingredients[/]",function(Request $req, Response $resp, $args){
   return (new IngredientController($this))->listIngredients();

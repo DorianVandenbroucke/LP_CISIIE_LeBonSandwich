@@ -3,6 +3,7 @@
 namespace src\controllers;
 
 use src\models\Commande as Commande;
+use src\models\Sandwich as Sandwich;
 
 class CommandeController extends AbstractController{
 
@@ -61,7 +62,7 @@ class CommandeController extends AbstractController{
 
   static public function sandwichsByCommande($id){
     $commande = Commande::findOrFail($id);
-    $sandwichs = $commande->sandwichs()->get();
+    $sandwichs = $commande->sandwichs()->orderBy("nom")->get();
     $nb_sandwichs = $sandwichs->count();
 
     $sandwichs_tab = [];
@@ -96,6 +97,15 @@ class CommandeController extends AbstractController{
                              ->withHeader('Content-Type','application/json');
       $result->getBody()->write(json_encode($commandes));
       return $result;
+
+  static public function addSandwichToCommande($id_commande, $id_sandwich){
+    $sandwich = Sandwich::findOrFail($id_sandwich);
+    $commandes = $sandwich->commandes()->attach($id_sandwich, ['id_sandwich' => $id_commande]);
+
+    $chaine = [
+                "lien_de_la_commande" => "/commandes/$id_commande"
+              ];
+    return $chaine;
   }
 
 }
