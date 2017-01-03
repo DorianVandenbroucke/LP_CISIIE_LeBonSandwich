@@ -9,9 +9,9 @@ class CommandeController extends AbstractController{
   private $request = null;
   private $auth;
 
-  public function __construct(HttpRequest $http_req){
+  public function __construct($http_req){
     $this->request = $http_req;
-    $this->auth = new Authentification();
+    //$this->auth = new Authentification();
   }
 
   static public function add($args){
@@ -84,6 +84,18 @@ class CommandeController extends AbstractController{
               ];
 
     return $chaine;
+  }
+
+  public function listCommandes()
+  {
+      $commandes = Commande::orderBy('date_de_livraison','desc')
+                            ->orderBy('ordre_creation','desc')	
+                            ->get();
+
+      $result = $this->request->response->withStatus(200)
+                             ->withHeader('Content-Type','application/json');
+      $result->getBody()->write(json_encode($commandes));
+      return $result;
   }
 
 }

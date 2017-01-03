@@ -135,4 +135,10 @@ $app->get("/ingredients/{id}/categorie[/]",function(Request $req, Response $resp
   return (new IngredientController($this))->getCategorie($args['id']);
 })->setName('ingredientCategories');
 
+
+//liste des commandes triées par date de livraison et ordre de creation
+$app->get("/commandes[/]", function(Request $req, Response $res, $args){
+  return (new CommandeController($this))->listCommandes();
+});
+
 $app->run();
