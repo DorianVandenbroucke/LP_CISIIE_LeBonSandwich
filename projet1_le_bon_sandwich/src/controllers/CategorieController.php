@@ -16,7 +16,7 @@ class CategorieController extends AbstractController{
   }
 
   static public function listCategories(){
-    $categories = Categorie::select("id", "nom")->get();
+    $categories = Categorie::select("id", "nom")->orderBy("nom")->get();
     $nb_categories = $categories->count();
 
     $categories_tab = [];
