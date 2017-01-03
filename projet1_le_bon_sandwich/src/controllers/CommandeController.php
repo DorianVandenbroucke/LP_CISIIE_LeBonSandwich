@@ -43,10 +43,10 @@ class CommandeController extends AbstractController{
 
     if($commande->etat != "livrée"){
       $nom_lien = "lien_de_suppression";
-      $lien = "/commandes/$commande->id/delete";
+      $lien = DIR."/commandes/$commande->id/delete";
     }else{
       $nom_lien = "lien_de_la_facture";
-      $lien = "/commandes/$commande->id/facture";
+      $lien = DIR."/commandes/$commande->id/facture";
     }
 
     $chaine = [
@@ -54,7 +54,7 @@ class CommandeController extends AbstractController{
                 "montant" => $commande->montant,
                 "date_de_livraison" => $commande->date_de_livraison,
                 "etat" => $commande->etat,
-                "lien_du_detail" => "/commandes/$commande->id/sandwichs",
+                "lien_du_detail" => DIR."/commandes/$commande->id/sandwichs",
                 $nom_lien => $lien
               ];
     return $chaine;
@@ -71,7 +71,7 @@ class CommandeController extends AbstractController{
                   $sandwichs_tab,
                   [
                     "nom" => $s->nom,
-                    "lien_de_suppression" => "/sandwichs/$s->id/commandes/$commande->id/delete"
+                    "lien_de_suppression" => DIR."/sandwichs/$s->id/commandes/$commande->id/delete"
                   ]
                 );
     }
@@ -80,8 +80,8 @@ class CommandeController extends AbstractController{
                 "id_commande" => $commande->id,
                 "nb_sandwichs" => $nb_sandwichs,
                 "sandwichs"  => $sandwichs_tab,
-                "lien_de_modification" => "/commande/$commande->id/update",
-                "lien_de_paiement" => "/commande/$commande->id/payment"
+                "lien_de_modification" => DIR."/commande/$commande->id/update",
+                "lien_de_paiement" => DIR."/commande/$commande->id/payment"
               ];
 
     return $chaine;
@@ -92,7 +92,7 @@ class CommandeController extends AbstractController{
     $commandes = $sandwich->commandes()->attach($id_sandwich, ['id_sandwich' => $id_commande]);
 
     $chaine = [
-                "lien_de_la_commande" => "/commandes/$id_commande"
+                "lien_de_la_commande" => DIR."/commandes/$id_commande"
               ];
     return $chaine;
   }

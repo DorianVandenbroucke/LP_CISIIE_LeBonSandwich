@@ -23,7 +23,7 @@ class CategorieController extends AbstractController{
     foreach($categories as $c){
       $lien = array(
                   "nom" => $c->nom,
-                  "lien" => "/categories/$c->id");
+                  "lien" => DIR."/categories/$c->id");
       array_push($categories_tab, $lien);
     }
 
@@ -40,7 +40,7 @@ class CategorieController extends AbstractController{
                 "id" => $category->id,
                 "nom" => $category->nom,
                 "description" => $category->description,
-                "lien" => "/categories/$category->id/ingredients",
+                "lien" => DIR."/categories/$category->id/ingredients",
               ];
     return $chaine;
   }
@@ -61,7 +61,7 @@ class CategorieController extends AbstractController{
                     "description" => $i->description,
                     "fournisseur" => $i->fournisseur,
                     "img" => $i->img,
-                    "lien" => "/ingredients/$i->id"
+                    "lien" => DIR."/ingredients/$i->id"
                   ]
                 );
     }

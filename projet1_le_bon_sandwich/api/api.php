@@ -1,5 +1,7 @@
 <?php
 
+define("DIR", $_SERVER['SCRIPT_NAME']);
+
 require("../vendor/autoload.php");
 src\utils\AppInit::bootEloquent('../conf/conf.ini');
 
