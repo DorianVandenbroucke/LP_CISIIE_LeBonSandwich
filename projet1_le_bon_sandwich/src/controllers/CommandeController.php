@@ -3,6 +3,7 @@
 namespace src\controllers;
 
 use src\models\Commande as Commande;
+use src\models\Sandwich as Sandwich;
 
 class CommandeController extends AbstractController{
 
@@ -14,18 +15,17 @@ class CommandeController extends AbstractController{
     $this->auth = new Authentification();
   }
 
-  static public function add($args){
+  static public function add($montant, $date_de_livraison, $etat){
 
-    var_dump($args); die;
 
     if(!isset($args['etat'])){
       $etat = "En attente";
     }
 
     $commande = new Commande();
-    $commande->montant = $args['montant'];
-    $commande->date_de_livraison = $args['date_de_livraison'];
-    $commande->etat = $args['etat'];
+    $commande->montant = $montant;
+    $commande->date_de_livraison = $date_de_livraison;
+    $commande->etat = $etat;
 
     $commande->save();
 
@@ -86,4 +86,34 @@ class CommandeController extends AbstractController{
     return $chaine;
   }
 
+
+
+  static public function modifySandwich($id, $taille, $pain,$ingredient){
+
+  		$sandwich = Sandwich::findOrFail($id);
+     
+      $commande = $sandwich->getCommande()->get();
+      var_dump($commande);
+
+  		if($commande->etat == "payé" || $commande->etat == "créé"){
+  		
+          $sandwich->taille = $taille;
+          $sandwich->pain = $pain;
+          $sandwich->ingredient = $ingredient;
+          $sandwich->save();
+
+          $chaine = [
+              "id"=> $sandwich->id,
+              "pain"=> $sandwich->pain,
+              "ingredient"=> $sandwich->ingredient
+          ];
+
+          return $chaine;
+  		}
+      else{
+          $error = "Vous ne pouvez  pas faire de modification";
+
+          return $error;
+      }
+  }
 }

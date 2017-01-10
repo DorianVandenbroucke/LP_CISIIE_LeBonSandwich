@@ -11,4 +11,5 @@ class Sandwich extends Model{
   protected $fillable = ["nom"];
   public $timestamps = false;
 
+
 }
