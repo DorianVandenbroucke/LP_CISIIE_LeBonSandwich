@@ -62,7 +62,7 @@ class CommandeController extends AbstractController{
 
   static public function sandwichsByCommande($id){
     $commande = Commande::findOrFail($id);
-    $sandwichs = $commande->sandwichs()->orderBy("nom")->get();
+    $sandwichs = $commande->sandwichs()->get();
     $nb_sandwichs = $sandwichs->count();
 
     $sandwichs_tab = [];
@@ -70,18 +70,20 @@ class CommandeController extends AbstractController{
       array_push(
                   $sandwichs_tab,
                   [
-                    "nom" => $s->nom,
-                    "lien_de_suppression" => DIR."/sandwichs/$s->id/commandes/$commande->id/delete"
+                    "taille" => $s->taille,
+                    "type_de_pain" => $s->type_de_pain,
                   ]
                 );
     }
 
+    $liens = [
+              "paiement" => DIR."/commandes/$commande->id/paiement/"
+             ];
     $chaine = [
                 "id_commande" => $commande->id,
                 "nb_sandwichs" => $nb_sandwichs,
                 "sandwichs"  => $sandwichs_tab,
-                "lien_de_modification" => DIR."/commande/$commande->id/update",
-                "lien_de_paiement" => DIR."/commande/$commande->id/payment"
+                "liens" => $liens
               ];
 
     return $chaine;
@@ -90,21 +92,11 @@ class CommandeController extends AbstractController{
   public function listCommandes()
   {
       $commandes = Commande::orderBy('date_de_livraison','desc')
-                            ->orderBy('ordre_creation','desc')	
+                            ->orderBy('ordre_creation','desc')
                             ->get();
       $result = $this->request->response->withStatus(200)->withHeader('Content-Type','application/json');
       $result->getBody()->write(json_encode($commandes));
       return $result;
-  }
-
-  static public function addSandwichToCommande($id_commande, $id_sandwich){
-    $sandwich = Sandwich::findOrFail($id_sandwich);
-    $commandes = $sandwich->commandes()->attach($id_sandwich, ['id_sandwich' => $id_commande]);
-
-    $chaine = [
-                "lien_de_la_commande" => DIR."/commandes/$id_commande"
-              ];
-    return $chaine;
   }
 
   public function filtrageCommandes($etat, $date)

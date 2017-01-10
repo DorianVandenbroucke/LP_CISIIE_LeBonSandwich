@@ -12,11 +12,7 @@ class Commande extends Model{
   public $timestamps = false;
 
   public function sandwichs(){
-    return $this->belongsToMany(
-                                  "src\models\Sandwich",
-                                  "sandwich_commande",
-                                  "id_commande", "id_sandwich"
-                               );
+    return $this->hasMany("src\models\Sandwich", "id_commande");
   }
 
 }

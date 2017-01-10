@@ -111,12 +111,13 @@ $app->get(
 );
 
 $app->post(
-  "/sandwichs/{id_sandwich}/commandes/{id_commande}/add[/]",
+  "/commandes/{id_commande}/sandwichs[/]",
   function(Request $req, Response $resp, $args){
     try{
       $id_commande = $args['id_commande'];
-      $id_sandwich = $args['id_sandwich'];
-      $chaine = CommandeController::addSandwichToCommande($id_sandwich, $id_commande);
+      $taille = $args['taille'];
+      $type = $args['type'];
+      $chaine = SandwichController::add($id_commande, $taille, $type);
       $resp = $resp->withStatus(200)->withHeader('Content-type', 'application/json, charset=utf-8');
       $resp->getBody()->write(json_encode($chaine));
     }catch(Illuminate\Database\Eloquent\ModelNotFoundException $e){
