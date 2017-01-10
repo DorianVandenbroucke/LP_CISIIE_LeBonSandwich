@@ -37,7 +37,6 @@ class IngredientController extends AbstractController{
                                  ->withHeader('Content-Type','application/json');
         $result->getBody()->write(json_encode($data));
         return $result;
-        echo json_encode($data);
     }
 
   
@@ -63,6 +62,7 @@ class IngredientController extends AbstractController{
     {
         try{
             $ingredient = Ingredient::findOrFail($id);
+            $ingredient->categorie = Ingredient::findOrFail($id)->getCategory;
             $data = ["ingredient" => $ingredient , "categorie" => $this->request->router->PathFor('ingredientCategories',array('id' => $ingredient->id))];
             return $this->responseToJSON($data,200);
         }
