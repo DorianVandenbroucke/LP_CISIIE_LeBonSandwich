@@ -12,7 +12,9 @@ use src\controllers\CategorieController as CategorieController;
 use src\controllers\CommandeController as CommandeController;
 use src\controllers\IngredientController as IngredientController;
 
-$app = new \Slim\App;
+$conf = ['settings' => ['displayErrorDetails' => true]];
+$errorDetails = new \Slim\Container($conf);
+$app = new \Slim\App($errorDetails);
 
 // On affiche une collection des catégories
 $app->get(
