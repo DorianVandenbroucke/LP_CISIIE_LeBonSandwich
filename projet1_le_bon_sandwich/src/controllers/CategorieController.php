@@ -23,7 +23,7 @@ class CategorieController extends AbstractController{
     foreach($categories as $c){
       $lien = array(
                   "nom" => $c->nom,
-                  "lien" => DIR."/categories/$c->id");
+                  "lien" => DIR."/categories/$c->id/");
       array_push($categories_tab, $lien);
     }
 
@@ -36,11 +36,12 @@ class CategorieController extends AbstractController{
 
   static public function detailCategory($id){
     $category = Categorie::findOrFail($id);
+    $lien_ingredients = ["ingredients" => DIR."/categories/$category->id/ingredients/"];
     $chaine = [
                 "id" => $category->id,
                 "nom" => $category->nom,
                 "description" => $category->description,
-                "lien" => DIR."/categories/$category->id/ingredients",
+                "lien" => $lien_ingredients
               ];
     return $chaine;
   }
@@ -61,7 +62,7 @@ class CategorieController extends AbstractController{
                     "description" => $i->description,
                     "fournisseur" => $i->fournisseur,
                     "img" => $i->img,
-                    "lien" => DIR."/ingredients/$i->id"
+                    "lien" => DIR."/ingredients/$i->id/"
                   ]
                 );
     }
