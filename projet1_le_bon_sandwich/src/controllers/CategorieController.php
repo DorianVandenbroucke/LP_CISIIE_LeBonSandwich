@@ -87,17 +87,16 @@ class CategorieController extends AbstractController{
         }
 
         $chaine = [
-                    "nombre_d_ingredient " => $nb_ingredients,
+                    "nombre_d_ingredient" => $nb_ingredients,
                     "ingredients" => $ingredients_tab
                   ];
-                  var_dump(json_encode($chaine));die;
         //return $this->response(200, $chaine);
                       $resp = $resp
                                   ->withStatus(200)
                                   ->withHeader(
                                           "Content-type",
                                           "application/json, charset=utf-8");
-                      $resp->getBody()->write(json_encode($chaine));
+                      $resp->getBody()->write(json_encode($chaine, JSON_FORCE_OBJECT));
                       return $resp;
       }catch(\Illuminate\Database\Eloquent\ModelNotFoundException $e){
         $chaine = ["Erreur", "Categorie d'ingrédients $id introuvable."];

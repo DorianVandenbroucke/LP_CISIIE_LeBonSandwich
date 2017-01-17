@@ -18,12 +18,9 @@ $errorDetails = new \Slim\Container($conf);
 $app = new \Slim\App($errorDetails);
 
 // On affiche une collection des catégories
-$app->get(
-  "/categories[/]",
-  function(Request $req, Response $resp, $args){
+$app->get( "/categories[/]", function(Request $req, Response $resp, $args){
     return CategorieController::listCategories($resp);
-  }
-)->setName("categories");
+  })->setName("categories");
 
 // On affiche le détail d'une catégorie
 $app->get(
@@ -94,6 +91,8 @@ $app->post(
   "/commandes/{id_commande}/sandwichs[/]",
   function(Request $req, Response $resp, $args){
     try{
+        $body = $req->getParsedBody();
+        var_dump($body); die;
       $id_commande = $args['id_commande'];
       $taille = $args['taille'];
       $type = $args['type'];
