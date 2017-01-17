@@ -5,7 +5,7 @@ namespace src\controllers;
 abstract class AbstractController{
   private $auth;
 
-  private $request = null;
+  public $request = null;
 
   public function __construct($http_req){
     $this->request = $http_req;
@@ -16,7 +16,7 @@ abstract class AbstractController{
         header("location: $route");
     }
 
-    public function response($status, $data){
+    public function responseJSON($status, $data){
         $resp = $this->request->response
                     ->withStatus($status)
                     ->withHeader(
