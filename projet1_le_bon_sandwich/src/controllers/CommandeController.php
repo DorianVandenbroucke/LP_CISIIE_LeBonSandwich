@@ -4,17 +4,10 @@ namespace src\controllers;
 
 use src\models\Commande as Commande;
 use src\models\Sandwich as Sandwich;
+use src\models\Ingredient as Ingredient;
 use \Illuminate\Database\Eloquent\ModelNotFoundException as ModelNotFoundException;
 
 class CommandeController extends AbstractController{
-
-  private $request = null;
-  private $auth;
-
-  public function __construct($http_req){
-    $this->request = $http_req;
-    //$this->auth = new Authentification();
-  }
 
   static public function add($args){
 
@@ -146,6 +139,7 @@ class CommandeController extends AbstractController{
     }
 
     public function deleteCommande($req, $resp, $args){
+        // TODO: VERIFICATION $commande->delete() + MODIF REPONSE JSON
         try {
             $id = $args['id'];
             $commande = Commande::findOrFail($id);
@@ -178,49 +172,63 @@ class CommandeController extends AbstractController{
                 $date_validite = $params['date_validite'];
                 $key = $params['key'];
                 $commande->etat = "payée";
-                $commande->save();
-                $chaine = ["Executé" => "La commande a été payée"];
-                $resp = $resp->withStatus(200)->withHeader('Content-Type','application/json');
-                $resp->getBody()->write(json_encode($chaine));
+                if ($commande->save()) {
+                    $chaine = ["Executé" => "La commande a été payée"];
+                    $status = 200;
+                }else {
+                    $chaine = ["Erreur" => "Le paiement à échoué"];
+                    $status = 400;
+                }
             } else{
                 $chaine = ["Erreur" => "La commande est déjà $commande->etat"];
-                $resp = $resp->withHeader('Content-type', 'application/json');
-                $resp->getBody()->write(json_encode($chaine));
+                $status = 400;
             }
         } catch (ModelNotFoundException $e) {
             $chaine = ["Erreur" => "La commande est introuvable ou n'existe pas"];
-            $resp = $resp->withStatus(404)->withHeader('Content-type', 'application/json');
-            $resp->getBody()->write(json_encode($chaine));
+            $status = 404;
         }
-        return $resp;
+
+        return $this->responseJSON($status, $chaine);
     }
 
-    // public function factureCommande($req, $resp, $args){
-    //     try {
-    //         $id = $args['id'];
-    //         $commande = Commande::findOrFail($id);
-    //         $sandwich = Sandwich::get();
-    //         var_dump($sandwich->id_commande);
-    //         if ($commande->etat === "livrée") {
-    //             $chaine = [
-    //                 "id" => $commande->id,
-    //                 "montant" => $commande->montant,
-    //                 "date_de_livraison" => $commande->date_de_livraison,
-    //                 "etat" => $commande->etat
-    //             ];
-    //             var_dump($chaine);
-    //         } else{
-    //             $chaine = ["Erreur" => "La commande n'a pas encore été livrée"];
-    //             $resp = $resp->withHeader('Content-type', 'application/json');
-    //             $resp->getBody()->write(json_encode($chaine));
-    //         }
-    //     } catch (ModelNotFoundException $e) {
-    //         $chaine = ["Erreur" => "La commande est introuvable ou n'existe pas"];
-    //         $resp = $resp->withStatus(404)->withHeader('Content-type', 'application/json');
-    //         $resp->getBody()->write(json_encode($chaine));
-    //     }
-    //     return $resp;
-    //
-    // }
+    public function factureCommande($req, $resp, $args){
+        try {
+            $sandwichs_tab = [];
+            $id = $args['id'];
+            $commande = Commande::findOrFail($id);
+            $sandwichs = Sandwich::where('id_commande', $id)->with('ingredient')->get();
+            $nb_sandwichs = $sandwichs->count();
+            foreach ($sandwichs as $sandwich) {
+                $ingredients_tab = [];
+                $ingredients = $sandwich->ingredient;
+                foreach ($ingredients as $ingredient) {
+                    array_push($ingredients_tab, $ingredient->nom);
+                }
+                array_push($sandwichs_tab, [
+                    "type_de_pain" => $sandwich->type_de_pain,
+                    "taille" => $sandwich->taille,
+                    "ingredients" => $ingredients_tab
+                ]);
+            }
 
+            // TODO: MONTANT POUR 1 SANDWICH
+
+            if ($commande->etat === "livrée") {
+                $chaine = [
+                    "montant" => $commande->montant,
+                    "date_de_livraison" => $commande->date_de_livraison,
+                    "nombre_de_sandwichs" => $nb_sandwichs,
+                    "sandwich" => $sandwichs_tab
+                ];
+                $status = 200;
+            } else{
+                $chaine = ["Erreur" => "Impossible d'obtenir une facture, la commande n'a pas encore été livrée"];
+                $status = 400;
+            }
+        } catch (ModelNotFoundException $e) {
+            $chaine = ["Erreur" => "La commande est introuvable ou n'existe pas"];
+            $status = 404;
+        }
+        return $this->responseJSON($status, $chaine);
+    }
 }
