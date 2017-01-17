@@ -173,6 +173,21 @@ $app->get("/commandes[/]", function(Request $req, Response $res, $args){
     return (new CommandeController($this))->listCommandes();
 })->setName('commandes');
 
+$app->put("/commandes/{id}[/]",function(Request $req, Response $resp, $args){
+    return (new CommandeController($this))->updateCommande($req, $resp, $args);
+});
+
+$app->delete("/commandes/{id}[/]",function(Request $req, Response $resp, $args){
+    return (new CommandeController($this))->deleteCommande($req, $resp, $args);
+});
+
+$app->post("/commandes/{id}/paiement[/]",function(Request $req, Response $resp, $args){
+    return (new CommandeController($this))->payCommande($req, $resp, $args);
+});
+
+$app->get("/commandes/{id}/facture[/]",function(Request $req, Response $resp, $args){
+    return (new CommandeController($this))->factureCommande($req, $resp, $args);
+});
 
 
 $app->run();
