@@ -15,7 +15,12 @@ class CommandeController extends AbstractController{
     //$this->auth = new Authentification();
   }
 
-  static public function add($id_commande, $taille, $type){
+  static public function add($req, $resp, $args){
+
+    $id_commande = $args['id_commande'];
+    $taille = $req->getParams()["taille"];
+    $type = $req->getParams()["type"];
+
     $sandwich = Sandwich::findOrFail($id_sandwich);
     $commandes = $sandwich->commandes()->attach($id_sandwich, ['id_sandwich' => $id_commande]);
 
