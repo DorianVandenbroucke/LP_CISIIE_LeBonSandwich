@@ -4,6 +4,7 @@ namespace src\controllers;
 
 use src\models\Commande as Commande;
 use src\models\Sandwich as Sandwich;
+use src\models\Ingredient as Ingredient;
 use \Illuminate\Database\Eloquent\ModelNotFoundException as ModelNotFoundException;
 
 class CommandeController extends AbstractController{
@@ -195,32 +196,49 @@ class CommandeController extends AbstractController{
         return $resp;
     }
 
-    // public function factureCommande($req, $resp, $args){
-    //     try {
-    //         $id = $args['id'];
-    //         $commande = Commande::findOrFail($id);
-    //         $sandwich = Sandwich::get();
-    //         var_dump($sandwich->id_commande);
-    //         if ($commande->etat === "livrée") {
-    //             $chaine = [
-    //                 "id" => $commande->id,
-    //                 "montant" => $commande->montant,
-    //                 "date_de_livraison" => $commande->date_de_livraison,
-    //                 "etat" => $commande->etat
-    //             ];
-    //             var_dump($chaine);
-    //         } else{
-    //             $chaine = ["Erreur" => "La commande n'a pas encore été livrée"];
-    //             $resp = $resp->withHeader('Content-type', 'application/json');
-    //             $resp->getBody()->write(json_encode($chaine));
-    //         }
-    //     } catch (ModelNotFoundException $e) {
-    //         $chaine = ["Erreur" => "La commande est introuvable ou n'existe pas"];
-    //         $resp = $resp->withStatus(404)->withHeader('Content-type', 'application/json');
-    //         $resp->getBody()->write(json_encode($chaine));
-    //     }
-    //     return $resp;
-    //
-    // }
+    public function factureCommande($req, $resp, $args){
+        try {
+            $sandwichs_tab = [];
+            $id = $args['id'];
+            $commande = Commande::findOrFail($id);
+            $sandwichs = Sandwich::where('id_commande', $id)->with('ingredient')->get();
+            $nb_sandwichs = $sandwichs->count();
+            foreach ($sandwichs as $sandwich) {
+                $ingredients_tab = [];
+                $ingredients = $sandwich->ingredient;
+                foreach ($ingredients as $ingredient) {
+                    array_push($ingredients_tab, $ingredient->nom);
+                }
+                array_push($sandwichs_tab, [
+                    "type_de_pain" => $sandwich->type_de_pain,
+                    "taille" => $sandwich->taille,
+                    "ingredients" => $ingredients_tab
+                ]);
+            }
+
+            // TODO: MONTANT POUR 1 SANDWICH
+
+            if ($commande->etat === "livrée") {
+                $chaine = [
+                    "montant" => $commande->montant,
+                    "date_de_livraison" => $commande->date_de_livraison,
+                    "nombre_de_sandwichs" => $nb_sandwichs,
+                    "sandwich" => $sandwichs_tab
+                ];
+                $resp = $resp->withStatus(200)->withHeader('Content-Type','application/json');
+                $resp->getBody()->write(json_encode($chaine, JSON_FORCE_OBJECT));
+            } else{
+                $chaine = ["Erreur" => "La commande n'a pas encore été livrée"];
+                $resp = $resp->withHeader('Content-type', 'application/json');
+                $resp->getBody()->write(json_encode($chaine));
+            }
+        } catch (ModelNotFoundException $e) {
+            $chaine = ["Erreur" => "La commande est introuvable ou n'existe pas"];
+            $resp = $resp->withStatus(404)->withHeader('Content-type', 'application/json');
+            $resp->getBody()->write(json_encode($chaine));
+        }
+        return $resp;
+
+    }
 
 }
