@@ -25,7 +25,7 @@ class IngredientController extends AbstractController{
         return($ingredient);
     }
 
-  public function listIngredients()
+  public function listIngredients($req, $res, $args)
   {
       try
       {
@@ -43,7 +43,7 @@ class IngredientController extends AbstractController{
         return $this->responseJSON(404, $data);
       }
   }
-    public function getIngredient($id)
+    public function getIngredient($req, $res, $id)
     {
         try{
             $ingredient = Ingredient::findOrFail($id);
@@ -59,7 +59,7 @@ class IngredientController extends AbstractController{
     }
 
     //Create
-    public function addIngredient($ingredient)
+    public function addIngredient($req, $res, $ingredient)
     {
         $ingredient = $this->issetIngredient($ingredient);
         $ingredient = $this->filterIngredient($ingredient);
@@ -80,7 +80,7 @@ class IngredientController extends AbstractController{
     }
 
     //Read 
-    public function getCategorie($id)
+    public function getCategorie($req, $res, $id)
     {
         try{
             $data =  Ingredient::findOrFail($id)->getCategory;
@@ -95,7 +95,7 @@ class IngredientController extends AbstractController{
 
 
     //Update
-    public function updateIngredient($id, $requestbody)
+    public function updateIngredient($req, $res, $id, $requestbody)
     {
         $data = [];
         try{
@@ -123,7 +123,7 @@ class IngredientController extends AbstractController{
     }       
 
     //Delete
-    public function deleteIngredient($id)
+    public function deleteIngredient($req, $res, $id)
     {
         try{
             Ingredient::findOrFail($id)->delete();

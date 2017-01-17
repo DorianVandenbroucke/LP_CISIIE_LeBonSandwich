@@ -19,6 +19,7 @@ class ComposerStaticInit64a6abd5b972fef15a6368fd14ffad7b
             'Symfony\\Polyfill\\Mbstring\\' => 26,
             'Symfony\\Component\\Translation\\' => 30,
             'Stringy\\' => 8,
+            'Slim\\Views\\' => 11,
             'Slim\\' => 5,
         ),
         'P' => 
@@ -55,6 +56,10 @@ class ComposerStaticInit64a6abd5b972fef15a6368fd14ffad7b
         'Stringy\\' => 
         array (
             0 => __DIR__ . '/..' . '/danielstjules/stringy/src',
+        ),
+        'Slim\\Views\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/slim/twig-view/src',
         ),
         'Slim\\' => 
         array (
@@ -100,6 +105,13 @@ class ComposerStaticInit64a6abd5b972fef15a6368fd14ffad7b
             'src\\' => 
             array (
                 0 => __DIR__ . '/../..' . '/',
+            ),
+        ),
+        'T' => 
+        array (
+            'Twig_' => 
+            array (
+                0 => __DIR__ . '/..' . '/twig/twig/lib',
             ),
         ),
         'P' => 

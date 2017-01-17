@@ -13,7 +13,10 @@ use src\controllers\CommandeController as CommandeController;
 use src\controllers\SandwichController as SandwichController;
 use src\controllers\IngredientController as IngredientController;
 
-$conf = ['settings' => ['displayErrorDetails' => true]];
+$conf = ['settings' => ['displayErrorDetails' => true, 'tmpl_dir' => '..\templates'],
+          'view' => function($c){
+            return new \Slim\Views\Twig($c['settings']['tmpl_dir'], ['debug'=>true, 'cache'=> $c['settings']['tmpl_dir']]);
+          }];
 $errorDetails = new \Slim\Container($conf);
 $app = new \Slim\App($errorDetails);
 
@@ -137,29 +140,31 @@ $app->post(
 
 
 $app->get("/ingredients[/]",function(Request $req, Response $resp, $args){
-  return (new IngredientController($this))->listIngredients();
+  //$data = (new IngredientController($this))->listIngredients($req, $resp, $args);
+  return (new IngredientController($this))->listIngredients($req, $resp, $args);
+  //return $this->view->render($resp, 'ingredients.html', ['data' => $data]);
 })->setName('ingredients');
 
 $app->post("/ingredients[/]",function(Request $req, Response $resp, $args){
   $parsedBody = $req->getParsedBody();
-  return (new IngredientController($this))->addIngredient($parsedBody);
+  return (new IngredientController($this))->addIngredient($req, $resp, $args, $parsedBody);
 });
 
 $app->get("/ingredients/{id}[/]",function(Request $req, Response $resp, $args){
-  return (new IngredientController($this))->getIngredient($args['id']);
+  return (new IngredientController($this))->getIngredient($req, $resp, $args['id']);
 })->setName('ingredient');
 
 $app->delete("/ingredients/{id}[/]",function(Request $req, Response $resp, $args){
-  return (new IngredientController($this))->deleteIngredient($args['id']);
+  return (new IngredientController($this))->deleteIngredient($req, $resp, $args['id']);
 });
 
 $app->put("/ingredients/{id}[/]",function(Request $req, Response $resp, $args){
   $parsedBody = $req->getParsedBody();
-  return (new IngredientController($this))->updateIngredient($args['id'],$parsedBody);
+  return (new IngredientController($this))->updateIngredient($req, $resp, $args['id'], $parsedBody);
 });
 
 $app->get("/ingredients/{id}/categorie[/]",function(Request $req, Response $resp, $args){
-  return (new IngredientController($this))->getCategorie($args['id']);
+  return (new IngredientController($this))->getCategorie($req, $resp, $args['id']);
 })->setName('ingredientCategories');
 
 
@@ -167,7 +172,7 @@ $app->get("/commandes[/]", function(Request $req, Response $res, $args){
   $_GET['date'] = (!isset($_GET['date'])) ? NULL : $_GET['date'];
   if(isset($_GET['etat']))
     //Filtrage des commandes par etat & date de livraison
-    return (new CommandeController($this))->filtrageCommandes($_GET['etat'], $_GET['date']);
+    return (new CommandeController($this))->filtrageCommandes($req, $resp, $args, $_GET['etat'], $_GET['date']);
   else
     //liste des commandes triées par date de livraison et ordre de creation
     return (new CommandeController($this))->listCommandes();
