@@ -139,6 +139,7 @@ class CommandeController extends AbstractController{
     }
 
     public function deleteCommande($req, $resp, $args){
+        // TODO: VERIFICATION $commande->delete() + MODIF REPONSE JSON
         try {
             $id = $args['id'];
             $commande = Commande::findOrFail($id);
@@ -171,21 +172,23 @@ class CommandeController extends AbstractController{
                 $date_validite = $params['date_validite'];
                 $key = $params['key'];
                 $commande->etat = "payée";
-                $commande->save();
-                $chaine = ["Executé" => "La commande a été payée"];
-                $resp = $resp->withStatus(200)->withHeader('Content-Type','application/json');
-                $resp->getBody()->write(json_encode($chaine));
+                if ($commande->save()) {
+                    $chaine = ["Executé" => "La commande a été payée"];
+                    $status = 200;
+                }else {
+                    $chaine = ["Erreur" => "Le paiement à échoué"];
+                    $status = 400;
+                }
             } else{
                 $chaine = ["Erreur" => "La commande est déjà $commande->etat"];
-                $resp = $resp->withHeader('Content-type', 'application/json');
-                $resp->getBody()->write(json_encode($chaine));
+                $status = 400;
             }
         } catch (ModelNotFoundException $e) {
             $chaine = ["Erreur" => "La commande est introuvable ou n'existe pas"];
-            $resp = $resp->withStatus(404)->withHeader('Content-type', 'application/json');
-            $resp->getBody()->write(json_encode($chaine));
+            $status = 404;
         }
-        return $resp;
+
+        return $this->responseJSON($status, $chaine);
     }
 
     public function factureCommande($req, $resp, $args){
@@ -217,16 +220,15 @@ class CommandeController extends AbstractController{
                     "nombre_de_sandwichs" => $nb_sandwichs,
                     "sandwich" => $sandwichs_tab
                 ];
-                return $this->responseJSON(200, $chaine);
+                $status = 200;
             } else{
-                $chaine = ["Erreur" => "La commande n'a pas encore été livrée"];
-                return $this->responseJSON(400, $chaine);
+                $chaine = ["Erreur" => "Impossible d'obtenir une facture, la commande n'a pas encore été livrée"];
+                $status = 400;
             }
         } catch (ModelNotFoundException $e) {
             $chaine = ["Erreur" => "La commande est introuvable ou n'existe pas"];
-            return $this->responseJSON(404, $chaine);
+            $status = 404;
         }
-
+        return $this->responseJSON($status, $chaine);
     }
-
 }
