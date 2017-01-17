@@ -7,8 +7,5 @@ src\utils\AppInit::bootEloquent('conf/conf.ini');
 
 
 use src\controllers\CategorieController as CategorieController;
-$c = new CategorieController($this);
-$c::detailCategory(2);
-
-use src\controllers\CommandeController as CommandeController;
-var_dump(CommandeController::updateCommande(1, "2017-02-02"));
+echo "<pre>";
+CategorieController::ingredientsByCategorie(NULL, 2);

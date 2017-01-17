@@ -21,34 +21,15 @@ $errorDetails = new \Slim\Container($conf);
 $app = new \Slim\App($errorDetails);
 
 // On affiche une collection des catégories
-$app->get(
-  "/categories[/]",
-  function(Request $req, Response $resp, $args){
-    $chaine = CategorieController::listCategories();
-    $resp = $resp->withStatus(200)->withHeader('Content-type', 'application/json, charset=utf-8');
-    $resp->getBody()->write(json_encode($chaine));
-    return $resp;
-  }
-);
+$app->get( "/categories[/]", function(Request $req, Response $resp, $args){
+    return CategorieController::listCategories($resp);
+  })->setName("categories");
 
 // On affiche le détail d'une catégorie
 $app->get(
   "/categories/{id}[/]",
   function(Request $req, Response $resp, $args){
-    /*try{
-      $id = $args['id'];
-      $chaine = CategorieController::detailCategory($id);
-      $resp = $resp->withStatus(200)->withHeader('Content-type', 'application/json, charset=utf-8');
-      $resp->getBody()->write(json_encode($chaine));
-    }catch(Illuminate\Database\Eloquent\ModelNotFoundException $e){
-      $chaine = ["Erreur", "Categorie d'ingrédients $id introuvable."];
-      $resp = $resp->withStatus(404)->withHeader('Content-type', 'application/json, charset=utf-8');
-      $resp->getBody()->write(json_encode($chaine));
-    }
-    return $resp;*/
-    $c = new CategorieController($this);
-    return $c::detailCategory($args['id']);
-//    return CategorieController::detailCategory($args['id']);
+    return CategorieController::detailCategory($resp, $args['id']);
   }
 )->setName("categories");
 
@@ -56,19 +37,9 @@ $app->get(
 $app->get(
   "/categories/{id}/ingredients[/]",
   function(Request $req, Response $resp, $args){
-    try{
-      $id = $args['id'];
-      $chaine = CategorieController::ingredientsByCategorie($id);
-      $resp = $resp->withStatus(200)->withHeader('Content-type', 'application/json, charset=utf-8');
-      $resp->getBody()->write(json_encode($chaine));
-    }catch(Illuminate\Database\Eloquent\ModelNotFoundException $e){
-      $chaine = ["Erreur", "Categorie d'ingrédients $id introuvable."];
-      $resp = $resp->withStatus(404)->withHeader('Content-type', 'application/json, charset=utf-8');
-      $resp->getBody()->write(json_encode($chaine));
-    }
-    return $resp;
+     return CategorieController::ingredientsByCategorie($resp, $id);
   }
-);
+)->setName("categories");
 
 $app->get(
   "/commandes/add[/]",function(Request $req, Response $resp, $args){
@@ -123,10 +94,7 @@ $app->post(
   "/commandes/{id_commande}/sandwichs[/]",
   function(Request $req, Response $resp, $args){
     try{
-      $id_commande = $args['id_commande'];
-      $taille = $args['taille'];
-      $type = $args['type'];
-      $chaine = SandwichController::add($id_commande, $taille, $type);
+      $chaine = SandwichController::add($req, $resp, $args);
       $resp = $resp->withStatus(200)->withHeader('Content-type', 'application/json, charset=utf-8');
       $resp->getBody()->write(json_encode($chaine));
     }catch(Illuminate\Database\Eloquent\ModelNotFoundException $e){
