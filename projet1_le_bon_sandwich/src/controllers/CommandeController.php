@@ -10,9 +10,9 @@ class CommandeController extends AbstractController{
   private $request = null;
   private $auth;
 
-  public function __construct(HttpRequest $http_req){
+  public function __construct($http_req){
     $this->request = $http_req;
-    $this->auth = new Authentification();
+    //$this->auth = new Authentification();
   }
 
   static public function add($montant, $date_de_livraison, $etat){
@@ -42,10 +42,10 @@ class CommandeController extends AbstractController{
 
     if($commande->etat != "livrée"){
       $nom_lien = "lien_de_suppression";
-      $lien = "/commandes/$commande->id/delete";
+      $lien = DIR."/commandes/$commande->id/delete";
     }else{
       $nom_lien = "lien_de_la_facture";
-      $lien = "/commandes/$commande->id/facture";
+      $lien = DIR."/commandes/$commande->id/facture";
     }
 
     $chaine = [
@@ -53,7 +53,7 @@ class CommandeController extends AbstractController{
                 "montant" => $commande->montant,
                 "date_de_livraison" => $commande->date_de_livraison,
                 "etat" => $commande->etat,
-                "lien_du_detail" => "/commandes/$commande->id/sandwichs",
+                "lien_du_detail" => DIR."/commandes/$commande->id/sandwichs",
                 $nom_lien => $lien
               ];
     return $chaine;
@@ -69,18 +69,20 @@ class CommandeController extends AbstractController{
       array_push(
                   $sandwichs_tab,
                   [
-                    "nom" => $s->nom,
-                    "lien_de_suppression" => "/sandwichs/$s->id/commandes/$commande->id/delete"
+                    "taille" => $s->taille,
+                    "type_de_pain" => $s->type_de_pain,
                   ]
                 );
     }
 
+    $liens = [
+              "paiement" => DIR."/commandes/$commande->id/paiement/"
+             ];
     $chaine = [
                 "id_commande" => $commande->id,
                 "nb_sandwichs" => $nb_sandwichs,
                 "sandwichs"  => $sandwichs_tab,
-                "lien_de_modification" => "/commande/$commande->id/update",
-                "lien_de_paiement" => "/commande/$commande->id/payment"
+                "liens" => $liens
               ];
 
     return $chaine;
@@ -88,32 +90,43 @@ class CommandeController extends AbstractController{
 
 
 
-  static public function modifySandwich($id, $taille, $pain,$ingredient){
-
-  		$sandwich = Sandwich::findOrFail($id);
-     
-      $commande = $sandwich->getCommande()->get();
-      var_dump($commande);
-
-  		if($commande->etat == "payé" || $commande->etat == "créé"){
-  		
-          $sandwich->taille = $taille;
-          $sandwich->pain = $pain;
-          $sandwich->ingredient = $ingredient;
-          $sandwich->save();
-
-          $chaine = [
-              "id"=> $sandwich->id,
-              "pain"=> $sandwich->pain,
-              "ingredient"=> $sandwich->ingredient
-          ];
-
-          return $chaine;
-  		}
-      else{
-          $error = "Vous ne pouvez  pas faire de modification";
-
-          return $error;
-      }
+public function listCommandes()
+  {
+      $commandes = Commande::orderBy('date_de_livraison','desc')
+                            ->orderBy('ordre_creation','desc')
+                            ->get();
+      $result = $this->request->response->withStatus(200)->withHeader('Content-Type','application/json');
+      $result->getBody()->write(json_encode($commandes));
+      return $result;
   }
-}
+
+  public function filtrageCommandes($etat, $date)
+  {
+      if(!isset($date)){
+        $commandes = Commande::where('etat','=',$etat)->get();
+      }
+      else{
+        $date = strtotime($date);
+        $date = date('Y-m-d',$date);
+        $commandes = Commande::where('etat','=',$etat)->where('date_de_livraison','=',$date)->get();
+      }
+      $result = $this->request->response->withStatus(200)
+                             ->withHeader('Content-Type','application/json');
+      $result->getBody()->write(json_encode($commandes));
+      return $result;
+    
+  }
+
+/*  public function etatCommande($id){
+
+    $commande= Commande::findOrFail($id);
+
+    if($commande->etat== "créé"){
+
+
+    }elseif($commande->etat== "en attente" ){
+
+    }elseif($commande->etat== "livrée")
+
+  }*/
+  }

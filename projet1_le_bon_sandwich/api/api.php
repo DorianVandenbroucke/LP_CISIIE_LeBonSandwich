@@ -1,5 +1,7 @@
 <?php
 
+define("DIR", $_SERVER['SCRIPT_NAME']);
+
 require("../vendor/autoload.php");
 src\utils\AppInit::bootEloquent('../conf/conf.ini');
 
@@ -9,8 +11,11 @@ use \Psr\Http\Message\ResponseInterface as Response;
 use src\controllers\CategorieController as CategorieController;
 use src\controllers\CommandeController as CommandeController;
 use src\controllers\IngredientController as IngredientController;
+use src\controllers\SandwichController as SandwichController;
 
-$app = new \Slim\App;
+$conf = ['settings' => ['displayErrorDetails' => true]];
+$errorDetails = new \Slim\Container($conf);
+$app = new \Slim\App($errorDetails);
 
 // On affiche une collection des catégories
 $app->get(
@@ -108,12 +113,31 @@ $app->get(
   }
 );
 
+$app->post(
+  "/commandes/{id_commande}/sandwichs[/]",
+  function(Request $req, Response $resp, $args){
+    try{
+      $id_commande = $args['id_commande'];
+      $taille = $args['taille'];
+      $type = $args['type'];
+      $chaine = SandwichController::add($id_commande, $taille, $type);
+      $resp = $resp->withStatus(200)->withHeader('Content-type', 'application/json, charset=utf-8');
+      $resp->getBody()->write(json_encode($chaine));
+    }catch(Illuminate\Database\Eloquent\ModelNotFoundException $e){
+      $chaine = ["Erreur", "Ressource sandwich ou commande introuvable."];
+      $resp = $resp->withStatus(404)->withHeader('Content-type', 'application/json, charset=utf-8');
+      $resp->getBody()->write(json_encode($chaine));
+    }
+    return $resp;
+  }
+);
+
 
 $app->put(
   "/commandes/{id_commande}/sandwichs/{id_sandwich}[/]",
     function(Request $req, Response $resp, $args){
       try{
-        $chaine = CommandControler::modifySandwich($arg['id'], $args['taille'], $args['pain'], $args['ingredient']);
+        $chaine = SandwichController::modifySandwich($arg['id'], $args['taille'], $args['type_de_pain']);
         $resp = $resp->status(200)->withHeader('Content-type', 'application/json, charset=utf-8');
         $resp->getBody()->write(json_encode($chaine));
       }catch(Illuminate\Database\Eloquent\ModelNotFoundException $e){
@@ -153,5 +177,18 @@ $app->put("/ingredients/{id}[/]",function(Request $req, Response $resp, $args){
 $app->get("/ingredients/{id}/categorie[/]",function(Request $req, Response $resp, $args){
   return (new IngredientController($this))->getCategorie($args['id']);
 })->setName('ingredientCategories');
+
+
+$app->get("/commandes[/]", function(Request $req, Response $res, $args){
+  $_GET['date'] = (!isset($_GET['date'])) ? NULL : $_GET['date'];
+  if(isset($_GET['etat']))
+    //Filtrage des commandes par etat & date de livraison
+    return (new CommandeController($this))->filtrageCommandes($_GET['etat'], $_GET['date']);
+  else
+    //liste des commandes triées par date de livraison et ordre de creation
+    return (new CommandeController($this))->listCommandes();
+})->setName('commandes');
+
+
 
 $app->run();
