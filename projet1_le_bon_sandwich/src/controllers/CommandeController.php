@@ -9,14 +9,6 @@ use \Illuminate\Database\Eloquent\ModelNotFoundException as ModelNotFoundExcepti
 
 class CommandeController extends AbstractController{
 
-  private $request = null;
-  private $auth;
-
-  public function __construct($http_req){
-    $this->request = $http_req;
-    //$this->auth = new Authentification();
-  }
-
   static public function add($args){
 
     var_dump($args); die;
@@ -225,19 +217,15 @@ class CommandeController extends AbstractController{
                     "nombre_de_sandwichs" => $nb_sandwichs,
                     "sandwich" => $sandwichs_tab
                 ];
-                $resp = $resp->withStatus(200)->withHeader('Content-Type','application/json');
-                $resp->getBody()->write(json_encode($chaine, JSON_FORCE_OBJECT));
+                return $this->responseJSON(200, $chaine);
             } else{
                 $chaine = ["Erreur" => "La commande n'a pas encore été livrée"];
-                $resp = $resp->withHeader('Content-type', 'application/json');
-                $resp->getBody()->write(json_encode($chaine));
+                return $this->responseJSON(400, $chaine);
             }
         } catch (ModelNotFoundException $e) {
             $chaine = ["Erreur" => "La commande est introuvable ou n'existe pas"];
-            $resp = $resp->withStatus(404)->withHeader('Content-type', 'application/json');
-            $resp->getBody()->write(json_encode($chaine));
+            return $this->responseJSON(404, $chaine);
         }
-        return $resp;
 
     }
 
