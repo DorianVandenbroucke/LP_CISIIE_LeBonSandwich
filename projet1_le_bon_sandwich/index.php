@@ -1,7 +1,10 @@
 <?php
 
+define("DIR", $_SERVER['SCRIPT_NAME']);
+
 require_once("vendor/autoload.php");
 src\utils\AppInit::bootEloquent('conf/conf.ini');
 
-use src\controllers\CommandeController as CommandeController;
-var_dump(CommandeController::add(2));
+use src\controllers\CategorieController as CategorieController;
+$c = new CategorieController($this);
+$c::detailCategory(2);

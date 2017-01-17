@@ -10,6 +10,7 @@ use \Psr\Http\Message\ResponseInterface as Response;
 
 use src\controllers\CategorieController as CategorieController;
 use src\controllers\CommandeController as CommandeController;
+use src\controllers\SandwichController as SandwichController;
 use src\controllers\IngredientController as IngredientController;
 
 $conf = ['settings' => ['displayErrorDetails' => true]];
@@ -31,7 +32,7 @@ $app->get(
 $app->get(
   "/categories/{id}[/]",
   function(Request $req, Response $resp, $args){
-    try{
+    /*try{
       $id = $args['id'];
       $chaine = CategorieController::detailCategory($id);
       $resp = $resp->withStatus(200)->withHeader('Content-type', 'application/json, charset=utf-8');
@@ -41,9 +42,12 @@ $app->get(
       $resp = $resp->withStatus(404)->withHeader('Content-type', 'application/json, charset=utf-8');
       $resp->getBody()->write(json_encode($chaine));
     }
-    return $resp;
+    return $resp;*/
+    $c = new CategorieController($this);
+    return $c::detailCategory($args['id']);
+//    return CategorieController::detailCategory($args['id']);
   }
-);
+)->setName("categories");
 
 // On affiche une collection d'ingredients appartenant à une catégorie donnée
 $app->get(

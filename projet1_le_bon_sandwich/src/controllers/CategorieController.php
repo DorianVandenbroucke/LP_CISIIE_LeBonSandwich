@@ -7,14 +7,6 @@ use src\models\Ingredient as Ingredient;
 
 class CategorieController extends AbstractController{
 
-  private $request = null;
-  private $auth;
-
-  public function __construct(HttpRequest $http_req){
-    $this->request = $http_req;
-    $this->auth = new Authentification();
-  }
-
   static public function listCategories(){
     $categories = Categorie::select("id", "nom")->orderBy("nom")->get();
     $nb_categories = $categories->count();
@@ -35,15 +27,21 @@ class CategorieController extends AbstractController{
   }
 
   static public function detailCategory($id){
-    $category = Categorie::findOrFail($id);
-    $lien_ingredients = ["ingredients" => DIR."/categories/$category->id/ingredients/"];
-    $chaine = [
-                "id" => $category->id,
-                "nom" => $category->nom,
-                "description" => $category->description,
-                "lien" => $lien_ingredients
-              ];
-    return $chaine;
+     try{
+        $category = Categorie::findOrFail($id);
+        $lien_ingredients = ["ingredients" => DIR."/categories/$category->id/ingredients/"];
+        $chaine = [
+                    "id" => $category->id,
+                    "nom" => $category->nom,
+                    "description" => $category->description,
+                    "lien" => $lien_ingredients
+                  ];
+                  var_dump($this); die;
+        return $this->response(200, $chaine);
+    }catch(Illuminate\Database\Eloquent\ModelNotFoundException $e){
+        $chaine = ["Erreur", "Categorie d'ingrédients $id introuvable."];
+        return $this->response(400, $chaine);
+    }
   }
 
   static public function ingredientsByCategorie($id){
