@@ -8,6 +8,8 @@ $baseDir = dirname($vendorDir);
 return array(
     'src\\' => array($baseDir . '/'),
     'Twig_' => array($vendorDir . '/twig/twig/lib'),
+    'SecurityLib' => array($vendorDir . '/ircmaxell/security-lib/lib'),
+    'RandomLib' => array($vendorDir . '/ircmaxell/random-lib/lib'),
     'Pimple' => array($vendorDir . '/pimple/pimple/src'),
     'Doctrine\\Common\\Inflector\\' => array($vendorDir . '/doctrine/inflector/lib'),
 );

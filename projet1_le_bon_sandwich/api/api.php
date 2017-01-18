@@ -71,7 +71,7 @@ $app->get(
     }
     return $resp;
   }
-);
+)->setName('commande');
 
 $app->get(
   "/commandes/{id}/sandwichs[/]",
@@ -136,18 +136,20 @@ $app->get("/ingredients/{id}/categorie[/]",function(Request $req, Response $resp
 })->setName('ingredientCategories');
 
 
-$app->get("/commandes[/]", function(Request $req, Response $res, $args){
-  $_GET['date'] = (!isset($_GET['date'])) ? NULL : $_GET['date'];
-  if(isset($_GET['etat']))
+$app->get("/commandes[/]", function(Request $req, Response $resp, $args){
     //Filtrage des commandes par etat & date de livraison
-    return (new CommandeController($this))->filtrageCommandes($req, $resp, $args, $_GET['etat'], $_GET['date']);
-  else
-    //liste des commandes triées par date de livraison et ordre de creation
-    return (new CommandeController($this))->listCommandes();
+    return (new CommandeController($this))->filtrageCommandes($req, $resp, $_GET['etat'], $_GET['date']);
 })->setName('commandes');
 
+$app->post('/commandes[/]', function(Request $req, Response $resp, $args){
+    $parsedBody = $req->getParsedBody();
+    return (new CommandeController($this))->add($req, $resp, $args, $parsedBody);
+});
+
 $app->put("/commandes/{id}[/]",function(Request $req, Response $resp, $args){
-    return (new CommandeController($this))->updateCommande($req, $resp, $args);
+    //récuperer les nouvelles valeurs depuis le Body de la requete
+    $parsedBody = $req->getParsedBody();
+    return (new CommandeController($this))->updateCommande($req, $resp, $args, $parsedBody);
 });
 
 $app->delete("/commandes/{id}[/]",function(Request $req, Response $resp, $args){

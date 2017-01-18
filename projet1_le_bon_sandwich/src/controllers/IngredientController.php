@@ -46,8 +46,8 @@ class IngredientController extends AbstractController{
     public function getIngredient($req, $res, $id)
     {
         try{
-            $ingredient = Ingredient::findOrFail($id);
-            $ingredient->categorie = Ingredient::findOrFail($id)->getCategory;
+            $ingredient = Ingredient::select('nom','description','fournisseur', 'img')->findOrFail($id);
+            $ingredient->categorie = Ingredient::findOrFail($id)->getCategory()->select('nom','description')->get();
             $data = ["ingredient" => $ingredient , "categorie" => $this->request->router->PathFor('ingredientCategories',array('id' => $ingredient->id))];
             return $this->responseJSON(200, $data);
         }
@@ -83,7 +83,7 @@ class IngredientController extends AbstractController{
     public function getCategorie($req, $res, $id)
     {
         try{
-            $data =  Ingredient::findOrFail($id)->getCategory;
+            $data =  Ingredient::findOrFail($id)->getCategory()->select('nom','description')->get();
             return $this->responseJSON(200,$data);
         }
         catch(\Illuminate\Database\Eloquent\ModelNotFoundException $e)

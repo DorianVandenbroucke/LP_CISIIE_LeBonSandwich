@@ -2,33 +2,38 @@
 
 namespace src\controllers;
 
+const CREATED = 1;
+const PAID = 2;
+const HANDLED = 3;
+const READ = 4;
+const DELIVRED = 5;
+
 use src\models\Commande as Commande;
 use src\models\Sandwich as Sandwich;
 use src\models\Ingredient as Ingredient;
 use \Illuminate\Database\Eloquent\ModelNotFoundException as ModelNotFoundException;
+use \Psr\Http\Message\ServerRequestInterface as Request;
 
 class CommandeController extends AbstractController{
 
-  static public function add($args){
+  public function checkTOKEN(Request $req){
+        $token = $req->getHeader('Token');
+        if(empty($token))
+            return false; 
+        return true;
+  }
 
-    var_dump($args); die;
-
-    if(!isset($args['etat'])){
-      $etat = "En attente";
-    }
+  public function add($req, $resp, $args, $parsedBody){
 
     $commande = new Commande();
-    $commande->montant = $args['montant'];
-    $commande->date_de_livraison = $args['date_de_livraison'];
-    $commande->etat = $args['etat'];
+    $commande->montant = 0;
+    $commande->date_de_livraison = date('Y-m-d', strtotime($parsedBody['date_de_livraison']));
+    $commande->etat = CREATED;
+    $commande->token = (new \RandomLib\Factory)->getMediumStrengthGenerator()->generateString(32);
 
     $commande->save();
-
-    $chaine = [
-                "id" => $commande->id,
-                "lien" => "/commandes/$commande->id"
-              ];
-    return $chaine;
+    $commande->self = $this->request->router->PathFor('commande', ['id' => $commande->id]);
+    return $this->responseJSON(201, $commande);
 
   }
 
@@ -86,30 +91,38 @@ class CommandeController extends AbstractController{
   public function listCommandes()
   {
       $commandes = Commande::orderBy('date_de_livraison','desc')
-                            ->orderBy('ordre_creation','desc')
+                            ->orderBy('date_de_creation','desc')
                             ->get();
       $result = $this->request->response->withStatus(200)->withHeader('Content-Type','application/json');
       $result->getBody()->write(json_encode($commandes));
       return $result;
   }
 
-  public function filtrageCommandes($etat, $date)
+  public function filtrageCommandes($req, $res, $etat, $date)
   {
-      if(!isset($date)){
-        $commandes = Commande::where('etat','=',$etat)->get();
+      if(!isset($etat))
+      {
+          if(!isset($date))
+              return $this->responseJSON(200, $this->listCommandes());
+          else
+              return $this->responseJSON(200, Commande::where('date_de_livraison','=',$date)->get());
       }
-      else{
-        $date = strtotime($date);
-        $date = date('Y-m-d',$date);
-        $commandes = Commande::where('etat','=',$etat)->where('date_de_livraison','=',$date)->get();
+      else
+      {
+          if(!isset($date))
+              return $this->responseJSON(200,Commande::where('etat','=',$etat)->get());
+
+          $date = date('Y-m-d', strtotime($date));
+          return $this->responseJSON(200, Commande::where('etat','=',$etat)->where('date_de_livraison','=',$date)->get());
       }
-      $result = $this->request->response->withStatus(200)
-                             ->withHeader('Content-Type','application/json');
-      $result->getBody()->write(json_encode($commandes));
-      return $result;
     }
 
     public function updateCommande($req, $resp, $args){
+        //Limiter l'acces aux utilisateurs qui posséde un Token
+        if(!$this->checkTOKEN($req)){
+            return $this->responseJSON(401, "acces dined");
+        }
+
         try{
             $id = $args['id'];
             $commande = Commande::findOrFail($id);
@@ -139,6 +152,10 @@ class CommandeController extends AbstractController{
     }
 
     public function deleteCommande($req, $resp, $args){
+        //Limiter l'acces aux utilisateurs qui posséde un Token
+        if(!$this->checkTOKEN($req)){
+            return $this->responseJSON(401, "acces dined");
+        }
         // TODO: VERIFICATION $commande->delete() + MODIF REPONSE JSON
         try {
             $id = $args['id'];
@@ -162,6 +179,10 @@ class CommandeController extends AbstractController{
     }
 
     public function payCommande($req, $resp, $args){
+        //Limiter l'acces aux utilisateurs qui posséde un Token
+        if(!$this->checkTOKEN($req)){
+            return $this->responseJSON(401, "acces dined");
+        }
         try {
             $id = $args['id'];
             $params = $req->getParams();
@@ -192,6 +213,10 @@ class CommandeController extends AbstractController{
     }
 
     public function factureCommande($req, $resp, $args){
+        //Limiter l'acces aux utilisateurs qui posséde un Token
+        if(!$this->checkTOKEN($req)){
+            return $this->responseJSON(401, "acces dined");
+        }
         try {
             $sandwichs_tab = [];
             $id = $args['id'];
