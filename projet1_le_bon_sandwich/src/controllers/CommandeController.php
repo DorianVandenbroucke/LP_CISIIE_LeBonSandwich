@@ -15,28 +15,7 @@ use \Illuminate\Database\Eloquent\ModelNotFoundException as ModelNotFoundExcepti
 use src\utils\Authentification ;
 
 class CommandeController extends AbstractController{
-
-<<<<<<< HEAD
-  private $request = null;
-  private $auth;
-
-  public function __construct($http_req){
-    $this->request = $http_req;
-    //$this->auth = new Authentification();
-  }
-
-  static public function add($montant, $date_de_livraison, $etat){
-
-
-    if(!isset($args['etat'])){
-      $etat = "En attente";
-    }
-
-    $commande = new Commande();
-    $commande->montant = $montant;
-    $commande->date_de_livraison = $date_de_livraison;
-    $commande->etat = $etat;
-=======
+	
   public function add($req, $resp, $args, $parsedBody){
 
     $commande = new Commande();
@@ -44,7 +23,6 @@ class CommandeController extends AbstractController{
     $commande->date_de_livraison = date('Y-m-d', strtotime($parsedBody['date_de_livraison']));
     $commande->etat = CREATED;
     $commande->token = (new \RandomLib\Factory)->getMediumStrengthGenerator()->generateString(32);
->>>>>>> e846f17195c65bec34976bb1936fbd33e34a16e6
 
     $commande->save();
     $commande->self = $this->request->router->PathFor('commande', ['id' => $commande->id]);
@@ -149,18 +127,8 @@ public function listCommandes()
           $date = date('Y-m-d', strtotime($date));
           return $this->responseJSON(200, Commande::where('etat','=',$etat)->where('date_de_livraison','=',$date)->get());
       }
-<<<<<<< HEAD
-      $result = $this->request->response->withStatus(200)
-                             ->withHeader('Content-Type','application/json');
-      $result->getBody()->write(json_encode($commandes));
-      return $result;
     
   }
-
-=======
-    }
->>>>>>> e846f17195c65bec34976bb1936fbd33e34a16e6
-
   
     public function updateCommande($req, $resp, $args){
         if(!Authentification::checkTOKEN($req)){
