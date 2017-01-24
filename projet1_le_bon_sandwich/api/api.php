@@ -34,7 +34,7 @@ $app->get(
 $app->get(
   "/categories/{id}/ingredients[/]",
   function(Request $req, Response $resp, $args){
-     return CategorieController::ingredientsByCategorie($resp, $id);
+     return CategorieController::ingredientsByCategorie($resp, $args['id']);
   }
 )->setName("categories");
 

@@ -17,6 +17,7 @@ class CategorieController extends AbstractController{
                   "nom" => $c->nom,
                   "lien" => DIR."/categories/$c->id/");
       array_push($categories_tab, $lien);
+    //   var_dump($this->request->router->PathFor('categories', array('id' => $c->id)));
     }
 
     $chaine = [
