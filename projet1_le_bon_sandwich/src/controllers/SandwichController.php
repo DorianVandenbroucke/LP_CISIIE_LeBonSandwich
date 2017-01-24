@@ -6,7 +6,7 @@ use src\models\Commande as Commande;
 use src\models\Sandwich as Sandwich;
 use src\models\Ingredient as Ingredient;
 
-<<<<<<< HEAD
+
 use \Illuminate\Database\Eloquent\ModelNotFoundException as ModelNotFoundException;
 
 class SandwichController extends AbstractController{
@@ -85,10 +85,11 @@ class SandwichController extends AbstractController{
 
       }
         
-=======
-class SandwichController extends AbstractController{
+      }
 
-  public function add($req, $resp, $id_commande){
+
+ /* public function add($req, $resp, $id_commande){
+
       try{
         $commande = Commande::findOrFail($id_commande);
         $taille = $req->getParams()["taille"];
@@ -116,8 +117,8 @@ class SandwichController extends AbstractController{
             $chaine = ["Erreur", "Ressource de la commande $id_commande introuvable."];
             return $this->responseJSON(404, $chaine);
       }
->>>>>>> e846f17195c65bec34976bb1936fbd33e34a16e6
-  }
+
+  }*/
 
 
 
