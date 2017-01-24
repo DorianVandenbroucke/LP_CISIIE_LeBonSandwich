@@ -15,7 +15,7 @@ use \Illuminate\Database\Eloquent\ModelNotFoundException as ModelNotFoundExcepti
 use src\utils\Authentification ;
 
 class CommandeController extends AbstractController{
-	
+
   public function add($req, $resp, $args, $parsedBody){
 
     $commande = new Commande();
@@ -127,9 +127,9 @@ public function listCommandes()
           $date = date('Y-m-d', strtotime($date));
           return $this->responseJSON(200, Commande::where('etat','=',$etat)->where('date_de_livraison','=',$date)->get());
       }
-    
+
   }
-  
+
     public function updateCommande($req, $resp, $args){
         if(!Authentification::checkTOKEN($req)){
             return $this->responseJSON(401, ["Erreur" => "Acces Refusé"]);
@@ -231,7 +231,7 @@ public function listCommandes()
             $sandwichs_tab = [];
             $id = $args['id'];
             $commande = Commande::findOrFail($id);
-            $sandwichs = Sandwich::where('id_commande', $id)->with('ingredient')->get();
+            $sandwichs = Sandwich::where('id_commande', $id)->with('ingredients')->get();
             $nb_sandwichs = $sandwichs->count();
             foreach ($sandwichs as $sandwich) {
                 $ingredients_tab = [];
