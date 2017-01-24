@@ -7,7 +7,7 @@ use src\models\Ingredient as Ingredient;
 
 class CategorieController extends AbstractController{
 
-  static public function listCategories($resp){
+  public function listCategories($resp){
     $categories = Categorie::select("id", "nom")->orderBy("nom")->get();
     $nb_categories = $categories->count();
 
@@ -23,17 +23,10 @@ class CategorieController extends AbstractController{
                 "nombre_de_categories" => $nb_categories,
                 "categories" => $categories_tab
               ];
-    // return $this->response(200, $chaine);
-        $resp = $resp
-                    ->withStatus(200)
-                    ->withHeader(
-                            "Content-type",
-                            "application/json, charset=utf-8");
-        $resp->getBody()->write(json_encode($chaine));
-        return $resp;
+    return $this->responseJSON(200, $chaine);
   }
 
-  static public function detailCategory($resp, $id){
+  public function detailCategory($resp, $id){
      try{
         $category = Categorie::findOrFail($id);
         $lien_ingredients = ["ingredients" => DIR."/categories/$category->id/ingredients/"];
@@ -43,28 +36,14 @@ class CategorieController extends AbstractController{
                     "description" => $category->description,
                     "lien" => $lien_ingredients
                   ];
-        // return $this->response(200, $chaine);
-            $resp = $resp
-                        ->withStatus(200)
-                        ->withHeader(
-                                "Content-type",
-                                "application/json, charset=utf-8");
-            $resp->getBody()->write(json_encode($chaine));
-            return $resp;
+        return $this->responseJSON(200, $chaine);
     }catch(\Illuminate\Database\Eloquent\ModelNotFoundException $e){
         $chaine = ["Erreur", "Categorie d'ingrédients $id introuvable."];
-        //return $this->response(400, $chaine
-            $resp = $resp
-                        ->withStatus(400)
-                        ->withHeader(
-                                "Content-type",
-                                "application/json, charset=utf-8");
-            $resp->getBody()->write(json_encode($chaine));
-            return $resp;
+        return $this->responseJSON(400, $chaine);
     }
   }
 
-  static public function ingredientsByCategorie($resp, $id){
+  public function ingredientsByCategorie($resp, $id){
       try{
         $categorie = Categorie::findOrFail($id);
         $ingredients = Ingredient::where("cat_id", $id)->orderBy("nom")->get();
@@ -90,24 +69,11 @@ class CategorieController extends AbstractController{
                     "nombre_d_ingredient" => $nb_ingredients,
                     "ingredients" => $ingredients_tab
                   ];
-        //return $this->response(200, $chaine);
-                      $resp = $resp
-                                  ->withStatus(200)
-                                  ->withHeader(
-                                          "Content-type",
-                                          "application/json, charset=utf-8");
-                      $resp->getBody()->write(json_encode($chaine, JSON_FORCE_OBJECT));
-                      return $resp;
+        return $this->responseJSON(200, $chaine);
+
       }catch(\Illuminate\Database\Eloquent\ModelNotFoundException $e){
         $chaine = ["Erreur", "Categorie d'ingrédients $id introuvable."];
-//return $this->response(400, $chaine);
-            $resp = $resp
-                        ->withStatus(400)
-                        ->withHeader(
-                                "Content-type",
-                                "application/json, charset=utf-8");
-            $resp->getBody()->write(json_encode($chaine));
-            return $resp;
+        return $this->responseJSON(400, $chaine);
       }
   }
 

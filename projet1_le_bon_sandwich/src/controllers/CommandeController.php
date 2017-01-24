@@ -12,16 +12,9 @@ use src\models\Commande as Commande;
 use src\models\Sandwich as Sandwich;
 use src\models\Ingredient as Ingredient;
 use \Illuminate\Database\Eloquent\ModelNotFoundException as ModelNotFoundException;
-use \Psr\Http\Message\ServerRequestInterface as Request;
+use src\utils\Authentification ;
 
 class CommandeController extends AbstractController{
-
-  public function checkTOKEN(Request $req){
-        $token = $req->getHeader('Token');
-        if(empty($token))
-            return false; 
-        return true;
-  }
 
   public function add($req, $resp, $args, $parsedBody){
 
@@ -100,6 +93,10 @@ class CommandeController extends AbstractController{
 
   public function filtrageCommandes($req, $res, $etat, $date)
   {
+      if(!Authentification::checkTOKEN($req)){
+            return $this->responseJSON(401, ["error" => "acces dined"]);
+      }
+
       if(!isset($etat))
       {
           if(!isset($date))
@@ -118,8 +115,7 @@ class CommandeController extends AbstractController{
     }
 
     public function updateCommande($req, $resp, $args){
-        //Limiter l'acces aux utilisateurs qui posséde un Token
-        if(!$this->checkTOKEN($req)){
+        if(!Authentification::checkTOKEN($req)){
             return $this->responseJSON(401, "acces dined");
         }
 
@@ -152,9 +148,8 @@ class CommandeController extends AbstractController{
     }
 
     public function deleteCommande($req, $resp, $args){
-        //Limiter l'acces aux utilisateurs qui posséde un Token
-        if(!$this->checkTOKEN($req)){
-            return $this->responseJSON(401, "acces dined");
+        if(!Authentification::checkTOKEN($req)){
+            return $this->responseJSON(401, ["error" => "acces dined"]);
         }
         // TODO: VERIFICATION $commande->delete() + MODIF REPONSE JSON
         try {
@@ -179,10 +174,10 @@ class CommandeController extends AbstractController{
     }
 
     public function payCommande($req, $resp, $args){
-        //Limiter l'acces aux utilisateurs qui posséde un Token
-        if(!$this->checkTOKEN($req)){
-            return $this->responseJSON(401, "acces dined");
+        if(!Authentification::checkTOKEN($req)){
+            return $this->responseJSON(401, ["error" => "acces dined"]);
         }
+
         try {
             $id = $args['id'];
             $params = $req->getParams();
@@ -213,10 +208,10 @@ class CommandeController extends AbstractController{
     }
 
     public function factureCommande($req, $resp, $args){
-        //Limiter l'acces aux utilisateurs qui posséde un Token
-        if(!$this->checkTOKEN($req)){
-            return $this->responseJSON(401, "acces dined");
+        if(!Authentification::checkTOKEN($req)){
+            return $this->responseJSON(401, ["error" => "acces dined"]);
         }
+
         try {
             $sandwichs_tab = [];
             $id = $args['id'];

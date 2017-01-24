@@ -7,7 +7,7 @@ src\utils\AppInit::bootEloquent('../conf/conf.ini');
 
 use \Psr\Http\Message\ServerRequestInterface as Request;
 use \Psr\Http\Message\ResponseInterface as Response;
-
+use \Slim\Extras\Middleware\HttpBasicAuth;
 use src\controllers\CategorieController as CategorieController;
 use src\controllers\CommandeController as CommandeController;
 use src\controllers\SandwichController as SandwichController;
@@ -22,14 +22,14 @@ $app = new \Slim\App($errorDetails);
 
 // On affiche une collection des catégories
 $app->get( "/categories[/]", function(Request $req, Response $resp, $args){
-    return CategorieController::listCategories($resp);
+    return (new CategorieController($this))->listCategories($resp);
   })->setName("categories");
 
 // On affiche le détail d'une catégorie
 $app->get(
   "/categories/{id}[/]",
   function(Request $req, Response $resp, $args){
-    return CategorieController::detailCategory($resp, $args['id']);
+    return (new CategorieController($this))->detailCategory($resp, $args['id']);
   }
 )->setName("categories");
 
@@ -37,7 +37,7 @@ $app->get(
 $app->get(
   "/categories/{id}/ingredients[/]",
   function(Request $req, Response $resp, $args){
-     return CategorieController::ingredientsByCategorie($resp, $id);
+     return (new CategorieController($this))->ingredientsByCategorie($resp, $args['id']);
   }
 )->setName("categories");
 
@@ -108,9 +108,7 @@ $app->post(
 
 
 $app->get("/ingredients[/]",function(Request $req, Response $resp, $args){
-  //$data = (new IngredientController($this))->listIngredients($req, $resp, $args);
   return (new IngredientController($this))->listIngredients($req, $resp, $args);
-  //return $this->view->render($resp, 'ingredients.html', ['data' => $data]);
 })->setName('ingredients');
 
 $app->post("/ingredients[/]",function(Request $req, Response $resp, $args){
@@ -137,8 +135,9 @@ $app->get("/ingredients/{id}/categorie[/]",function(Request $req, Response $resp
 
 
 $app->get("/commandes[/]", function(Request $req, Response $resp, $args){
-    //Filtrage des commandes par etat & date de livraison
-    return (new CommandeController($this))->filtrageCommandes($req, $resp, $_GET['etat'], $_GET['date']);
+  $etat = (isset($_GET['etat'])) ? $_GET['etat'] : null ;
+  $date = (isset($_GET['sate'])) ? $_GET['date'] : null ;
+  return (new CommandeController($this))->filtrageCommandes($req, $resp, $etat, $date);
 })->setName('commandes');
 
 $app->post('/commandes[/]', function(Request $req, Response $resp, $args){

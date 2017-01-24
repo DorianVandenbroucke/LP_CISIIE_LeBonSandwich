@@ -4,6 +4,8 @@ namespace src\controllers;
 
 use src\models\Categorie as Categorie;
 use src\models\Ingredient as Ingredient;
+use \Psr\Http\Message\ServerRequestInterface as Request;
+use src\utils\Authentification ;
 
 class IngredientController extends AbstractController{
 
@@ -27,6 +29,10 @@ class IngredientController extends AbstractController{
 
   public function listIngredients($req, $res, $args)
   {
+      if(!Authentification::checkACCESS($req)){
+          return $this->responseJSON(401, 'access dined');
+      }
+
       try
       {
         $data = [];
@@ -61,6 +67,10 @@ class IngredientController extends AbstractController{
     //Create
     public function addIngredient($req, $res, $ingredient)
     {
+      if(!Authentification::checkACCESS($req)){
+          return $this->responseJSON(401, 'access dined');
+      }
+
         $ingredient = $this->issetIngredient($ingredient);
         $ingredient = $this->filterIngredient($ingredient);
         $newIngredient = new Ingredient();
@@ -125,6 +135,10 @@ class IngredientController extends AbstractController{
     //Delete
     public function deleteIngredient($req, $res, $id)
     {
+        if(!Authentification::checkACCESS($req)){
+          return $this->responseJSON(401, 'access dined');
+        }
+
         try{
             Ingredient::findOrFail($id)->delete();
             return $this->responseJSON(204,NULL);
