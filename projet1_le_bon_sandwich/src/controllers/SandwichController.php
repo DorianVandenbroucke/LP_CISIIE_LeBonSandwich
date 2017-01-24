@@ -119,9 +119,7 @@ class SandwichController extends AbstractController{
 			$chaine = ["Erreur" => "La sandwich est introuvable"];
 			$resp = $resp->withStatus(404)->withHeader('Content-type', 'application/json');
 			$resp->getBody()->write(json_encode($chaine));
-
 		}
-
 	  }
 
 }
