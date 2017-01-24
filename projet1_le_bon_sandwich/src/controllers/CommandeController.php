@@ -138,52 +138,49 @@ class CommandeController extends AbstractController{
             $new_date = $req->getParams()['date_de_livraison'];
             if ($commande->etat === "crée") {
                 $commande->date_de_livraison = $new_date;
-                $chaine = [
-                    "id" => $commande->id,
-                    "montant" => $commande->montant,
-                    "date_de_livraison" => $commande->date_de_livraison,
-                    "etat" => $commande->etat
-                ];
-                $commande->save();
-                $resp = $resp->withStatus(200)->withHeader('Content-Type','application/json');
-                $resp->getBody()->write(json_encode($chaine));
+                if ($commande->save()) {
+                    $chaine = ["id" => $commande->id,
+                        "montant" => $commande->montant,
+                        "date_de_livraison" => $commande->date_de_livraison,
+                        "etat" => $commande->etat
+                    ];
+                    $status = 200;
+                } else {
+                    $chaine = ["Erreur" => "Il y a eu une erreur dans l'execution de la requête"];
+                    $status = 400;
+                }
             } else {
                 $chaine = ["Erreur" => "La commande est déjà $commande->etat"];
-                $resp = $resp->withHeader('Content-type', 'application/json');
-                $resp->getBody()->write(json_encode($chaine));
+                $status = 400;
             }
         }catch(ModelNotFoundException $e){
             $chaine = ["Erreur" => "La commande est introuvable ou n'existe pas"];
-            $resp = $resp->withStatus(404)->withHeader('Content-type', 'application/json');
-            $resp->getBody()->write(json_encode($chaine));
+            $status = 404;
         }
-        return $resp;
+        return $this->responseJSON($status, $chaine);
     }
 
     public function deleteCommande($req, $resp, $args){
-        if(!Authentification::checkTOKEN($req)){
-            return $this->responseJSON(401, ["error" => "acces dined"]);
-        }
-        // TODO: VERIFICATION $commande->delete() + MODIF REPONSE JSON
         try {
             $id = $args['id'];
             $commande = Commande::findOrFail($id);
             if ($commande->etat === "crée") {
-                $commande->delete();
-                $chaine = ["Executé" => "La commande a été correctement supprimée"];
-                $resp = $resp->withStatus(200)->withHeader('Content-Type','application/json');
-                $resp->getBody()->write(json_encode($chaine));
+                if ($commande->delete()) {
+                    $chaine = ["Executé" => "La commande a été correctement supprimée"];
+                    $status = 200;
+                } else {
+                    $chaine = ["Erreur" => "Il y a eu une erreur dans l'execution de la requête"];
+                    $status = 400;
+                }
             }else{
                 $chaine = ["Erreur" => "La commande est déjà $commande->etat"];
-                $resp = $resp->withHeader('Content-type', 'application/json');
-                $resp->getBody()->write(json_encode($chaine));
+                $status = 400;
             }
         } catch (ModelNotFoundException $e) {
             $chaine = ["Erreur" => "La commande est introuvable ou n'existe pas"];
-            $resp = $resp->withStatus(404)->withHeader('Content-type', 'application/json');
-            $resp->getBody()->write(json_encode($chaine));
+            $status = 404;
         }
-        return $resp;
+        return $this->responseJSON($status, $chaine);
     }
 
     public function payCommande($req, $resp, $args){
@@ -216,7 +213,6 @@ class CommandeController extends AbstractController{
             $chaine = ["Erreur" => "La commande est introuvable ou n'existe pas"];
             $status = 404;
         }
-
         return $this->responseJSON($status, $chaine);
     }
 
