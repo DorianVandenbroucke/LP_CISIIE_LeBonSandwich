@@ -41,15 +41,15 @@ $app->get(
   }
 )->setName("categories");
 
-$app->get(
+$app->post(
   "/commandes/add[/]",function(Request $req, Response $resp, $args){
     try{
-      $chaine = CommandeController::add($args);
+      $chaine = CommandeController::add($args['montant'], $args['date_de_livraison'], $args['etat']);
       $resp = $resp->withStatus(200)->withHeader('Content-type', 'application/json, charset=utf-8');
       $resp->getBody()->write(json_encode($chaine));
     }catch(Illuminate\Database\Eloquent\ModelNotFoundException $e){
       $chaine = ["Erreur", "Une erreur est survenue lors de l'ajout de la commande."];
-      $resp = $resp->withStatus(404)->withHeader('Content-type', 'application/json, charset=utf-8');
+      $resp = $resp->withStatus(405)->withHeader('Content-type', 'application/json, charset=utf-8');
       $resp->getBody()->write(json_encode($chaine));
     }
     return $resp;
@@ -80,9 +80,23 @@ $app->post(
   }
 )->setName("commandes");
 
+$app->put("/commandes/{id_commande}/sandwichs/{id_sandwich}/ingredients[/]",
+    function(Request $req, Response $resp, $args){
+      return (new SandwichController($this))->modifyIngredients ($req, $resp, $args);
+    }
+);
+
+$app->put("/commandes/{id_commande}/sandwichs/{id_sandwich}[/]",
+    function(Request $req, Response $resp, $args){
+      return (new SandwichController($this))->modifySandwich($req, $resp, $args);
+    }
+);
+
+
 $app->get("/ingredients[/]",function(Request $req, Response $resp, $args){
   return (new IngredientController($this))->listIngredients($req, $resp, $args);
 })->setName('ingredients');
+
 
 $app->post("/ingredients[/]",function(Request $req, Response $resp, $args){
   $parsedBody = $req->getParsedBody();
