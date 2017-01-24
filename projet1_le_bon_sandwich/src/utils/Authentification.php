@@ -43,7 +43,7 @@ function checkTOKEN(Request $req, Response $resp, callable $next){
 
 
 function checkACCESS(Request $req, Response $resp, callable $next){
-    
+
     $Authorization = $req->getHeader('Authorization');
 
     if(empty($Authorization)){
@@ -65,3 +65,11 @@ function checkACCESS(Request $req, Response $resp, callable $next){
     $resp = $resp->withHeader("Content-type", "application/json, charset=utf-8");
     return $resp;
 }   
+
+
+function simple_cors ($req, $resp, callable $next ) {
+    $origin = $req->getHeader('origin');
+    if (empty($origin)) $origin = '*';
+    $rs = $rs->withHeader('Access-Control-Allow-Origin',$origin );
+    return $next($rq, $rs);
+} 
