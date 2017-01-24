@@ -35,21 +35,6 @@ $app->get("/categories/{id}/ingredients[/]",function(Request $req, Response $res
     return (new CategorieController($this))->ingredientsByCategorie($resp, $args['id']);
 })->setName("categories");
 
-$app->post(
-  "/commandes/add[/]",function(Request $req, Response $resp, $args){
-    try{
-      $chaine = CommandeController::add($args['montant'], $args['date_de_livraison'], $args['etat']);
-      $resp = $resp->withStatus(200)->withHeader('Content-type', 'application/json, charset=utf-8');
-      $resp->getBody()->write(json_encode($chaine));
-    }catch(Illuminate\Database\Eloquent\ModelNotFoundException $e){
-      $chaine = ["Erreur", "Une erreur est survenue lors de l'ajout de la commande."];
-      $resp = $resp->withStatus(405)->withHeader('Content-type', 'application/json, charset=utf-8');
-      $resp->getBody()->write(json_encode($chaine));
-    }
-    return $resp;
-  }
-);
-
 // On affiche le détail d'une commande
 $app->get(
   "/commandes/{id}[/]",
@@ -129,10 +114,10 @@ $app->get("/commandes[/]", function(Request $req, Response $resp, $args){
   return (new CommandeController($this))->filtrageCommandes($req, $resp, $etat, $date);
 })->setName('commandes');
 
-$app->post('/commandes[/]', function(Request $req, Response $resp, $args){
-    $parsedBody = $req->getParsedBody();
-    return (new CommandeController($this))->add($req, $resp, $args, $parsedBody);
-});
+// On crée une commande
+$app->post("/commandes[/]",function(Request $req, Response $resp, $args){
+    return (new CommandeController($this))->add($req, $resp);
+})->setName("commandes");
 
 $app->put("/commandes/{id}[/]",function(Request $req, Response $resp, $args){
     //récuperer les nouvelles valeurs depuis le Body de la requete

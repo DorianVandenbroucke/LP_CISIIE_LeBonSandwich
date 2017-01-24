@@ -8,7 +8,7 @@ class Commande extends Model{
 
   protected $table = "commande";
   protected $primaryKey = "id";
-  protected $fillable = ["montant", "date_de_livraison", "etat"];
+  protected $fillable = ["montant", "date_de_livraison", "etat", "token"];
   public $timestamps = false;
 
   public function sandwichs(){

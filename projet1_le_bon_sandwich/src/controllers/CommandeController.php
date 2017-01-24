@@ -16,19 +16,23 @@ use src\utils\Authentification ;
 
 class CommandeController extends AbstractController{
 
-  public function add($req, $resp, $args, $parsedBody){
+	public function add($req, $resp){
+		try{
+			
+			$commande = new Commande();
+			$commande->montant = 0;
+			$commande->date_de_livraison = date('Y-m-d', strtotime(date('Y-m-d + 3 days')));
+			$commande->etat = CREATED;
+			$commande->token = (new \RandomLib\Factory)->getMediumStrengthGenerator()->generateString(32);
 
-    $commande = new Commande();
-    $commande->montant = 0;
-    $commande->date_de_livraison = date('Y-m-d', strtotime($parsedBody['date_de_livraison']));
-    $commande->etat = CREATED;
-    $commande->token = (new \RandomLib\Factory)->getMediumStrengthGenerator()->generateString(32);
-
-    $commande->save();
-    $commande->self = $this->request->router->PathFor('commande', ['id' => $commande->id]);
-    return $this->responseJSON(201, $commande);
-
-  }
+			$commande->save();
+			$commande->self = $this->request->router->PathFor('commandes', ['id' => $commande->id]);
+			return $this->responseJSON(201, $commande);
+			
+		}catch(\Illuminate\Database\Eloquent\ModelNotFoundException $e){
+			$this->responseJSON(400, ["error" => "Une erreur est survenue."]);
+		}
+	}
 
   public function detailCommande($resp, $id){
       try{
