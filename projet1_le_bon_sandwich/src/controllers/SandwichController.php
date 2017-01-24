@@ -5,52 +5,36 @@ namespace src\controllers;
 use src\models\Commande as Commande;
 use src\models\Sandwich as Sandwich;
 
-class CommandeController extends AbstractController{
+class SandwichController extends AbstractController{
 
-  private $request = null;
-  private $auth;
+  public function add($req, $resp, $id_commande){
+      try{
+        $commande = Commande::findOrFail($id_commande);
+        $taille = $req->getParams()["taille"];
+        $type = $req->getParams()["type"];
 
-  public function __construct($http_req){
-    $this->request = $http_req;
-    //$this->auth = new Authentification();
-  }
+        $sandwich = new Sandwich();
+        $sandwich->taille = $taille;
+        $sandwich->type_de_pain = $type;
+        $sandwich->id_commande = $id_commande;
+        $sandwich->save();
 
-  static public function add($req, $resp, $args){
+        $id_sandwich = $sandwich->id;
 
-    $id_commande = $args['id_commande'];
-    $taille = $req->getParams()["taille"];
-    $type = $req->getParams()["type"];
-
-    $sandwich = Sandwich::findOrFail($id_sandwich);
-    $commandes = $sandwich->commandes()->attach($id_sandwich, ['id_sandwich' => $id_commande]);
-
-    $chaine = [
-                "lien_de_la_commande" => DIR."/commandes/$id_commande"
-              ];
-    return $chaine;
-
-    $commande = Commande::findOrFail($id_commande);
-
-    $sandwich = new Sandwich();
-    $sandwich->taille = $taille;
-    $sandwich->type = $type;
-    $sandwich->id_commande = $id_commande;
-    $sandwich->save();
-
-    $id_sandwich = $sandwich->id;
-
-    $lien = [
-              "commande" => DIR."/commandes/$id_commande/",
-              "ingredients" => DIR."/sandwichs/$id_sandwich/ingredients/"
-            ];
-    $chaine = [
-                "taille" => $taille,
-                "type_de_pain" => $type,
-                "lien" => $liens
-              ];
-
-    return $chaine;
-
+        $liens = [
+                  "commande" => DIR."/commandes/$id_commande/",
+                  "ingredients" => DIR."/sandwichs/$id_sandwich/ingredients/"
+                ];
+        $chaine = [
+                    "taille" => $taille,
+                    "type_de_pain" => $type,
+                    "links" => $liens
+                  ];
+        return $this->responseJSON(200, $chaine);
+      }catch(\Illuminate\Database\Eloquent\ModelNotFoundException $e){
+            $chaine = ["Erreur", "Ressource de la commande $id_commande introuvable."];
+            return $this->responseJSON(404, $chaine);
+      }
   }
 
 }

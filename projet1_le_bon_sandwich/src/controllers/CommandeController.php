@@ -31,55 +31,68 @@ class CommandeController extends AbstractController{
 
   }
 
-  static public function detailCommande($id){
-    $commande = Commande::findOrFail($id);
+  public function detailCommande($resp, $id){
+      try{
+          $commande = Commande::findOrFail($id);
 
-    if($commande->etat != "livrée"){
-      $nom_lien = "lien_de_suppression";
-      $lien = DIR."/commandes/$commande->id/delete";
-    }else{
-      $nom_lien = "lien_de_la_facture";
-      $lien = DIR."/commandes/$commande->id/facture";
-    }
+          if($commande->etat != "livrée"){
+              $nom_lien = "lien_de_suppression";
+              $lien = DIR."/commandes/$commande->id/delete";
+          }else{
+              $nom_lien = "lien_de_la_facture";
+              $lien = DIR."/commandes/$commande->id/facture";
+          }
 
-    $chaine = [
-                "id" => $commande->id,
-                "montant" => $commande->montant,
-                "date_de_livraison" => $commande->date_de_livraison,
-                "etat" => $commande->etat,
-                "lien_du_detail" => DIR."/commandes/$commande->id/sandwichs",
-                $nom_lien => $lien
-              ];
-    return $chaine;
+          $links = [
+                    "sandwichs" => DIR."/commandes/$commande->id/sandwichs",
+                    $nom_lien => $lien
+                   ];
+
+          $chaine = [
+                    "id" => $commande->id,
+                    "montant" => $commande->montant,
+                    "date_de_livraison" => $commande->date_de_livraison,
+                    "etat" => $commande->etat,
+                    "links" => $links
+                  ];
+        return $this->responseJSON(200, $chaine);
+      }catch(\Illuminate\Database\Eloquent\ModelNotFoundException $e){
+            $chaine = ["Erreur", "Ressource de la commande $id introuvable."];
+            return $this->responseJSON(404, $chaine);
+      }
   }
 
-  static public function sandwichsByCommande($id){
-    $commande = Commande::findOrFail($id);
-    $sandwichs = $commande->sandwichs()->get();
-    $nb_sandwichs = $sandwichs->count();
+  public function sandwichsByCommande($resp, $id){
+      try{
+            $commande = Commande::findOrFail($id);
+            $sandwichs = $commande->sandwichs()->get();
+            $nb_sandwichs = $sandwichs->count();
 
-    $sandwichs_tab = [];
-    foreach($sandwichs as $s){
-      array_push(
-                  $sandwichs_tab,
-                  [
-                    "taille" => $s->taille,
-                    "type_de_pain" => $s->type_de_pain,
-                  ]
-                );
-    }
+            $sandwichs_tab = [];
+            foreach($sandwichs as $s){
+              array_push(
+                          $sandwichs_tab,
+                          [
+                            "taille" => $s->taille,
+                            "type_de_pain" => $s->type_de_pain,
+                          ]
+                        );
+            }
 
-    $liens = [
-              "paiement" => DIR."/commandes/$commande->id/paiement/"
-             ];
-    $chaine = [
-                "id_commande" => $commande->id,
-                "nb_sandwichs" => $nb_sandwichs,
-                "sandwichs"  => $sandwichs_tab,
-                "liens" => $liens
-              ];
-
-    return $chaine;
+            $liens = [
+                      "paiement" => DIR."/commandes/$commande->id/paiement/"
+                     ];
+            $chaine = [
+                        "id_commande" => $commande->id,
+                        "nb_sandwichs" => $nb_sandwichs,
+                        "sandwichs"  => $sandwichs_tab,
+                        "liens" => $liens
+                      ];
+            return $this->responseJSON(200, $chaine);
+        }catch(\Illuminate\Database\Eloquent\ModelNotFoundException $e){
+            $chaine = ["Erreur", "Ressource de la commande $id introuvable."];
+            return $this->responseJSON(400, $chaine);
+        }
   }
 
   public function listCommandes()
@@ -126,52 +139,49 @@ class CommandeController extends AbstractController{
             $new_date = $req->getParams()['date_de_livraison'];
             if ($commande->etat === "crée") {
                 $commande->date_de_livraison = $new_date;
-                $chaine = [
-                    "id" => $commande->id,
-                    "montant" => $commande->montant,
-                    "date_de_livraison" => $commande->date_de_livraison,
-                    "etat" => $commande->etat
-                ];
-                $commande->save();
-                $resp = $resp->withStatus(200)->withHeader('Content-Type','application/json');
-                $resp->getBody()->write(json_encode($chaine));
+                if ($commande->save()) {
+                    $chaine = ["id" => $commande->id,
+                        "montant" => $commande->montant,
+                        "date_de_livraison" => $commande->date_de_livraison,
+                        "etat" => $commande->etat
+                    ];
+                    $status = 200;
+                } else {
+                    $chaine = ["Erreur" => "Il y a eu une erreur dans l'execution de la requête"];
+                    $status = 400;
+                }
             } else {
                 $chaine = ["Erreur" => "La commande est déjà $commande->etat"];
-                $resp = $resp->withHeader('Content-type', 'application/json');
-                $resp->getBody()->write(json_encode($chaine));
+                $status = 400;
             }
         }catch(ModelNotFoundException $e){
             $chaine = ["Erreur" => "La commande est introuvable ou n'existe pas"];
-            $resp = $resp->withStatus(404)->withHeader('Content-type', 'application/json');
-            $resp->getBody()->write(json_encode($chaine));
+            $status = 404;
         }
-        return $resp;
+        return $this->responseJSON($status, $chaine);
     }
 
     public function deleteCommande($req, $resp, $args){
-        if(!Authentification::checkTOKEN($req)){
-            return $this->responseJSON(401, ["error" => "acces dined"]);
-        }
-        // TODO: VERIFICATION $commande->delete() + MODIF REPONSE JSON
         try {
             $id = $args['id'];
             $commande = Commande::findOrFail($id);
             if ($commande->etat === "crée") {
-                $commande->delete();
-                $chaine = ["Executé" => "La commande a été correctement supprimée"];
-                $resp = $resp->withStatus(200)->withHeader('Content-Type','application/json');
-                $resp->getBody()->write(json_encode($chaine));
+                if ($commande->delete()) {
+                    $chaine = ["Executé" => "La commande a été correctement supprimée"];
+                    $status = 200;
+                } else {
+                    $chaine = ["Erreur" => "Il y a eu une erreur dans l'execution de la requête"];
+                    $status = 400;
+                }
             }else{
                 $chaine = ["Erreur" => "La commande est déjà $commande->etat"];
-                $resp = $resp->withHeader('Content-type', 'application/json');
-                $resp->getBody()->write(json_encode($chaine));
+                $status = 400;
             }
         } catch (ModelNotFoundException $e) {
             $chaine = ["Erreur" => "La commande est introuvable ou n'existe pas"];
-            $resp = $resp->withStatus(404)->withHeader('Content-type', 'application/json');
-            $resp->getBody()->write(json_encode($chaine));
+            $status = 404;
         }
-        return $resp;
+        return $this->responseJSON($status, $chaine);
     }
 
     public function payCommande($req, $resp, $args){
@@ -204,7 +214,6 @@ class CommandeController extends AbstractController{
             $chaine = ["Erreur" => "La commande est introuvable ou n'existe pas"];
             $status = 404;
         }
-
         return $this->responseJSON($status, $chaine);
     }
 

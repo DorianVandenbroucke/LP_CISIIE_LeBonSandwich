@@ -30,7 +30,7 @@ class IngredientController extends AbstractController{
   public function listIngredients($req, $res, $args)
   {
       if(!Authentification::checkACCESS($req)){
-          return $this->responseJSON(401, 'access dined');
+          return $this->responseJSON(401, 'access denied');
       }
 
       try
@@ -89,7 +89,7 @@ class IngredientController extends AbstractController{
         }
     }
 
-    //Read 
+    //Read
     public function getCategorie($req, $res, $id)
     {
         try{
@@ -123,14 +123,14 @@ class IngredientController extends AbstractController{
             $ingredient->save();
             if(!empty($data))
                 return $this->responseJSON(200, $data);
-            return $this->responseJSON(204, NULL);     
+            return $this->responseJSON(204, NULL);
         }
         catch(\Illuminate\Database\Eloquent\ModelNotFoundException $e)
         {
             $data =  ["Error" => "Ingredient $id introuvable"];
             return $this->responseJSON(404, $data);
         }
-    }       
+    }
 
     //Delete
     public function deleteIngredient($req, $res, $id)
