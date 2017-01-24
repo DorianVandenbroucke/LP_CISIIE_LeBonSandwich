@@ -130,20 +130,20 @@ class CommandeController extends AbstractController{
 
     public function updateCommande($req, $resp, $args){
         if(!Authentification::checkTOKEN($req)){
-            return $this->responseJSON(401, "acces dined");
+            return $this->responseJSON(401, ["Erreur" => "Acces Refusé"]);
         }
 
         try{
             $id = $args['id'];
             $commande = Commande::findOrFail($id);
             $new_date = $req->getParams()['date_de_livraison'];
-            if ($commande->etat === "crée") {
+            if ($commande->etat == CREATED) {
                 $commande->date_de_livraison = $new_date;
                 if ($commande->save()) {
                     $chaine = ["id" => $commande->id,
                         "montant" => $commande->montant,
                         "date_de_livraison" => $commande->date_de_livraison,
-                        "etat" => $commande->etat
+                        "etat" => "créée"
                     ];
                     $status = 200;
                 } else {
@@ -151,7 +151,7 @@ class CommandeController extends AbstractController{
                     $status = 400;
                 }
             } else {
-                $chaine = ["Erreur" => "La commande est déjà $commande->etat"];
+                $chaine = ["Erreur" => "La commande a déjà été payée ou livrée"];
                 $status = 400;
             }
         }catch(ModelNotFoundException $e){
@@ -162,10 +162,13 @@ class CommandeController extends AbstractController{
     }
 
     public function deleteCommande($req, $resp, $args){
+        if(!Authentification::checkTOKEN($req)){
+            return $this->responseJSON(401, ["Erreur" => "Acces Refusé"]);
+        }
         try {
             $id = $args['id'];
             $commande = Commande::findOrFail($id);
-            if ($commande->etat === "crée") {
+            if ($commande->etat == CREATED) {
                 if ($commande->delete()) {
                     $chaine = ["Executé" => "La commande a été correctement supprimée"];
                     $status = 200;
@@ -174,7 +177,7 @@ class CommandeController extends AbstractController{
                     $status = 400;
                 }
             }else{
-                $chaine = ["Erreur" => "La commande est déjà $commande->etat"];
+                $chaine = ["Erreur" => "La commande a déjà été payée ou livrée"];
                 $status = 400;
             }
         } catch (ModelNotFoundException $e) {
@@ -186,7 +189,7 @@ class CommandeController extends AbstractController{
 
     public function payCommande($req, $resp, $args){
         if(!Authentification::checkTOKEN($req)){
-            return $this->responseJSON(401, ["error" => "acces dined"]);
+            return $this->responseJSON(401, ["Erreur" => "Acces Refusé"]);
         }
 
         try {
@@ -194,11 +197,11 @@ class CommandeController extends AbstractController{
             $params = $req->getParams();
             $commande = Commande::findOrFail($id);
 
-            if ($commande->etat === "crée") {
+            if ($commande->etat == CREATED) {
                 $num_carte = $params['num_carte'];
                 $date_validite = $params['date_validite'];
                 $key = $params['key'];
-                $commande->etat = "payée";
+                $commande->etat = PAID;
                 if ($commande->save()) {
                     $chaine = ["Executé" => "La commande a été payée"];
                     $status = 200;
@@ -207,7 +210,7 @@ class CommandeController extends AbstractController{
                     $status = 400;
                 }
             } else{
-                $chaine = ["Erreur" => "La commande est déjà $commande->etat"];
+                $chaine = ["Erreur" => "La commande est déjà été payée ou livrée"];
                 $status = 400;
             }
         } catch (ModelNotFoundException $e) {
@@ -219,7 +222,7 @@ class CommandeController extends AbstractController{
 
     public function factureCommande($req, $resp, $args){
         if(!Authentification::checkTOKEN($req)){
-            return $this->responseJSON(401, ["error" => "acces dined"]);
+            return $this->responseJSON(401, ["Erreur" => "Acces Refusé"]);
         }
 
         try {
@@ -243,7 +246,7 @@ class CommandeController extends AbstractController{
 
             // TODO: MONTANT POUR 1 SANDWICH
 
-            if ($commande->etat === "livrée") {
+            if ($commande->etat == DELIVRED) {
                 $chaine = [
                     "montant" => $commande->montant,
                     "date_de_livraison" => $commande->date_de_livraison,
