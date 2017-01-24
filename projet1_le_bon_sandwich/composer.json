@@ -4,13 +4,9 @@
     "illuminate/database": "5.0.*",
     "php": ">=5.5.9",
     "slim/slim": "3.*",
-<<<<<<< HEAD
-    "twig/twig" : "1.*.*"
-=======
     "twig/twig": "1.*",
     "slim/twig-view": "^2.1",
     "ircmaxell/random-lib": "^1.2"
->>>>>>> e846f17195c65bec34976bb1936fbd33e34a16e6
   },
 
   "autoload" : {
@@ -18,5 +14,4 @@
       "src\\": "."
     }
   }
-
 }

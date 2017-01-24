@@ -15,27 +15,28 @@ use \Illuminate\Database\Eloquent\ModelNotFoundException as ModelNotFoundExcepti
 use src\utils\Authentification ;
 
 
+
 class CommandeController extends AbstractController{
 
+	public function add($req, $resp){
+		try{
+			
+			$commande = new Commande();
+			$commande->montant = 0;
+			$commande->date_de_livraison = date('Y-m-d', strtotime(date('Y-m-d + 3 days')));
+			$commande->etat = CREATED;
+			$commande->token = (new \RandomLib\Factory)->getMediumStrengthGenerator()->generateString(32);
 
+			$commande->save();
+			$commande->self = $this->request->router->PathFor('commandes', ['id' => $commande->id]);
+			return $this->responseJSON(201, $commande);
+			
+		}catch(\Illuminate\Database\Eloquent\ModelNotFoundException $e){
+			$this->responseJSON(400, ["error" => "Une erreur est survenue."]);
+		}
+	}
 
- 
-  public function add($req, $resp, $args, $parsedBody){
-
-    $commande = new Commande();
-    $commande->montant = 0;
-    $commande->date_de_livraison = date('Y-m-d', strtotime($parsedBody['date_de_livraison']));
-    $commande->etat = CREATED;
-    $commande->token = (new \RandomLib\Factory)->getMediumStrengthGenerator()->generateString(32);
-
-
-    $commande->save();
-    $commande->self = $this->request->router->PathFor('commande', ['id' => $commande->id]);
-    return $this->responseJSON(201, $commande);
-
-  }
-
-  public function detailCommande($resp, $id){
+  public function detailCommande($req, $resp, $id){
       try{
           $commande = Commande::findOrFail($id);
 
@@ -111,12 +112,8 @@ public function listCommandes()
       return $result;
   }
 
-  public function filtrageCommandes($req, $res, $etat, $date)
+  public function filtrageCommandes($req, $resp, $etat, $date)
   {
-      if(!Authentification::checkTOKEN($req)){
-            return $this->responseJSON(401, ["error" => "acces dined"]);
-      }
-
       if(!isset($etat))
       {
           if(!isset($date))
@@ -132,22 +129,9 @@ public function listCommandes()
           $date = date('Y-m-d', strtotime($date));
           return $this->responseJSON(200, Commande::where('etat','=',$etat)->where('date_de_livraison','=',$date)->get());
       }
-
-      $result = $this->request->response->withStatus(200)
-                             ->withHeader('Content-Type','application/json');
-      $result->getBody()->write(json_encode($commandes));
-      return $result;
-    
   }
 
-
-
-  
     public function updateCommande($req, $resp, $args){
-        if(!Authentification::checkTOKEN($req)){
-            return $this->responseJSON(401, ["Erreur" => "Acces Refusé"]);
-        }
-
         try{
             $id = $args['id'];
             $commande = Commande::findOrFail($id);
@@ -177,9 +161,6 @@ public function listCommandes()
     }
 
     public function deleteCommande($req, $resp, $args){
-        if(!Authentification::checkTOKEN($req)){
-            return $this->responseJSON(401, ["Erreur" => "Acces Refusé"]);
-        }
         try {
             $id = $args['id'];
             $commande = Commande::findOrFail($id);
@@ -203,10 +184,6 @@ public function listCommandes()
     }
 
     public function payCommande($req, $resp, $args){
-        if(!Authentification::checkTOKEN($req)){
-            return $this->responseJSON(401, ["Erreur" => "Acces Refusé"]);
-        }
-
         try {
             $id = $args['id'];
             $params = $req->getParams();
@@ -236,15 +213,11 @@ public function listCommandes()
     }
 
     public function factureCommande($req, $resp, $args){
-        if(!Authentification::checkTOKEN($req)){
-            return $this->responseJSON(401, ["Erreur" => "Acces Refusé"]);
-        }
-
         try {
             $sandwichs_tab = [];
             $id = $args['id'];
             $commande = Commande::findOrFail($id);
-            $sandwichs = Sandwich::where('id_commande', $id)->with('ingredient')->get();
+            $sandwichs = Sandwich::where('id_commande', $id)->with('ingredients')->get();
             $nb_sandwichs = $sandwichs->count();
             foreach ($sandwichs as $sandwich) {
                 $ingredients_tab = [];
@@ -281,7 +254,6 @@ public function listCommandes()
     }
 
 
-    //api prive
 
     public function paginationListCommande($req, $resp, $args){
 
@@ -299,16 +271,6 @@ public function listCommandes()
 
                 return $this->responseJSON(404,$chaine);
         }
-
-            
-
-         
-
-        
-        
-           
-        
-
 
     }
 }

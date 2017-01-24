@@ -11,6 +11,7 @@ use src\models\Ingredient as Ingredient;
 use \Illuminate\Database\Eloquent\ModelNotFoundException as ModelNotFoundException;
 
 class SandwichController extends AbstractController{
+
   public function add($req, $resp, $id_commande){
       try{
         $commande = Commande::findOrFail($id_commande);
@@ -24,7 +25,10 @@ class SandwichController extends AbstractController{
 			$sandwich->type_de_pain = $type;
 			$sandwich->id_commande = $id_commande;
 			$sandwich->save();
+
 			$id_sandwich = $sandwich->id;
+
+
 			$liens = [
 					  "commande" => DIR."/commandes/$id_commande/",
 					  "ingredients" => DIR."/sandwichs/$id_sandwich/ingredients/"
@@ -44,6 +48,43 @@ class SandwichController extends AbstractController{
             return $this->responseJSON(404, $chaine);
       }
   }
+
+  
+	public function delete($req, $resp, $id_sandwich){
+		
+		try{
+			
+			$sandwich = Sandwich::findOrFail($id_sandwich);
+			$commande = Commande::findOrFail($sandwich->id_commande);
+			
+			$status_commande = ["créée", "payée"];
+			
+			if(!in_array($commande->etat, $status_commande)){
+				
+				if($sandwich->delete()){
+					$liens = ["commande" => DIR."/commandes/".$commande->id];
+					$chaine = [
+								"Le sandwich a été supprimé avec succés.",
+								"liens" => $liens
+							  ];
+					return $this->responseJSON(200, $chaine);
+				}else{
+					return $this->responseJSON(400, ["erreur", "Une erreur est survenue lors de l'exécution de la requête."]);
+				}
+				
+			}else{
+				$chaine = ["error" => "Cette commande est ".$commande->etat.", elle n'est donc plus modifiable"];
+				return $this->responseJSON(404, $chaine);
+			}
+			
+		}catch(\Illuminate\Database\Eloquent\ModelNotFoundException $e){
+            $chaine = ["Erreur", "Ressource du sandwich $id_sandwich introuvable."];
+            return $this->responseJSON(404, $chaine);
+		}
+	
+	}
+
+
       public function modifySandwich($req, $resp, $args){
         try{
             $id_sandwich = $args['id_sandwich'];
@@ -74,39 +115,46 @@ class SandwichController extends AbstractController{
             $chaine = ["Erreur" => "La sandwich est introuvable"];
             $resp = $resp->withStatus(404)->withHeader('Content-type', 'application/json');
             $resp->getBody()->write(json_encode($chaine));
+
       }
 	}
 	  
 	  public function modifyIngredients($req, $resp, $args){
-		try{
-			$id_sandwich = $args['id'];
-			$sandwich = Sandwich::findOrFail($id_sandwich);
-			$ingredients = $sandwich->ingredients()->get();
-			
-			if($ingredients['salade']){
-			  $ingredients['salade'] = $salade;
-			  $salade->save();
+
+				try{
+					$id_sandwich = $args['id'];
+					$sandwich = Sandwich::findOrFail($id_sandwich);
+					$ingredients = $sandwich->ingredients()->get();
+					
+					if($ingredients['salade']){
+						$ingredients['salade'] = $salade;
+						$salade->save();
+					}
+					if($ingredients['crudite']){
+						$ingredients['crudite'] = $crudite;
+						$crudite->save();
+					} 
+					if( $ingredients['viande']){ 
+						$ingredients['viande'] = $viande;
+						$viande->save();
+					} 
+					if($ingredients['fromage']){
+						$ingredients['fromage']  = $fromage;
+						$fromage->save();
+					}
+					if($ingredients['sauce']){
+						$ingredients['sauce'] = $sauce;
+						$sauce->save();
+					} 
+
+				}catch(ModelNotFoundExceptionn $e){
+					$chaine = ["Erreur" => "La sandwich est introuvable"];
+					$resp = $resp->withStatus(404)->withHeader('Content-type', 'application/json');
+					$resp->getBody()->write(json_encode($chaine));
+				}
 			}
-			if($ingredients['crudite']){
-			  $ingredients['crudite'] = $crudite;
-			  $crudite->save();
-			} 
-			if( $ingredients['viande']){ 
-			  $ingredients['viande'] = $viande;
-			  $viande->save();
-			} 
-			if($ingredients['fromage']){
-			  $ingredients['fromage']  = $fromage;
-			  $fromage->save();
-			}
-			if($ingredients['sauce']){
-			  $ingredients['sauce'] = $sauce;
-			  $sauce->save();
-			} 
-		}catch(ModelNotFoundExceptionn $e){
-			$chaine = ["Erreur" => "La sandwich est introuvable"];
-			$resp = $resp->withStatus(404)->withHeader('Content-type', 'application/json');
-			$resp->getBody()->write(json_encode($chaine));
-		}
-	  }
+
 }
+
+
+
