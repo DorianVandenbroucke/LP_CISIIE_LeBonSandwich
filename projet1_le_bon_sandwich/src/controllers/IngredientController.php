@@ -29,10 +29,6 @@ class IngredientController extends AbstractController{
 
   public function listIngredients($req, $res, $args)
   {
-      if(!Authentification::checkACCESS($req)){
-          return $this->responseJSON(401, 'access denied');
-      }
-
       try
       {
         $data = [];
@@ -54,7 +50,7 @@ class IngredientController extends AbstractController{
         try{
             $ingredient = Ingredient::select('nom','description','fournisseur', 'img')->findOrFail($id);
             $ingredient->categorie = Ingredient::findOrFail($id)->getCategory()->select('nom','description')->get();
-            $data = ["ingredient" => $ingredient , "categorie" => $this->request->router->PathFor('ingredientCategories',array('id' => $ingredient->id))];
+            $data = ["ingredient" => $ingredient , "categorie" => $this->request->router->PathFor('ingredientCategories',['id' => $id])];
             return $this->responseJSON(200, $data);
         }
         catch(\Illuminate\Database\Eloquent\ModelNotFoundException $e)
@@ -67,9 +63,6 @@ class IngredientController extends AbstractController{
     //Create
     public function addIngredient($req, $res, $ingredient)
     {
-      if(!Authentification::checkACCESS($req)){
-          return $this->responseJSON(401, 'access dined');
-      }
 
         $ingredient = $this->issetIngredient($ingredient);
         $ingredient = $this->filterIngredient($ingredient);
@@ -99,7 +92,7 @@ class IngredientController extends AbstractController{
         catch(\Illuminate\Database\Eloquent\ModelNotFoundException $e)
         {
            $data =  ["Error" => "Ingredient $id introuvable"];
-            return $this->responseJSON(404, $data);
+           return $this->responseJSON(404, $data);
         }
     }
 
@@ -135,10 +128,6 @@ class IngredientController extends AbstractController{
     //Delete
     public function deleteIngredient($req, $res, $id)
     {
-        if(!Authentification::checkACCESS($req)){
-          return $this->responseJSON(401, 'access dined');
-        }
-
         try{
             Ingredient::findOrFail($id)->delete();
             return $this->responseJSON(204,NULL);
