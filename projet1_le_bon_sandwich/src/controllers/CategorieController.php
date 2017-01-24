@@ -14,8 +14,9 @@ class CategorieController extends AbstractController{
     $categories_tab = [];
     foreach($categories as $c){
       $lien = array(
-                  "nom" => $c->nom,
-                  "lien" => DIR."/categories/$c->id/");
+                      "nom" => $c->nom,
+                      "lien" => DIR."/categories/$c->id/"
+                    );
       array_push($categories_tab, $lien);
     //   var_dump($this->request->router->PathFor('categories', array('id' => $c->id)));
     }

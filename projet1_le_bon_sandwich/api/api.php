@@ -56,56 +56,30 @@ $app->get(
   }
 );
 
+// On affiche le détail d'une commande
 $app->get(
   "/commandes/{id}[/]",
   function(Request $req, Response $resp, $args){
-    try{
-      $id = $args['id'];
-      $chaine = CommandeController::detailCommande($id);
-      $resp = $resp->withStatus(200)->withHeader('Content-type', 'application/json, charset=utf-8');
-      $resp->getBody()->write(json_encode($chaine));
-    }catch(Illuminate\Database\Eloquent\ModelNotFoundException $e){
-      $chaine = ["Erreur", "Ressource de la commande $id introuvable."];
-      $resp = $resp->withStatus(404)->withHeader('Content-type', 'application/json, charset=utf-8');
-      $resp->getBody()->write(json_encode($chaine));
-    }
-    return $resp;
+     return (new CommandeController($this))->detailCommande($resp, $args['id']);
   }
-)->setName('commande');
+)->setName("commandes");
 
+// On affiche les sandwichs d'une commande
 $app->get(
   "/commandes/{id}/sandwichs[/]",
   function(Request $req, Response $resp, $args){
-    try{
-      $id = $args['id'];
-      $chaine = CommandeController::sandwichsByCommande($id);
-      $resp = $resp->withStatus(200)->withHeader('Content-type', 'application/json, charset=utf-8');
-      $resp->getBody()->write(json_encode($chaine));
-    }catch(Illuminate\Database\Eloquent\ModelNotFoundException $e){
-      $chaine = ["Erreur", "Ressource de la commande $id introuvable."];
-      $resp = $resp->withStatus(404)->withHeader('Content-type', 'application/json, charset=utf-8');
-      $resp->getBody()->write(json_encode($chaine));
-    }
-    return $resp;
+     return (new CommandeController($this))->sandwichsByCommande($resp, $args['id']);
   }
-);
+)->setName("commandes");
 
+// On enregistre un sandwich pour une commande
 $app->post(
-  "/commandes/{id_commande}/sandwichs[/]",
+  "/commandes/{id}/sandwichs[/]",
   function(Request $req, Response $resp, $args){
-    try{
-      $chaine = SandwichController::add($req, $resp, $args);
-      $resp = $resp->withStatus(200)->withHeader('Content-type', 'application/json, charset=utf-8');
-      $resp->getBody()->write(json_encode($chaine));
-    }catch(Illuminate\Database\Eloquent\ModelNotFoundException $e){
-      $chaine = ["Erreur", "Ressource sandwich ou commande introuvable."];
-      $resp = $resp->withStatus(404)->withHeader('Content-type', 'application/json, charset=utf-8');
-      $resp->getBody()->write(json_encode($chaine));
-    }
-    return $resp;
+     $parsedBody = $req->getParsedBody();
+     return (new SandwichController($this))->add($req, $resp, $args['id']);
   }
-);
-
+)->setName("commandes");
 
 $app->get("/ingredients[/]",function(Request $req, Response $resp, $args){
   return (new IngredientController($this))->listIngredients($req, $resp, $args);
