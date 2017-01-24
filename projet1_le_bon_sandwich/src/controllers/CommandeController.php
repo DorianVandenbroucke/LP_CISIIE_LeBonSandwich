@@ -14,29 +14,12 @@ use src\models\Ingredient as Ingredient;
 use \Illuminate\Database\Eloquent\ModelNotFoundException as ModelNotFoundException;
 use src\utils\Authentification ;
 
+
 class CommandeController extends AbstractController{
 
-<<<<<<< HEAD
-  private $request = null;
-  private $auth;
-
-  public function __construct($http_req){
-    $this->request = $http_req;
-    //$this->auth = new Authentification();
-  }
-
-  static public function add($montant, $date_de_livraison, $etat){
 
 
-    if(!isset($args['etat'])){
-      $etat = "En attente";
-    }
-
-    $commande = new Commande();
-    $commande->montant = $montant;
-    $commande->date_de_livraison = $date_de_livraison;
-    $commande->etat = $etat;
-=======
+ 
   public function add($req, $resp, $args, $parsedBody){
 
     $commande = new Commande();
@@ -44,7 +27,7 @@ class CommandeController extends AbstractController{
     $commande->date_de_livraison = date('Y-m-d', strtotime($parsedBody['date_de_livraison']));
     $commande->etat = CREATED;
     $commande->token = (new \RandomLib\Factory)->getMediumStrengthGenerator()->generateString(32);
->>>>>>> e846f17195c65bec34976bb1936fbd33e34a16e6
+
 
     $commande->save();
     $commande->self = $this->request->router->PathFor('commande', ['id' => $commande->id]);
@@ -149,7 +132,7 @@ public function listCommandes()
           $date = date('Y-m-d', strtotime($date));
           return $this->responseJSON(200, Commande::where('etat','=',$etat)->where('date_de_livraison','=',$date)->get());
       }
-<<<<<<< HEAD
+
       $result = $this->request->response->withStatus(200)
                              ->withHeader('Content-Type','application/json');
       $result->getBody()->write(json_encode($commandes));
@@ -157,9 +140,7 @@ public function listCommandes()
     
   }
 
-=======
-    }
->>>>>>> e846f17195c65bec34976bb1936fbd33e34a16e6
+
 
   
     public function updateCommande($req, $resp, $args){
@@ -297,5 +278,37 @@ public function listCommandes()
             $status = 404;
         }
         return $this->responseJSON($status, $chaine);
+    }
+
+
+    //api prive
+
+    public function paginationListCommande($req, $resp, $args){
+
+     
+        $offset = (isset($_GET['offset'])) ? $_GET['offset'] : 0 ;
+        $size = (isset($_GET['size'])) ? $_GET['size'] : 0 ;
+        
+        try{
+            $liste_commande = Commande::skip($offset)->take($size)->get();
+
+            return $this->responseJSON(200,$liste_commande);
+
+        }catch(ModelNotFoundException $e){
+             $chaine = ["Erreur" => "Plage définit incorrecte"];
+
+                return $this->responseJSON(404,$chaine);
+        }
+
+            
+
+         
+
+        
+        
+           
+        
+
+
     }
 }
