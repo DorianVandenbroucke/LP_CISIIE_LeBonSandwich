@@ -95,7 +95,9 @@ class CommandeController extends AbstractController{
         }
   }
 
-  public function listCommandes()
+
+
+public function listCommandes()
   {
       $commandes = Commande::orderBy('date_de_livraison','desc')
                             ->orderBy('date_de_creation','desc')
@@ -122,7 +124,8 @@ class CommandeController extends AbstractController{
           $date = date('Y-m-d', strtotime($date));
           return $this->responseJSON(200, Commande::where('etat','=',$etat)->where('date_de_livraison','=',$date)->get());
       }
-    }
+
+  }
 
     public function updateCommande($req, $resp, $args){
         try{
@@ -210,7 +213,7 @@ class CommandeController extends AbstractController{
             $sandwichs_tab = [];
             $id = $args['id'];
             $commande = Commande::findOrFail($id);
-            $sandwichs = Sandwich::where('id_commande', $id)->with('ingredient')->get();
+            $sandwichs = Sandwich::where('id_commande', $id)->with('ingredients')->get();
             $nb_sandwichs = $sandwichs->count();
             foreach ($sandwichs as $sandwich) {
                 $ingredients_tab = [];

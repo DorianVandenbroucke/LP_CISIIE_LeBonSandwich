@@ -15,8 +15,8 @@ class Ingredient extends Model{
     return $this->belongsTo("src\models\Categorie", "cat_id");
   }
 
-  public function sandwich(){
-    return $this->belongsToMany('src\models\Sandwich', 'ingredient_sandwich', 'id_ingredient', 'id_sandwich');
-  }
 
+   public function sandwichs(){
+    return $this->belongsToMany("src/models/Sandwich", "ingredient_sandwich", "id_ingredient", "id_sandwich");
+  }
 }

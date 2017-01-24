@@ -24,33 +24,27 @@ $app = new \Slim\App($errorDetails);
 // On affiche une collection des catégories
 $app->get( "/categories[/]", function(Request $req, Response $resp, $args){
     return (new CategorieController($this))->listCategories($resp);
-  })->setName("categories");
+})->setName("categories");
 
 // On affiche le détail d'une catégorie
-$app->get(
-  "/categories/{id}[/]",
-  function(Request $req, Response $resp, $args){
-    return (new CategorieController($this))->detailCategory($resp, $args['id']);
-  }
-)->setName("categories");
+$app->get("/categories/{id}[/]",function(Request $req, Response $resp, $args){
+	return (new CategorieController($this))->detailCategory($resp, $args['id']);
+})->setName("categories");
 
 // On affiche une collection d'ingredients appartenant à une catégorie donnée
-$app->get(
-  "/categories/{id}/ingredients[/]",
-  function(Request $req, Response $resp, $args){
-     return (new CategorieController($this))->ingredientsByCategorie($resp, $args['id']);
-  }
-)->setName("categories");
+$app->get("/categories/{id}/ingredients[/]",function(Request $req, Response $resp, $args){
+    return (new CategorieController($this))->ingredientsByCategorie($resp, $args['id']);
+})->setName("categories");
 
-$app->get(
+$app->post(
   "/commandes/add[/]",function(Request $req, Response $resp, $args){
     try{
-      $chaine = CommandeController::add($args);
+      $chaine = CommandeController::add($args['montant'], $args['date_de_livraison'], $args['etat']);
       $resp = $resp->withStatus(200)->withHeader('Content-type', 'application/json, charset=utf-8');
       $resp->getBody()->write(json_encode($chaine));
     }catch(Illuminate\Database\Eloquent\ModelNotFoundException $e){
       $chaine = ["Erreur", "Une erreur est survenue lors de l'ajout de la commande."];
-      $resp = $resp->withStatus(404)->withHeader('Content-type', 'application/json, charset=utf-8');
+      $resp = $resp->withStatus(405)->withHeader('Content-type', 'application/json, charset=utf-8');
       $resp->getBody()->write(json_encode($chaine));
     }
     return $resp;
@@ -77,14 +71,35 @@ $app->get(
 $app->post(
   "/commandes/{id}/sandwichs[/]",
   function(Request $req, Response $resp, $args){
-     $parsedBody = $req->getParsedBody();
      return (new SandwichController($this))->add($req, $resp, $args['id']);
   }
 )->setName("commandes");
 
+// On supprime un sandwich pour une commande
+$app->delete(
+  "/commandes/sandwichs/{id}[/]",
+  function(Request $req, Response $resp, $args){
+     return (new SandwichController($this))->delete($req, $resp, $args['id']);
+  }
+)->setName("commandes");
+
+$app->put("/commandes/{id_commande}/sandwichs/{id_sandwich}/ingredients[/]",
+    function(Request $req, Response $resp, $args){
+      return (new SandwichController($this))->modifyIngredients ($req, $resp, $args);
+    }
+);
+
+$app->put("/commandes/{id_commande}/sandwichs/{id_sandwich}[/]",
+    function(Request $req, Response $resp, $args){
+      return (new SandwichController($this))->modifySandwich($req, $resp, $args);
+    }
+);
+
+
 $app->get("/ingredients[/]",function(Request $req, Response $resp, $args){
   return (new IngredientController($this))->listIngredients($req, $resp, $args);
 })->setName('ingredients')->add('checkACCESS');
+
 
 $app->post("/ingredients[/]",function(Request $req, Response $resp, $args){
   $parsedBody = $req->getParsedBody();

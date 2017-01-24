@@ -10,8 +10,8 @@ class Sandwich extends Model{
   protected $primaryKey = "id";
   protected $fillable = ["type_de_pain", "taille", "id_commande"];
   public $timestamps = false;
-
-  public function ingredient(){
+  
+  public function ingredients(){
     return $this->belongsToMany('src\models\Ingredient', 'ingredient_sandwich', 'id_sandwich', 'id_ingredient');
   }
 

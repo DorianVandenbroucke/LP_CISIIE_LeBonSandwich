@@ -36,12 +36,12 @@ class CategorieController extends AbstractController{
                     "id" => $category->id,
                     "nom" => $category->nom,
                     "description" => $category->description,
-                    "lien" => $lien_ingredients
+                    "links" => $lien_ingredients
                   ];
         return $this->responseJSON(200, $chaine);
     }catch(\Illuminate\Database\Eloquent\ModelNotFoundException $e){
-        $chaine = ["Erreur", "Categorie d'ingrédients $id introuvable."];
-        return $this->responseJSON(400, $chaine);
+        $chaine = ["error" => "Categorie d'ingrédients $id introuvable."];
+        return $this->responseJSON(404, $chaine);
     }
   }
 
@@ -62,7 +62,7 @@ class CategorieController extends AbstractController{
                         "description" => $i->description,
                         "fournisseur" => $i->fournisseur,
                         "img" => $i->img,
-                        "lien" => DIR."/ingredients/$i->id/"
+                        "link" => ["detail" => DIR."/ingredients/$i->id/"]
                       ]
                     );
         }
@@ -74,8 +74,8 @@ class CategorieController extends AbstractController{
         return $this->responseJSON(200, $chaine);
 
       }catch(\Illuminate\Database\Eloquent\ModelNotFoundException $e){
-        $chaine = ["Erreur", "Categorie d'ingrédients $id introuvable."];
-        return $this->responseJSON(400, $chaine);
+        $chaine = ["error" => "Categorie d'ingrédients $id introuvable."];
+        return $this->responseJSON(404, $chaine);
       }
   }
 
