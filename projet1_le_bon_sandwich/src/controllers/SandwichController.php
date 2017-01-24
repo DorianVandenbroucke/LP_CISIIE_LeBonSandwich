@@ -48,6 +48,40 @@ class SandwichController extends AbstractController{
             return $this->responseJSON(404, $chaine);
       }
   }
+  
+	public function delete($req, $resp, $id_sandwich){
+		
+		try{
+			
+			$sandwich = Sandwich::findOrFail($id_sandwich);
+			$commande = Commande::findOrFail($sandwich->id_commande);
+			
+			$status_commande = ["créée", "payée"];
+			
+			if(!in_array($commande->etat, $status_commande)){
+				
+				if($sandwich->delete()){
+					$liens = ["commande" => DIR."/commandes/".$commande->id];
+					$chaine = [
+								"Le sandwich a été supprimé avec succés.",
+								"liens" => $liens
+							  ];
+					return $this->responseJSON(200, $chaine);
+				}else{
+					return $this->responseJSON(400, ["erreur", "Une erreur est survenue lors de l'exécution de la requête."]);
+				}
+				
+			}else{
+				$chaine = ["error" => "Cette commande est ".$commande->etat.", elle n'est donc plus modifiable"];
+				return $this->responseJSON(404, $chaine);
+			}
+			
+		}catch(\Illuminate\Database\Eloquent\ModelNotFoundException $e){
+            $chaine = ["Erreur", "Ressource du sandwich $id_sandwich introuvable."];
+            return $this->responseJSON(404, $chaine);
+		}
+	
+	}
 
 
       public function modifySandwich($req, $resp, $args){

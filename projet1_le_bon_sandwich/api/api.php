@@ -23,7 +23,7 @@ $app = new \Slim\App($errorDetails);
 // On affiche une collection des catégories
 $app->get( "/categories[/]", function(Request $req, Response $resp, $args){
     return (new CategorieController($this))->listCategories($resp);
-  })->setName("categories");
+})->setName("categories");
 
 // On affiche le détail d'une catégorie
 $app->get(
@@ -77,6 +77,14 @@ $app->post(
   "/commandes/{id}/sandwichs[/]",
   function(Request $req, Response $resp, $args){
      return (new SandwichController($this))->add($req, $resp, $args['id']);
+  }
+)->setName("commandes");
+
+// On supprime un sandwich pour une commande
+$app->delete(
+  "/commandes/sandwichs/{id}[/]",
+  function(Request $req, Response $resp, $args){
+     return (new SandwichController($this))->delete($req, $resp, $args['id']);
   }
 )->setName("commandes");
 
