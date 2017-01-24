@@ -76,7 +76,6 @@ $app->get(
 $app->post(
   "/commandes/{id}/sandwichs[/]",
   function(Request $req, Response $resp, $args){
-     $parsedBody = $req->getParsedBody();
      return (new SandwichController($this))->add($req, $resp, $args['id']);
   }
 )->setName("commandes");
