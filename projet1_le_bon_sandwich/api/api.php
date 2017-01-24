@@ -10,8 +10,8 @@ use \Psr\Http\Message\ResponseInterface as Response;
 
 use src\controllers\CategorieController as CategorieController;
 use src\controllers\CommandeController as CommandeController;
-use src\controllers\IngredientController as IngredientController;
 use src\controllers\SandwichController as SandwichController;
+use src\controllers\IngredientController as IngredientController;
 
 $conf = ['settings' => ['displayErrorDetails' => true]];
 $errorDetails = new \Slim\Container($conf);
@@ -32,7 +32,7 @@ $app->get(
 $app->get(
   "/categories/{id}[/]",
   function(Request $req, Response $resp, $args){
-    try{
+    /*try{
       $id = $args['id'];
       $chaine = CategorieController::detailCategory($id);
       $resp = $resp->withStatus(200)->withHeader('Content-type', 'application/json, charset=utf-8');
@@ -42,9 +42,12 @@ $app->get(
       $resp = $resp->withStatus(404)->withHeader('Content-type', 'application/json, charset=utf-8');
       $resp->getBody()->write(json_encode($chaine));
     }
-    return $resp;
+    return $resp;*/
+    $c = new CategorieController($this);
+    return $c::detailCategory($args['id']);
+//    return CategorieController::detailCategory($args['id']);
   }
-);
+)->setName("categories");
 
 // On affiche une collection d'ingredients appartenant à une catégorie donnée
 $app->get(
@@ -133,21 +136,16 @@ $app->post(
 );
 
 
-$app->put(
-  "/commandes/{id_commande}/sandwichs/{id_sandwich}[/]",
+$app->put("/commandes/{id_commande}/sandwichs/{id_sandwich}/ingredients[/]",
     function(Request $req, Response $resp, $args){
-      try{
-        $chaine = SandwichController::modifySandwich($arg['id'], $args['taille'], $args['type_de_pain']);
-        $resp = $resp->status(200)->withHeader('Content-type', 'application/json, charset=utf-8');
-        $resp->getBody()->write(json_encode($chaine));
-      }catch(Illuminate\Database\Eloquent\ModelNotFoundException $e){
-        $chaine = ["Erreur", "Une erreur est survenue lors de la modification du sandwich."];
-        $resp = $resp->withStatus(405)->withHeader('Content-type', 'application/json, charset=utf-8');
-        $resp->getBody()->write(json_encode($chaine));
-      }
-      return $resp;
+      return (new SandwichController($this))->modifyIngredients ($req, $resp, $args);
     }
+);
 
+$app->put("/commandes/{id_commande}/sandwichs/{id_sandwich}[/]",
+    function(Request $req, Response $resp, $args){
+      return (new SandwichController($this))->modifySandwich($req, $resp, $args);
+    }
 );
 
 
@@ -189,6 +187,21 @@ $app->get("/commandes[/]", function(Request $req, Response $res, $args){
     return (new CommandeController($this))->listCommandes();
 })->setName('commandes');
 
+$app->put("/commandes/{id}[/]",function(Request $req, Response $resp, $args){
+    return (new CommandeController($this))->updateCommande($req, $resp, $args);
+});
+
+$app->delete("/commandes/{id}[/]",function(Request $req, Response $resp, $args){
+    return (new CommandeController($this))->deleteCommande($req, $resp, $args);
+});
+
+$app->post("/commandes/{id}/paiement[/]",function(Request $req, Response $resp, $args){
+    return (new CommandeController($this))->payCommande($req, $resp, $args);
+});
+
+$app->get("/commandes/{id}/facture[/]",function(Request $req, Response $resp, $args){
+    return (new CommandeController($this))->factureCommande($req, $resp, $args);
+});
 
 
 $app->run();

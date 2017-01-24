@@ -7,13 +7,6 @@ use src\models\Ingredient as Ingredient;
 
 class IngredientController extends AbstractController{
 
-  private $request = null;
-  private $auth;
-
-  public function __construct($http_req){
-    $this->request = $http_req;
-  }
-
   function issetIngredient($ingredient){
         $ingredient["nom"] = (isset($ingredient["nom"])) ? $ingredient["nom"] : NULL;
         $ingredient["cat_id"] = (isset($ingredient["cat_id"])) ? $ingredient["cat_id"] : 0;
@@ -31,15 +24,7 @@ class IngredientController extends AbstractController{
         $ingredient["img"] = filter_var($ingredient["img"], FILTER_SANITIZE_STRING);
         return($ingredient);
     }
-  
-  function responseToJSON($data,$status){
-        $result = $this->request->response->withStatus($status)
-                                 ->withHeader('Content-Type','application/json');
-        $result->getBody()->write(json_encode($data));
-        return $result;
-    }
 
-  
   public function listIngredients()
   {
       try
@@ -47,15 +32,15 @@ class IngredientController extends AbstractController{
         $data = [];
         $ingredients = Ingredient::all();
         foreach ($ingredients as $ingredient) {
-            array_push($data, ["ingredient" => $ingredient , 
+            array_push($data, ["ingredient" => $ingredient ,
                                 "links" => ["self" => ["href" => $this->request->router->PathFor('ingredient',array('id' => $ingredient->id))]] ]);
         }
-        return $this->responseToJSON($data,200);
+        return $this->responseJSON(200, $data);
       }
       catch(\Illuminate\Database\Eloquent\ModelNotFoundException $e)
       {
         $data =  ["Error" => "Erreur lors de la sélection des données"];
-        return $this->responseToJSON($data,404);
+        return $this->responseJSON(404, $data);
       }
   }
     public function getIngredient($id)
@@ -64,12 +49,12 @@ class IngredientController extends AbstractController{
             $ingredient = Ingredient::findOrFail($id);
             $ingredient->categorie = Ingredient::findOrFail($id)->getCategory;
             $data = ["ingredient" => $ingredient , "categorie" => $this->request->router->PathFor('ingredientCategories',array('id' => $ingredient->id))];
-            return $this->responseToJSON($data,200);
+            return $this->responseJSON(200, $data);
         }
         catch(\Illuminate\Database\Eloquent\ModelNotFoundException $e)
         {
             $data =  ["Error" => "Ingredient $id introuvable"];
-            return $this->responseToJson($data,404);
+            return $this->responseJSON(404, $data);
         }
     }
 
@@ -87,10 +72,10 @@ class IngredientController extends AbstractController{
 
         try{
             $newIngredient->save();
-            return $this->responseToJSON($newIngredient,201);
+            return $this->responseJSON(201, $newIngredient);
         }
         catch(\Illuminate\Database\Eloquent\ModelNotFoundException $e){
-            return$this->responseToJSON($e,500);
+            return $this->responseJSON(500, $e);
         }
     }
 
@@ -99,12 +84,12 @@ class IngredientController extends AbstractController{
     {
         try{
             $data =  Ingredient::findOrFail($id)->getCategory;
-            return $this->responseToJSON($data,200);
+            return $this->responseJSON(200,$data);
         }
         catch(\Illuminate\Database\Eloquent\ModelNotFoundException $e)
         {
            $data =  ["Error" => "Ingredient $id introuvable"];
-            return $this->responseToJson($data,404);
+            return $this->responseJSON(404, $data);
         }
     }
 
@@ -127,13 +112,13 @@ class IngredientController extends AbstractController{
             }
             $ingredient->save();
             if(!empty($data))
-                return $this->responseToJSON($data,200);
-            return $this->responseToJSON(NULL,204);     
+                return $this->responseJSON(200, $data);
+            return $this->responseJSON(204, NULL);     
         }
         catch(\Illuminate\Database\Eloquent\ModelNotFoundException $e)
         {
             $data =  ["Error" => "Ingredient $id introuvable"];
-            return $this->responseToJson($data,404);
+            return $this->responseJSON(404, $data);
         }
     }       
 
@@ -142,12 +127,12 @@ class IngredientController extends AbstractController{
     {
         try{
             Ingredient::findOrFail($id)->delete();
-            return $this->responseToJSON(NULL,204);
+            return $this->responseJSON(204,NULL);
         }
         catch(\Illuminate\Database\Eloquent\ModelNotFoundException $e)
         {
             $data =  ["Error" => "Ingredient $id introuvable"];
-            return $this->responseToJson($data,404);
+            return $this->responseJSON(404, $data);
         }
     }
 }
