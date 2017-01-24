@@ -29,10 +29,6 @@ class IngredientController extends AbstractController{
 
   public function listIngredients($req, $res, $args)
   {
-      if(!Authentification::checkACCESS($req)){
-          return $this->responseJSON(401, 'access denied');
-      }
-
       try
       {
         $data = [];
@@ -67,9 +63,6 @@ class IngredientController extends AbstractController{
     //Create
     public function addIngredient($req, $res, $ingredient)
     {
-      if(!Authentification::checkACCESS($req)){
-          return $this->responseJSON(401, 'access dined');
-      }
 
         $ingredient = $this->issetIngredient($ingredient);
         $ingredient = $this->filterIngredient($ingredient);
@@ -135,10 +128,6 @@ class IngredientController extends AbstractController{
     //Delete
     public function deleteIngredient($req, $res, $id)
     {
-        if(!Authentification::checkACCESS($req)){
-          return $this->responseJSON(401, 'access dined');
-        }
-
         try{
             Ingredient::findOrFail($id)->delete();
             return $this->responseJSON(204,NULL);

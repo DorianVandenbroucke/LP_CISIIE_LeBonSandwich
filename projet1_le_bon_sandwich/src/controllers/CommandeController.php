@@ -31,7 +31,7 @@ class CommandeController extends AbstractController{
 
   }
 
-  public function detailCommande($resp, $id){
+  public function detailCommande($req, $resp, $id){
       try{
           $commande = Commande::findOrFail($id);
 
@@ -105,12 +105,8 @@ class CommandeController extends AbstractController{
       return $result;
   }
 
-  public function filtrageCommandes($req, $res, $etat, $date)
+  public function filtrageCommandes($req, $resp, $etat, $date)
   {
-      if(!Authentification::checkTOKEN($req)){
-            return $this->responseJSON(401, ["error" => "acces dined"]);
-      }
-
       if(!isset($etat))
       {
           if(!isset($date))
@@ -129,10 +125,6 @@ class CommandeController extends AbstractController{
     }
 
     public function updateCommande($req, $resp, $args){
-        if(!Authentification::checkTOKEN($req)){
-            return $this->responseJSON(401, ["Erreur" => "Acces Refusé"]);
-        }
-
         try{
             $id = $args['id'];
             $commande = Commande::findOrFail($id);
@@ -162,9 +154,6 @@ class CommandeController extends AbstractController{
     }
 
     public function deleteCommande($req, $resp, $args){
-        if(!Authentification::checkTOKEN($req)){
-            return $this->responseJSON(401, ["Erreur" => "Acces Refusé"]);
-        }
         try {
             $id = $args['id'];
             $commande = Commande::findOrFail($id);
@@ -188,10 +177,6 @@ class CommandeController extends AbstractController{
     }
 
     public function payCommande($req, $resp, $args){
-        if(!Authentification::checkTOKEN($req)){
-            return $this->responseJSON(401, ["Erreur" => "Acces Refusé"]);
-        }
-
         try {
             $id = $args['id'];
             $params = $req->getParams();
@@ -221,10 +206,6 @@ class CommandeController extends AbstractController{
     }
 
     public function factureCommande($req, $resp, $args){
-        if(!Authentification::checkTOKEN($req)){
-            return $this->responseJSON(401, ["Erreur" => "Acces Refusé"]);
-        }
-
         try {
             $sandwichs_tab = [];
             $id = $args['id'];
