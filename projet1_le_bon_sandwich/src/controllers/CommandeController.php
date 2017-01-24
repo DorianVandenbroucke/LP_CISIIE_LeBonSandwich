@@ -22,6 +22,7 @@ class CommandeController extends AbstractController{
     $commande->montant = 0;
     $commande->date_de_livraison = date('Y-m-d', strtotime($parsedBody['date_de_livraison']));
     $commande->etat = CREATED;
+    //Generer un Token
     $commande->token = (new \RandomLib\Factory)->getMediumStrengthGenerator()->generateString(32);
 
     $commande->save();
