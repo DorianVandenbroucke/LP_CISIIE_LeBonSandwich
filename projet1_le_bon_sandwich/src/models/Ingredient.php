@@ -15,12 +15,17 @@ class Ingredient extends Model{
     return $this->belongsTo("src\models\Categorie", "cat_id");
   }
 
+<<<<<<< HEAD
 
    public function sandwichs(){
     return $this->belongsToMany("src/models/Sandwich",
                                 "ingredient_sandwich", 
                                 "id_ingredient", "id_sandwich");
 
+=======
+  public function sandwich(){
+    return $this->belongsToMany('src\models\Sandwich', 'ingredient_sandwich', 'id_ingredient', 'id_sandwich');
+>>>>>>> e846f17195c65bec34976bb1936fbd33e34a16e6
   }
 
 }
