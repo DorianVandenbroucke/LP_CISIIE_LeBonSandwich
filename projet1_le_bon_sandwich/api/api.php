@@ -135,11 +135,11 @@ $app->delete(
 )->setName("commandes");
 
 // On ajoute/supprime un ingrédient dans un sandwich
-$app->put("/commandes/sandwichs/{id_sandwich}/ingredients/{id_ingredient}[/]",
+$app->put("/commandes/{id}/sandwichs/{id_sandwich}/ingredients/{id_ingredient}[/]",
     function(Request $req, Response $resp, $args){
       return (new SandwichController($this))->modifyIngredients ($req, $resp, $args);
     }
-);
+)->add('checkTOKEN');
 
 $app->put("/commandes/{id_commande}/sandwichs/{id_sandwich}[/]",
     function(Request $req, Response $resp, $args){

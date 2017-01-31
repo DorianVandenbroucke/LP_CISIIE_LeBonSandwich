@@ -15,10 +15,9 @@ class CategorieController extends AbstractController{
     foreach($categories as $c){
       $lien = array(
                       "nom" => $c->nom,
-                      "lien" => DIR."/categories/$c->id/"
+                      "lien" => ["self" => DIR."/categories/$c->id/"]
                     );
       array_push($categories_tab, $lien);
-    //   var_dump($this->request->router->PathFor('categories', array('id' => $c->id)));
     }
 
     $chaine = [
@@ -40,7 +39,7 @@ class CategorieController extends AbstractController{
                   ];
         return $this->responseJSON(200, $chaine);
     }catch(\Illuminate\Database\Eloquent\ModelNotFoundException $e){
-        $chaine = ["error" => "Categorie d'ingrédients $id introuvable."];
+        $chaine = ["error" => "Categorie $id introuvable."];
         return $this->responseJSON(404, $chaine);
     }
   }
