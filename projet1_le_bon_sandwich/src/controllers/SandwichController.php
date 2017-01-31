@@ -32,7 +32,7 @@ class SandwichController extends AbstractController{
 
 			$id_sandwich = $sandwich->id;
 
-            $commande->montant = PRICES[$taille];
+            $commande->montant += PRICES[$taille];
             $commande->save();
 
 			$liens = [
@@ -128,30 +128,25 @@ class SandwichController extends AbstractController{
 	  public function modifyIngredients($req, $resp, $args){
 
 				try{
-					$id_sandwich = $args['id'];
+					$id_sandwich = $args['id_sandwich'];
 					$sandwich = Sandwich::findOrFail($id_sandwich);
 					$ingredients = $sandwich->ingredients()->get();
 
-					if($ingredients['salade']){
-						$ingredients['salade'] = $salade;
-						$salade->save();
-					}
-					if($ingredients['crudite']){
-						$ingredients['crudite'] = $crudite;
-						$crudite->save();
-					}
-					if( $ingredients['viande']){
-						$ingredients['viande'] = $viande;
-						$viande->save();
-					}
-					if($ingredients['fromage']){
-						$ingredients['fromage']  = $fromage;
-						$fromage->save();
-					}
-					if($ingredients['sauce']){
-						$ingredients['sauce'] = $sauce;
-						$sauce->save();
-					}
+                    $ingredients_id_tab = [];
+
+                    foreach($ingredients as $ingredient){
+                        array_push($ingredients_id_tab, $ingredient->id);
+                    }
+
+                    if(in_array($args['id_ingredient'], $ingredients_id_tab)){
+                        $sandwich->ingredients()->detach($args['id_ingredient']);
+                        $message = "Ingrédient supprimé avec succès.";
+                    }else{
+                        $sandwich->ingredients()->attach($args['id_ingredient']);
+                        $message = "Ingrédient ajouté avec succès.";
+                    }
+
+                    return $this->responseJSON(200, ["Succès" => $message]);
 
 				}catch(ModelNotFoundExceptionn $e){
 					$chaine = ["Erreur" => "La sandwich est introuvable"];

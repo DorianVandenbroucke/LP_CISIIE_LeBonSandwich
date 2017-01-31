@@ -112,8 +112,12 @@ public function listCommandes()
       return $result;
   }
 
-  public function filtrageCommandes($req, $resp, $etat, $date)
+  public function filtrageCommandes($req, $resp, $args)
   {
+
+      $etat = $req->getParam('etat');
+      $date = $req->getParam('date');
+
       if(!isset($etat))
       {
           if(!isset($date))
@@ -256,26 +260,28 @@ public function listCommandes()
 
 
     public function paginationListCommande($req, $resp, $args){
-
-
-        $offset = (isset($_GET['offset'])) ? $_GET['offset'] : 0 ;
-        $size = (isset($_GET['size'])) ? $_GET['size'] : 0 ;
-
-        try{
-            $liste_commande = Commande::skip($offset)->take($size)->get();
-
+        
+        $offset = $req->getParam('offset');
+        $size = $req->getParam('size');
+        $offset = (isset($offset)) ? $offset : 0 ;
+        $size = (isset($size)) ? $size : 10 ;
+        
+        try
+        {
+            $liste_commande = Commande::take($size)->skip($offset)->get();
             return $this->responseJSON(200,$liste_commande);
 
-        }catch(ModelNotFoundException $e){
+        }catch(ModelNotFoundException $e)
+        {
              $chaine = ["Erreur" => "Plage définit incorrecte"];
-
-            return $this->responseJSON(404,$chaine);
+             return $this->responseJSON(404,$chaine);
         }
 
     }
 
 
     public function changerEtatCommande($req, $resp, $args){
+
 
         $id_commande = $args['id_commande'];
        

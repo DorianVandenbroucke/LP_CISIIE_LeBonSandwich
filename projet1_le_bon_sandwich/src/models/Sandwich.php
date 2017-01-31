@@ -11,9 +11,8 @@ class Sandwich extends Model{
   protected $fillable = ["type_de_pain", "taille", "id_commande"];
   public $timestamps = false;
 
-
   public function ingredients(){
-    return $this->belongsToMany("src/models/Ingredients",
+    return $this->belongsToMany("src\models\Ingredient",
                                 "ingredient_sandwich",
                                 "id_sandwich", "id_ingredient");
 
