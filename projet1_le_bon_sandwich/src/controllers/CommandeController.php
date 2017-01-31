@@ -20,7 +20,7 @@ class CommandeController extends AbstractController{
 
 	public function add($req, $resp){
 		try{
-			
+
 			$commande = new Commande();
 			$commande->montant = 0;
 			$commande->date_de_livraison = date('Y-m-d', strtotime(date('Y-m-d + 3 days')));
@@ -30,7 +30,7 @@ class CommandeController extends AbstractController{
 			$commande->save();
 			$commande->self = $this->request->router->PathFor('commandes', ['id' => $commande->id]);
 			return $this->responseJSON(201, $commande);
-			
+
 		}catch(\Illuminate\Database\Eloquent\ModelNotFoundException $e){
 			$this->responseJSON(400, ["error" => "Une erreur est survenue."]);
 		}
@@ -257,10 +257,10 @@ public function listCommandes()
 
     public function paginationListCommande($req, $resp, $args){
 
-     
+
         $offset = (isset($_GET['offset'])) ? $_GET['offset'] : 0 ;
         $size = (isset($_GET['size'])) ? $_GET['size'] : 0 ;
-        
+
         try{
             $liste_commande = Commande::skip($offset)->take($size)->get();
 
