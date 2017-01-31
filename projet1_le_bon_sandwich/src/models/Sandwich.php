@@ -10,7 +10,7 @@ class Sandwich extends Model{
   protected $primaryKey = "id";
   protected $fillable = ["type_de_pain", "taille", "id_commande"];
   public $timestamps = false;
-<<<<<<< HEAD
+
 
 
   public function ingredients(){
@@ -21,11 +21,4 @@ class Sandwich extends Model{
   }
 }
 
-=======
-  
-  public function ingredients(){
-    return $this->belongsToMany('src\models\Ingredient', 'ingredient_sandwich', 'id_sandwich', 'id_ingredient');
-  }
 
-}
->>>>>>> ebf81c89938e314fe85a076a2d798ce72e24a40f
