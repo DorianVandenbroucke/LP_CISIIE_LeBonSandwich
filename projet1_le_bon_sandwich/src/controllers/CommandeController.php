@@ -275,47 +275,45 @@ public function listCommandes()
     }
 
 
-    public function etatCommande($req, $resp, $args){
+    public function changerEtatCommande($req, $resp, $args){
 
         $id_commande = $args['id_commande'];
-        $commande = Commande::findOrFail($id_commande);
+       
 
         try{
-            if($commande->etat == "créée"){
+             $commande = Commande::findOrFail($id_commande);
 
-            }else{
-
-            }
-
-            if($commande->etat == "payée"){
-                
-            }else{
-
-            }
-
-            if($commande->etat == "en cours"){
-                
-            }else{
-
-            }
-
-            if($commande->etat == "prête"){
-                
-            }else{
-
-            }
-
-            if($commande->etat == "livrée"){
-                
-            }else{
-
-            }
-
-        }catch(ModelNotFoundException $e){
+             }catch(ModelNotFoundException $e){
             $chaine = ["Erreur" => "Cette commande est introuvable"];
 
             return $this->responseJSON(404,$chaine);
         }
+
+            switch ($commande->etat) {
+                case 1:
+                    $commande->etat = 2;
+                    break;
+
+                case 2:
+                    $commande->etat = 3;
+                    break;
+
+                case 3:
+                    $commande->etat = 4;
+                    break;
+                
+                case 4:
+                    $commande->etat = 5;
+                    break;
+
+            }
+       
+    }
+
+    public function getTDB($req, $resp, $args){
+
+        $commande = Commande ::all
+
 
     }
 
