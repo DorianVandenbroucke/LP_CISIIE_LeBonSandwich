@@ -57,11 +57,7 @@ class CategorieController extends AbstractController{
                       [
                         "id" => $i->id,
                         "nom" => $i->nom,
-                        "cat_id" => $i->cat_id,
-                        "description" => $i->description,
-                        "fournisseur" => $i->fournisseur,
-                        "img" => $i->img,
-                        "link" => ["detail" => DIR."/ingredients/$i->id/"]
+                        "link" => ["self" => DIR."/ingredients/$i->id/"]
                       ]
                     );
         }
