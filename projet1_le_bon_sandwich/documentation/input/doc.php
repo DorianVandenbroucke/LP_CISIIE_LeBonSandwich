@@ -7,8 +7,7 @@
 *
 * @apiDescription On affiche une collection des catégories
 *
-* Retourne une représentation json des ressources, incluant le nombre de catégories
-* leur noms.
+* Retourne une représentation json des ressources
 *
 * Le résultat inclut un lien pour accéder à la catégorie.
 *
@@ -35,6 +34,7 @@
 *      ]
 *    }
 */
+
 /**
 * @apiGroup Categories
 * @apiName detailCategory
@@ -44,8 +44,7 @@
 *
 * @apiDescription On affiche le détail d'une catégorie
 *
-* Retourne une représentation json de la ressource, incluant son nom et
-* sa description.
+* Retourne une représentation json de la ressource
 *
 * Le résultat inclut un lien pour accéder à la liste des ingrédients de cette catégorie.
 *
@@ -78,6 +77,7 @@
 *      "error": "Categorie d'ingrédients 56 introuvable."
 *    }
 */
+
 /**
 * @apiGroup Categories
 * @apiName ingredientsByCategorie
@@ -88,8 +88,7 @@
 * @apiDescription On affiche une collection d'ingredients
 * appartenant à une catégorie donnée
 *
-* Retourne une représentation json de la ressource, incluant le nombre d'ingrédients
-* présent dans la base, leur id, nom, cat_id, description, fournisseur et image associée
+* Retourne une représentation json de la ressource
 *
 * Le résultat inclut un lien pour accéder à l'ingrédient que l'on souhaite
 *
@@ -135,4 +134,227 @@
 *    {
 *      "error": "Categorie d'ingrédients 456 introuvable."
 *    }
+*/
+
+/**
+* @apiGroup Ingredients
+* @apiName listIngredients
+* @apiVersion 0.1.0
+*
+* @api {get} /ingredients[/]  Afficher
+*
+* @apiDescription On affiche les ingrédients
+*
+* Retourne une représentation json de la ressource
+*
+* Le résultat inclut un lien pour accéder à l'ingrédient que l'on souhaite
+*
+*/
+
+/**
+* @apiGroup Ingredients
+* @apiName addIngredient
+* @apiVersion 0.1.0
+*
+* @api {post} /ingredients[/]  Ajouter
+*
+* @apiDescription On ajoute un ingrédient
+*
+* Retourne une représentation json de la ressource
+*
+*/
+
+/**
+* @apiGroup Ingredients
+* @apiName getIngredient
+* @apiVersion 0.1.0
+*
+* @api {get} /ingredients/{id}[/]  Détail
+*
+* @apiDescription On affiche le détail d'un ingrédient
+*
+* Retourne une représentation json de la ressource
+*
+* Le résultat inclut un lien pour accéder à la catégorie dans laquelle se trouve l'ingrédient
+*
+*/
+
+/**
+* @apiGroup Ingredients
+* @apiName deleteIngredient
+* @apiVersion 0.1.0
+*
+* @api {delete} /ingredients/{id}[/]  Supprimer
+*
+* @apiDescription On supprime un ingrédient
+*
+*/
+
+/**
+* @apiGroup Ingredients
+* @apiName updateIngredient
+* @apiVersion 0.1.0
+*
+* @api {put} /ingredients/{id}[/]  Modifier
+*
+* @apiDescription On modifie un ingrédient
+*
+* Retourne une représentation json de la ressource modifiée
+*
+*/
+
+/**
+* @apiGroup Ingredients
+* @apiName getCategorie
+* @apiVersion 0.1.0
+*
+* @api {get} /ingredients/{id}/categorie[/]  Catégorie
+*
+* @apiDescription On obtient la catégorie de l'ingrédient
+*
+* Retourne une représentation json de la ressource
+*
+*/
+
+/**
+* @apiGroup Commande
+* @apiName detailCommande
+* @apiVersion 0.1.0
+*
+* @api {get} /commandes/{id}[/]  Détail
+*
+* @apiDescription On obtient le détail de la commande
+*
+* Retourne une représentation json de la ressource
+*
+*/
+
+/**
+* @apiGroup Commande
+* @apiName add
+* @apiVersion 0.1.0
+*
+* @api {post} /commandes[/]  Ajouter
+*
+* @apiDescription On crée une commande
+*
+* Retourne une représentation json de la ressource
+*
+*/
+
+/**
+* @apiGroup Commande
+* @apiName updateCommande
+* @apiVersion 0.1.0
+*
+* @api {put} /commandes/{id}[/]  Modifier
+*
+* @apiDescription On modifie la date de livraison d'une commande si celle-ci n'est pas encore payée
+*
+* Retourne une représentation json de la ressource
+*
+*/
+
+/**
+* @apiGroup Commande
+* @apiName deleteCommande
+* @apiVersion 0.1.0
+*
+* @api {delete} /commandes/{id}[/]  Supprimer
+*
+* @apiDescription On supprime une commande si celle-ci n'est pas encore payée
+*
+* Retourne une représentation json de la ressource
+*
+*/
+
+/**
+* @apiGroup Commande
+* @apiName payCommande
+* @apiVersion 0.1.0
+*
+* @api {post} /commandes/{id}[/]  Payer
+*
+* @apiDescription On paye une commande si celle-ci n'est pas encore payée
+*
+* Retourne une représentation json de la ressource
+*
+*/
+
+/**
+* @apiGroup Commande
+* @apiName factureCommande
+* @apiVersion 0.1.0
+*
+* @api {get} /commandes/{id}/facture[/]  Facture
+*
+* @apiDescription On paye une commande si celle-ci n'est pas encore payée
+*
+* Retourne une représentation json de la ressource
+*
+*/
+
+/**
+* @apiGroup Commande
+* @apiName sandwichsByCommande
+* @apiVersion 0.1.0
+*
+* @api {get} /commandes/{id}/sandwichs[/]  Sandwich
+*
+* @apiDescription On affiche les sandwichs d'une commande
+*
+* Retourne une représentation json de la ressource
+*
+*/
+
+/**
+* @apiGroup Sandwichs
+* @apiName add
+* @apiVersion 0.1.0
+*
+* @api {post} /commandes/{id}/sandwichs[/]  Ajouter
+*
+* @apiDescription On ajoute un sandwich à une commande
+*
+* Retourne une représentation json de la ressource
+*
+*/
+
+/**
+* @apiGroup Sandwichs
+* @apiName delete
+* @apiVersion 0.1.0
+*
+* @api {delete} /commandes/{id}/sandwichs[/]  Supprimer
+*
+* @apiDescription On ajoute un sandwich à une commande
+*
+* Retourne une représentation json de la ressource
+*
+*/
+
+/**
+* @apiGroup Sandwichs
+* @apiName modifyIngredient
+* @apiVersion 0.1.0
+*
+* @api {put} /commandes/sandwichs/{id_sandwich}/ingredients/{id_ingredient}[/]  Modifier
+*
+* @apiDescription On ajoute ou supprime un ingrédient dans un sandwich si celui-ci existe déjà
+*
+* Retourne une représentation json de la ressource
+*
+*/
+
+/**
+* @apiGroup Sandwichs
+* @apiName modifySandwich
+* @apiVersion 0.1.0
+*
+* @api {put} /commandes/{id_commande}/sandwichs/{id_sandwich}[/]  Modifier
+*
+* @apiDescription On fait quelque chose mais c'est pas encore défini parce que c'est pas fini
+*
+* Retourne une représentation json de la ressource
+*
 */
