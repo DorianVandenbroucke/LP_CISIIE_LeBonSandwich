@@ -3,6 +3,7 @@ namespace src\controllers;
 
 const TYPES = ["blanc", "complet", "céréales"];
 const SIZES = ["petite faim", "moyenne faim", "grosse faim", "ogre"];
+const PRICES = ["petite faim" => 1.00, "moyenne faim" => 1.75, "grosse faim" => 2.30, "ogre" => 2.65];
 
 use src\models\Commande as Commande;
 use src\models\Sandwich as Sandwich;
@@ -17,9 +18,9 @@ class SandwichController extends AbstractController{
         $commande = Commande::findOrFail($id_commande);
         $taille = $req->getParams()["taille"];
         $type = $req->getParams()["type"];
-		
+
 		if(in_array($taille, SIZES) && in_array($type, TYPES)){
-		
+
 			$sandwich = new Sandwich();
 			$sandwich->taille = $taille;
 			$sandwich->type_de_pain = $type;
@@ -28,6 +29,8 @@ class SandwichController extends AbstractController{
 
 			$id_sandwich = $sandwich->id;
 
+            $commande->montant = PRICES[$taille];
+            $commande->save();
 
 			$liens = [
 					  "commande" => DIR."/commandes/$id_commande/",
@@ -39,7 +42,7 @@ class SandwichController extends AbstractController{
 						"links" => $liens
 					  ];
 			return $this->responseJSON(200, $chaine);
-			
+
 		}else{
 			return $this->responseJSON(400, ["erreur" => "Le type ou la taille entré n'est pas valide"]);
 		}
@@ -49,18 +52,18 @@ class SandwichController extends AbstractController{
       }
   }
 
-  
+
 	public function delete($req, $resp, $id_sandwich){
-		
+
 		try{
-			
+
 			$sandwich = Sandwich::findOrFail($id_sandwich);
 			$commande = Commande::findOrFail($sandwich->id_commande);
-			
+
 			$status_commande = ["créée", "payée"];
-			
+
 			if(!in_array($commande->etat, $status_commande)){
-				
+
 				if($sandwich->delete()){
 					$liens = ["commande" => DIR."/commandes/".$commande->id];
 					$chaine = [
@@ -71,17 +74,17 @@ class SandwichController extends AbstractController{
 				}else{
 					return $this->responseJSON(400, ["erreur", "Une erreur est survenue lors de l'exécution de la requête."]);
 				}
-				
+
 			}else{
 				$chaine = ["error" => "Cette commande est ".$commande->etat.", elle n'est donc plus modifiable"];
 				return $this->responseJSON(404, $chaine);
 			}
-			
+
 		}catch(\Illuminate\Database\Eloquent\ModelNotFoundException $e){
             $chaine = ["Erreur", "Ressource du sandwich $id_sandwich introuvable."];
             return $this->responseJSON(404, $chaine);
 		}
-	
+
 	}
 
 
@@ -91,9 +94,9 @@ class SandwichController extends AbstractController{
             $sandwich = Sandwich::findOrFail($id_sandwich);
             $id_commande = $sandwich->id_commande;
             $commande = Commande::findOrfail($id_commande);
-        
+
           if($commande->etat == "payé" || $commande->etat == "créé"){
-          
+
               $taille = $sandwich->taille;
               $type_de_pain = $sandwich->type_de_pain;
               $sandwich->save();
@@ -118,14 +121,14 @@ class SandwichController extends AbstractController{
 
       }
 	}
-	  
+
 	  public function modifyIngredients($req, $resp, $args){
 
 				try{
 					$id_sandwich = $args['id'];
 					$sandwich = Sandwich::findOrFail($id_sandwich);
 					$ingredients = $sandwich->ingredients()->get();
-					
+
 					if($ingredients['salade']){
 						$ingredients['salade'] = $salade;
 						$salade->save();
@@ -133,11 +136,11 @@ class SandwichController extends AbstractController{
 					if($ingredients['crudite']){
 						$ingredients['crudite'] = $crudite;
 						$crudite->save();
-					} 
-					if( $ingredients['viande']){ 
+					}
+					if( $ingredients['viande']){
 						$ingredients['viande'] = $viande;
 						$viande->save();
-					} 
+					}
 					if($ingredients['fromage']){
 						$ingredients['fromage']  = $fromage;
 						$fromage->save();
@@ -145,7 +148,7 @@ class SandwichController extends AbstractController{
 					if($ingredients['sauce']){
 						$ingredients['sauce'] = $sauce;
 						$sauce->save();
-					} 
+					}
 
 				}catch(ModelNotFoundExceptionn $e){
 					$chaine = ["Erreur" => "La sandwich est introuvable"];
@@ -155,6 +158,3 @@ class SandwichController extends AbstractController{
 			}
 
 }
-
-
-
