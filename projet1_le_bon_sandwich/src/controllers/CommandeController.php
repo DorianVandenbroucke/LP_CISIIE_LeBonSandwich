@@ -198,11 +198,11 @@ public function listCommandes()
                     $chaine = ["Executé" => "La commande a été payée"];
                     $status = 200;
                 }else {
-                    $chaine = ["Erreur" => "Le paiement à échoué"];
+                    $chaine = ["Erreur" => "Le paiement a échoué"];
                     $status = 400;
                 }
             } else{
-                $chaine = ["Erreur" => "La commande est déjà été payée ou livrée"];
+                $chaine = ["Erreur" => "La commande a déjà été payée ou livrée"];
                 $status = 400;
             }
         } catch (ModelNotFoundException $e) {
@@ -269,8 +269,55 @@ public function listCommandes()
         }catch(ModelNotFoundException $e){
              $chaine = ["Erreur" => "Plage définit incorrecte"];
 
-                return $this->responseJSON(404,$chaine);
+            return $this->responseJSON(404,$chaine);
         }
 
     }
+
+
+    public function etatCommande($req, $resp, $args){
+
+        $id_commande = $args['id_commande'];
+        $commande = Commande::findOrFail($id_commande);
+
+        try{
+            if($commande->etat == "créée"){
+
+            }else{
+
+            }
+
+            if($commande->etat == "payée"){
+                
+            }else{
+
+            }
+
+            if($commande->etat == "en cours"){
+                
+            }else{
+
+            }
+
+            if($commande->etat == "prête"){
+                
+            }else{
+
+            }
+
+            if($commande->etat == "livrée"){
+                
+            }else{
+
+            }
+
+        }catch(ModelNotFoundException $e){
+            $chaine = ["Erreur" => "Cette commande est introuvable"];
+
+            return $this->responseJSON(404,$chaine);
+        }
+
+    }
+
+    
 }
