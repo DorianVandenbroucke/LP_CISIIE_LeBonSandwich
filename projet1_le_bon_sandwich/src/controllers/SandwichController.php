@@ -132,7 +132,15 @@ class SandwichController extends AbstractController{
 					$sandwich = Sandwich::findOrFail($id_sandwich);
 					$ingredients = $sandwich->ingredients()->get();
 
-                    if(in_array($ingredients, $args['id_ingredient'])){
+                    $ingredients_id_tab = [];
+
+                    foreach($ingredients as $ingredient){
+                        array_push($ingredients_id_tab, $ingredient->id);
+                    }
+
+                    var_dump($ingredients_id_tab);
+
+                    /*if(in_array($args['id_ingredient'], $ingredients_id_tab)){
 
                     }else{
 
@@ -157,7 +165,7 @@ class SandwichController extends AbstractController{
 					if($ingredients['sauce']){
 						$ingredients['sauce'] = $sauce;
 						$sauce->save();
-					}
+					}*/
 
 				}catch(ModelNotFoundExceptionn $e){
 					$chaine = ["Erreur" => "La sandwich est introuvable"];

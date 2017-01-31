@@ -69,11 +69,12 @@ $app->delete(
   }
 )->setName("commandes")->add('response_JSON')->add('checkTOKEN');
 
+// On ajoute/supprime un ingrédient dans un sandwich
 $app->put("/commandes/sandwichs/{id_sandwich}/ingredients/{id_ingredient}[/]",
     function(Request $req, Response $resp, $args){
       return (new SandwichController($this))->modifyIngredients($req, $resp, $args);
     }
-)->add('response_JSON')->add('checkTOKEN');
+);
 
 //on modifie un sandwich dans une commande
 $app->put("/commandes/{id_commande}/sandwichs/{id_sandwich}[/]",
@@ -82,7 +83,7 @@ $app->put("/commandes/{id_commande}/sandwichs/{id_sandwich}[/]",
     }
 )->add('response_JSON')->add('checkTOKEN');
 
-//modification de la taille d'un sandwich 
+//modification de la taille d'un sandwich
 $app->put("/taille/{id_taille}",
     function(Request $req, Response $resp, $args){
       $requestbody = $req->getParsedBody();
