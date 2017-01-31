@@ -17,5 +17,6 @@ class Sandwich extends Model{
                                 "id_sandwich", "id_ingredient");
 
   }
+
 }
 
