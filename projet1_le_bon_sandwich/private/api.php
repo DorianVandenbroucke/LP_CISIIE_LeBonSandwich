@@ -13,13 +13,14 @@ use src\controllers\CategorieController as CategorieController;
 use src\controllers\CommandeController as CommandeController;
 use src\controllers\SandwichController as SandwichController;
 use src\controllers\IngredientController as IngredientController;
+use src\controllers\DashBoardController as DashBoardController;
 
-$conf = ['settings' => ['displayErrorDetails' => true, 'tmpl_dir' => '..\templates'],
+$conf = ['settings' => ['displayErrorDetails' => true, 'tmpl_dir' => '..\src\templates'],
           'view' => function($c){
             return new \Slim\Views\Twig($c['settings']['tmpl_dir'], ['debug'=>true, 'cache'=> $c['settings']['tmpl_dir']]);
           }];
-$errorDetails = new \Slim\Container($conf);
-$app = new \Slim\App($errorDetails);
+$container = new \Slim\Container($conf);
+$app = new \Slim\App($container);
 
 
 $app->get("/commandes/{id}[/]",function(Request $req, Response $resp, $args){
@@ -34,5 +35,12 @@ $app->get("/commandes[/]", function(Request $req, Response $resp, $args){
   }
  return (new CommandeController($this))->filtrageCommandes($req, $resp, $args);
 })->setName('commandes');
+
+
+$app->get('/ingredients[/]', function(Request $req, Response $resp, $args){
+    return (new DashBoardController($this))->ListIngredients($req, $resp, $args);
+});
+
+
 
 $app->run();
