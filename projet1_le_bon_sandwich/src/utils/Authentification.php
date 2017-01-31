@@ -66,8 +66,7 @@ function checkACCESS(Request $req, Response $resp, callable $next){
     return $resp;
 }   
 
-
-function simple_cors ($req, $resp, callable $next ) {
+function simple_cors(Request $req, Response $resp, callable $next) {
     $origin = $req->getHeader('origin');
     if (empty($origin)) $origin = '*';
     $rs = $rs->withHeader('Access-Control-Allow-Origin',$origin );

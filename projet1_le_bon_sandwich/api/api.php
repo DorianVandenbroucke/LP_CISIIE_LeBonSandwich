@@ -108,18 +108,6 @@ $app->get("/ingredients/{id}/categorie[/]",function(Request $req, Response $resp
   return (new IngredientController($this))->getCategorie($req, $resp, $args['id']);
 })->setName('ingredientCategories');
 
-$app->get("/commandes[/]", function(Request $req, Response $resp, $args){
-  $etat = (isset($_GET['etat'])) ? $_GET['etat'] : null ;
-  $date = (isset($_GET['sate'])) ? $_GET['date'] : null ;
-
-  $offset = (isset($_GET['offset'])) ? $_GET['offset'] : 0 ;
-  $size = (isset($_GET['size'])) ? $_GET['size'] : 0 ;
-  if($offset != 0 || $size != 0){
-     return(new CommandeController($this))->paginationListCommande($req, $resp, $args);
-  }
- return (new CommandeController($this))->filtrageCommandes($req, $resp, $etat, $date);
-})->setName('commandes');
-
 
 // On crée une commande
 $app->post("/commandes[/]",function(Request $req, Response $resp, $args){
