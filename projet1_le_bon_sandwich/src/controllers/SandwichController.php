@@ -1,13 +1,16 @@
 <?php
 namespace src\controllers;
 
+
 const TYPES = ["blanc", "complet", "céréales"];
 const SIZES = ["petite faim", "moyenne faim", "grosse faim", "ogre"];
 const PRICES = ["petite faim" => 1.00, "moyenne faim" => 1.75, "grosse faim" => 2.30, "ogre" => 2.65];
 
+
 use src\models\Commande as Commande;
 use src\models\Sandwich as Sandwich;
 use src\models\Ingredient as Ingredient;
+use src\models\Taille as Taille;
 
 use \Illuminate\Database\Eloquent\ModelNotFoundException as ModelNotFoundException;
 
@@ -29,7 +32,7 @@ class SandwichController extends AbstractController{
 
 			$id_sandwich = $sandwich->id;
 
-            $commande->montant = PRICES[$taille];
+            $commande->montant += PRICES[$taille];
             $commande->save();
 
 			$liens = [
@@ -125,9 +128,15 @@ class SandwichController extends AbstractController{
 	  public function modifyIngredients($req, $resp, $args){
 
 				try{
-					$id_sandwich = $args['id'];
+					$id_sandwich = $args['id_sandwich'];
 					$sandwich = Sandwich::findOrFail($id_sandwich);
 					$ingredients = $sandwich->ingredients()->get();
+
+                    if(in_array($ingredients, $args['id_ingredient'])){
+
+                    }else{
+
+                    }
 
 					if($ingredients['salade']){
 						$ingredients['salade'] = $salade;
@@ -157,4 +166,31 @@ class SandwichController extends AbstractController{
 				}
 			}
 
+
+			public function modifierTailleSandwich($req, $resp, $args, $requestbody){
+			$data = [];
+			try{
+				$id_taille = $args["id_taille"];
+				$taille = Taille::findOrFail($id_taille);
+
+				foreach ($requestbody as $key => $value) {
+					if(in_array($key,$taille->getFillable()))
+					{
+						$taille->$key = filter_var($value, FILTER_SANITIZE_STRING);
+					}
+					else
+					{
+						$data[] =  ["Warring" => "Il manque une valeur à l'attribut $key"];
+					}
+				}
+				$taille->save();
+				if(!empty($data))
+				return $this->responseJSON(200, $data);
+				return $this->responseJSON(204, NULL);
+
+			}catch(ModelNotFoundException $e){
+				$data =  ["Error" => "La taille que vous demandez est introuvable"];
+				return $this->responseJSON(404, $data);
+			}
+		}
 }

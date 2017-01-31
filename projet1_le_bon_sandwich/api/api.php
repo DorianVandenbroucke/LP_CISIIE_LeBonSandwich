@@ -14,6 +14,7 @@ use src\controllers\CommandeController as CommandeController;
 use src\controllers\SandwichController as SandwichController;
 use src\controllers\IngredientController as IngredientController;
 
+
 $conf = ['settings' => ['displayErrorDetails' => true, 'tmpl_dir' => '..\templates'],
           'view' => function($c){
             return new \Slim\Views\Twig($c['settings']['tmpl_dir'], ['debug'=>true, 'cache'=> $c['settings']['tmpl_dir']]);
@@ -50,7 +51,7 @@ $app->get(
   function(Request $req, Response $resp, $args){
      return (new CommandeController($this))->sandwichsByCommande($resp, $args['id']);
   }
-)->setName("commandes");
+)->setName("commandes")->add('response_JSON')->add('checkTOKEN');
 
 // On enregistre un sandwich pour une commande
 $app->post(
@@ -58,7 +59,7 @@ $app->post(
   function(Request $req, Response $resp, $args){
      return (new SandwichController($this))->add($req, $resp, $args['id']);
   }
-)->setName("commandes");
+)->setName("commandes")->add('response_JSON')->add('checkTOKEN');
 
 // On supprime un sandwich pour une commande
 $app->delete(
@@ -66,17 +67,26 @@ $app->delete(
   function(Request $req, Response $resp, $args){
      return (new SandwichController($this))->delete($req, $resp, $args['id']);
   }
-)->setName("commandes");
+)->setName("commandes")->add('response_JSON')->add('checkTOKEN');
 
-$app->put("/commandes/{id_commande}/sandwichs/{id_sandwich}/ingredients[/]",
+$app->put("/commandes/sandwichs/{id_sandwich}/ingredients/{id_ingredient}[/]",
     function(Request $req, Response $resp, $args){
-      return (new SandwichController($this))->modifyIngredients ($req, $resp, $args);
+      return (new SandwichController($this))->modifyIngredients($req, $resp, $args);
     }
-);
+)->add('response_JSON')->add('checkTOKEN');
 
+//on modifie un sandwich dans une commande
 $app->put("/commandes/{id_commande}/sandwichs/{id_sandwich}[/]",
     function(Request $req, Response $resp, $args){
       return (new SandwichController($this))->modifySandwich($req, $resp, $args);
+    }
+)->add('response_JSON')->add('checkTOKEN');
+
+//modification de la taille d'un sandwich 
+$app->put("/taille/{id_taille}",
+    function(Request $req, Response $resp, $args){
+      $requestbody = $req->getParsedBody();
+      return (new SandwichController($this))->modifierTailleSandwich($req, $resp, $args, $requestbody);
     }
 );
 
@@ -108,9 +118,10 @@ $app->get("/ingredients/{id}/categorie[/]",function(Request $req, Response $resp
   return (new IngredientController($this))->getCategorie($req, $resp, $args['id']);
 })->setName('ingredientCategories');
 
+
 $app->get("/commandes[/]", function(Request $req, Response $resp, $args){
   $etat = (isset($_GET['etat'])) ? $_GET['etat'] : null ;
-  $date = (isset($_GET['sate'])) ? $_GET['date'] : null ;
+  $date = (isset($_GET['date'])) ? $_GET['date'] : null ;
 
   $offset = (isset($_GET['offset'])) ? $_GET['offset'] : 0 ;
   $size = (isset($_GET['size'])) ? $_GET['size'] : 0 ;
