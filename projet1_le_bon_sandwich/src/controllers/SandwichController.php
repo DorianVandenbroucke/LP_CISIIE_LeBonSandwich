@@ -29,7 +29,7 @@ class SandwichController extends AbstractController{
 
 			$id_sandwich = $sandwich->id;
 
-            $commande->montant = PRICES[$taille];
+            $commande->montant += PRICES[$taille];
             $commande->save();
 
 			$liens = [
@@ -125,9 +125,15 @@ class SandwichController extends AbstractController{
 	  public function modifyIngredients($req, $resp, $args){
 
 				try{
-					$id_sandwich = $args['id'];
+					$id_sandwich = $args['id_sandwich'];
 					$sandwich = Sandwich::findOrFail($id_sandwich);
 					$ingredients = $sandwich->ingredients()->get();
+
+                    if(in_array($ingredients, $args['id_ingredient'])){
+
+                    }else{
+
+                    }
 
 					if($ingredients['salade']){
 						$ingredients['salade'] = $salade;

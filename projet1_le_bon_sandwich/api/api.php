@@ -50,7 +50,7 @@ $app->get(
   function(Request $req, Response $resp, $args){
      return (new CommandeController($this))->sandwichsByCommande($resp, $args['id']);
   }
-)->setName("commandes");
+)->setName("commandes")->add('response_JSON')->add('checkTOKEN');
 
 // On enregistre un sandwich pour une commande
 $app->post(
@@ -58,7 +58,7 @@ $app->post(
   function(Request $req, Response $resp, $args){
      return (new SandwichController($this))->add($req, $resp, $args['id']);
   }
-)->setName("commandes");
+)->setName("commandes")->add('response_JSON')->add('checkTOKEN');
 
 // On supprime un sandwich pour une commande
 $app->delete(
@@ -66,19 +66,19 @@ $app->delete(
   function(Request $req, Response $resp, $args){
      return (new SandwichController($this))->delete($req, $resp, $args['id']);
   }
-)->setName("commandes");
+)->setName("commandes")->add('response_JSON')->add('checkTOKEN');
 
-$app->put("/commandes/{id_commande}/sandwichs/{id_sandwich}/ingredients[/]",
+$app->put("/commandes/sandwichs/{id_sandwich}/ingredients/{id_ingredient}[/]",
     function(Request $req, Response $resp, $args){
-      return (new SandwichController($this))->modifyIngredients ($req, $resp, $args);
+      return (new SandwichController($this))->modifyIngredients($req, $resp, $args);
     }
-);
+)->add('response_JSON')->add('checkTOKEN');
 
 $app->put("/commandes/{id_commande}/sandwichs/{id_sandwich}[/]",
     function(Request $req, Response $resp, $args){
       return (new SandwichController($this))->modifySandwich($req, $resp, $args);
     }
-);
+)->add('response_JSON')->add('checkTOKEN');
 
 
 $app->get("/ingredients[/]",function(Request $req, Response $resp, $args){
