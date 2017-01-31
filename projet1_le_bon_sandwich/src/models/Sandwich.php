@@ -15,6 +15,8 @@ class Sandwich extends Model{
     return $this->belongsToMany("src\models\Ingredient",
                                 "ingredient_sandwich",
                                 "id_sandwich", "id_ingredient");
+
   }
 
 }
+
