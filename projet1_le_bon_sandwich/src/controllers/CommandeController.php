@@ -41,18 +41,16 @@ class CommandeController extends AbstractController{
       try{
           $commande = Commande::findOrFail($id);
 
-          if($commande->etat != "livrée"){
-              $nom_lien = "lien_de_suppression";
-              $lien = DIR."/commandes/$commande->id/delete";
-          }else{
-              $nom_lien = "lien_de_la_facture";
-              $lien = DIR."/commandes/$commande->id/facture";
-          }
-
-          $links = [
-                    "sandwichs" => DIR."/commandes/$commande->id/sandwichs",
-                    $nom_lien => $lien
-                   ];
+		  if($commande->etat != "livrée"){
+	          $links = [
+	                    "sandwichs" => DIR."/commandes/$commande->id/sandwichs"
+	                   ];
+		  }else{
+	          $links = [
+	                    "sandwichs" => DIR."/commandes/$commande->id/sandwichs",
+	                    "lien_de_la_facture" => DIR."/commandes/$commande->id/facture"
+	                   ];
+		  }
 
           $chaine = [
                     "id" => $commande->id,
@@ -63,7 +61,7 @@ class CommandeController extends AbstractController{
                   ];
         return $this->responseJSON(200, $chaine);
       }catch(\Illuminate\Database\Eloquent\ModelNotFoundException $e){
-            $chaine = ["Erreur", "Ressource de la commande $id introuvable."];
+            $chaine = ["erreur" => "Ressource de la commande $id introuvable."];
             return $this->responseJSON(404, $chaine);
       }
   }
@@ -96,7 +94,7 @@ class CommandeController extends AbstractController{
                       ];
             return $this->responseJSON(200, $chaine);
         }catch(\Illuminate\Database\Eloquent\ModelNotFoundException $e){
-            $chaine = ["Erreur", "Ressource de la commande $id introuvable."];
+            $chaine = ["erreur" => "Ressource de la commande $id introuvable."];
             return $this->responseJSON(400, $chaine);
         }
   }
