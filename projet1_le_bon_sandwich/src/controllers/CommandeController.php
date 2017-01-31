@@ -20,7 +20,7 @@ class CommandeController extends AbstractController{
 
 	public function add($req, $resp){
 		try{
-			
+
 			$commande = new Commande();
 			$commande->montant = 0;
 			$commande->date_de_livraison = date('Y-m-d', strtotime(date('Y-m-d + 3 days')));
@@ -30,7 +30,7 @@ class CommandeController extends AbstractController{
 			$commande->save();
 			$commande->self = $this->request->router->PathFor('commandes', ['id' => $commande->id]);
 			return $this->responseJSON(201, $commande);
-			
+
 		}catch(\Illuminate\Database\Eloquent\ModelNotFoundException $e){
 			$this->responseJSON(400, ["error" => "Une erreur est survenue."]);
 		}
@@ -202,11 +202,11 @@ public function listCommandes()
                     $chaine = ["Executé" => "La commande a été payée"];
                     $status = 200;
                 }else {
-                    $chaine = ["Erreur" => "Le paiement à échoué"];
+                    $chaine = ["Erreur" => "Le paiement a échoué"];
                     $status = 400;
                 }
             } else{
-                $chaine = ["Erreur" => "La commande est déjà été payée ou livrée"];
+                $chaine = ["Erreur" => "La commande a déjà été payée ou livrée"];
                 $status = 400;
             }
         } catch (ModelNotFoundException $e) {
@@ -278,4 +278,12 @@ public function listCommandes()
         }
 
     }
+
+
+    public function etatCommande($req, $resp, $args){
+
+
+    }
+
+    
 }

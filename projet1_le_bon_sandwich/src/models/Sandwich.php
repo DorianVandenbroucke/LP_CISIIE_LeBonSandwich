@@ -12,11 +12,10 @@ class Sandwich extends Model{
   public $timestamps = false;
 
   public function ingredients(){
-    return $this->belongsToMany("src/models/Ingredients",
-                                "ingredient_sandwich", 
+    return $this->belongsToMany("src\models\Ingredient",
+                                "ingredient_sandwich",
                                 "id_sandwich", "id_ingredient");
 
   }
 }
-
 
