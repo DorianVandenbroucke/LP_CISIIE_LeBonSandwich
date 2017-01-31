@@ -44,22 +44,6 @@ $app->get(
   }
 )->setName("commandes")->add('response_JSON')->add('checkTOKEN');
 
-// On affiche les sandwichs d'une commande
-$app->get(
-  "/commandes/{id}/sandwichs[/]",
-  function(Request $req, Response $resp, $args){
-     return (new CommandeController($this))->sandwichsByCommande($resp, $args['id']);
-  }
-)->setName("commandes");
-
-// On enregistre un sandwich pour une commande
-$app->post(
-  "/commandes/{id}/sandwichs[/]",
-  function(Request $req, Response $resp, $args){
-     return (new SandwichController($this))->add($req, $resp, $args['id']);
-  }
-)->setName("commandes");
-
 // On supprime un sandwich pour une commande
 $app->delete(
   "/commandes/sandwichs/{id}[/]",
@@ -120,26 +104,45 @@ $app->get("/commandes[/]", function(Request $req, Response $resp, $args){
  return (new CommandeController($this))->filtrageCommandes($req, $resp, $etat, $date);
 })->setName('commandes');
 
-
 // On crée une commande
 $app->post("/commandes[/]",function(Request $req, Response $resp, $args){
     return (new CommandeController($this))->add($req, $resp);
 })->setName("commandes");
 
+//On modifie la date de livraison de la commande
 $app->put("/commandes/{id}[/]",function(Request $req, Response $resp, $args){
     //récuperer les nouvelles valeurs depuis le Body de la requete
     $parsedBody = $req->getParsedBody();
     return (new CommandeController($this))->updateCommande($req, $resp, $args, $parsedBody);
 })->add('response_JSON')->add('checkTOKEN');
 
+//On supprime une commande
 $app->delete("/commandes/{id}[/]",function(Request $req, Response $resp, $args){
     return (new CommandeController($this))->deleteCommande($req, $resp, $args);
 })->add('response_JSON')->add('checkTOKEN');
 
+//On paye la commande
 $app->post("/commandes/{id}/paiement[/]",function(Request $req, Response $resp, $args){
     return (new CommandeController($this))->payCommande($req, $resp, $args);
 })->add('response_JSON')->add('checkTOKEN');
 
+// On affiche les sandwichs d'une commande
+$app->get(
+  "/commandes/{id}/sandwichs[/]",
+  function(Request $req, Response $resp, $args){
+     return (new CommandeController($this))->sandwichsByCommande($resp, $args['id']);
+  }
+)->setName("commandes");
+
+// On enregistre un sandwich pour une commande
+$app->post(
+  "/commandes/{id}/sandwichs[/]",
+  function(Request $req, Response $resp, $args){
+     return (new SandwichController($this))->add($req, $resp, $args['id']);
+  }
+)->setName("commandes");
+
+//On obtient la facture pour une commande
 $app->get("/commandes/{id}/facture[/]",function(Request $req, Response $resp, $args){
     return (new CommandeController($this))->factureCommande($req, $resp, $args);
 })->add('response_JSON')->add('checkTOKEN');
