@@ -50,4 +50,8 @@ class DashBoardController extends AbstractController
             echo "Page d'erreur en cours d'elaboration";
         }
     }
+
+    public function authentificationForm($req, $resp, $args){
+        return $this->request->view->render($resp, "authentification.html", ["url" => DIR."/authentification/verify/"]);
+    }
 }

@@ -58,6 +58,10 @@ $app->post('/ingredients[/]', function(Request $req, Response $resp, $args){
 $app->get('/ingredients/delete/{id}[/]', function(Request $req, Response $resp, $args){
     $args["baseUrl"] = $req->getUri()->getBaseUrl();
     return (new DashBoardController($this))->DeleteIngredient($req, $resp, $args);
+})->setName('deleteIngredient');
+
+$app->get("/authentification[/]", function(Request $req, Response $resp, $args){
+    return (new DashBoardController($this))->authentificationForm($req, $resp, $args);
 });
 
 $app->run();

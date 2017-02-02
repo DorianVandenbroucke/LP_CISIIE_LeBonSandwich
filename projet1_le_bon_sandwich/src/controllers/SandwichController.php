@@ -37,7 +37,7 @@ class SandwichController extends AbstractController{
 
 			$liens = [
 					  "commande" => DIR."/commandes/$id_commande/",
-					  "ingredients" => DIR."/sandwichs/$id_sandwich/ingredients/"
+					  "ingredients" => DIR."/commandes/$id_commande/sandwichs/$id_sandwich/ingredients/"
 					];
 			$chaine = [
 						"taille" => $taille,
@@ -124,6 +124,36 @@ class SandwichController extends AbstractController{
 
       }
 	}
+
+    public function listIngredients($req, $resp, $args){
+
+        try{
+            $sandwich = Sandwich::findOrFail($args['id_sandwich']);
+            $ingredients = $sandwich->ingredients()->get();
+            $nb_ingredients = $ingredients->count();
+
+            $ingredients_tab = [];
+
+            foreach($ingredients as $ingredient){
+                $elm = [
+                        "nom" => $ingredient->nom,
+                        "links" => ["self" => DIR."/ingredients/".$ingredient->id]
+                       ];
+                array_push($ingredients_tab, $elm);
+            }
+
+            $chaine = [
+                        "nb_ingredients" => $nb_ingredients,
+                        "ingredients" => $ingredients_tab
+                      ];
+
+            return $this->responseJSON(200, $chaine);
+
+        }catch(ModelNotFoundExceptionn $e){
+            return $this->responseJSON(404, ["erreur" => "Le sandwich est introuvable"]);
+        }
+
+    }
 
 	  public function modifyIngredients($req, $resp, $args){
 
