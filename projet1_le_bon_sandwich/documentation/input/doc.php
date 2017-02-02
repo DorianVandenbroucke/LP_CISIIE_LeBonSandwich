@@ -1,4 +1,4 @@
-/**
+/** apidoc -i input/ -o doc/ -t template/
 * @apiGroup Categories
 * @apiName listCategories
 * @apiVersion 0.1.0
