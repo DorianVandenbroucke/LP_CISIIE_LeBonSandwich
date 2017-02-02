@@ -52,6 +52,7 @@ $app->get('/ingredients/add[/]', function(Request $req, Response $resp, $args){
 
 $app->post('/ingredients[/]', function(Request $req, Response $resp, $args){
     $args["parsedBody"] = $req->getParsedBody();
+    $args["baseUrl"] = $req->getUri()->getBaseUrl();
     return (new DashBoardController($this))->AddIngredient($req, $resp, $args);
 });
 

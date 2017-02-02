@@ -26,8 +26,8 @@ class __TwigTemplate_8c57a4a6fb8ba7809a121de9981d23c37544fa2be7c7603561072fdac53
         // line 7
         echo twig_escape_filter($this->env, (isset($context["id"]) ? $context["id"] : null), "html", null, true);
         echo " Supprimé <a href=\"";
-        echo twig_escape_filter($this->env, $this->env->getExtension('Slim\Views\TwigExtension')->pathFor("ingredients"), "html", null, true);
-        echo "\">Liste des ingredients</a></h1>
+        echo twig_escape_filter($this->env, (isset($context["base_url"]) ? $context["base_url"] : null), "html", null, true);
+        echo "/ingredients\">Liste des ingredients</a></h1>
 </body>
 </html>";
     }
@@ -63,7 +63,7 @@ class __TwigTemplate_8c57a4a6fb8ba7809a121de9981d23c37544fa2be7c7603561072fdac53
 \t<title></title>
 </head>
 <body>
-    <h1>Ingredients {{id}} Supprimé <a href=\"{{ path_for('ingredients')}}\">Liste des ingredients</a></h1>
+    <h1>Ingredients {{id}} Supprimé <a href=\"{{base_url}}/ingredients\">Liste des ingredients</a></h1>
 </body>
 </html>", "ingredient_deleted.html", "C:\\wamp64\\www\\sandwichAPI\\LP_CISIIE_LeBonSandwich\\projet1_le_bon_sandwich\\src\\templates\\ingredient_deleted.html");
     }

@@ -32,7 +32,7 @@ class DashBoardController extends AbstractController
             try{
                 $newIngredient->save();
                 $categories = Categorie::with('getIngredients')->get();
-                return $this->request->view->render($resp, 'ingredients.html', ["categories"=>$categories]);
+                return $this->request->view->render($resp, 'ingredients.html', ["categories"=>$categories, "base_url"=>$args['baseUrl']]);
             }
             catch(\Illuminate\Database\Eloquent\ModelNotFoundException $e){
                 echo "Page d'erreur en cours d'elaboration";
@@ -44,7 +44,7 @@ class DashBoardController extends AbstractController
         try{
             Ingredient::findOrFail($args['id'])->delete();
             $categories = Categorie::with('getIngredients')->get();
-            return $this->request->view->render($resp, 'ingredient_deleted.html', ['id'=>$args['id']]);
+            return $this->request->view->render($resp, 'ingredient_deleted.html', ['id'=>$args['id'], "base_url"=>$args['baseUrl']]);
         }
         catch(\Illuminate\Database\Eloquent\ModelNotFoundException $e){
             echo "Page d'erreur en cours d'elaboration";
