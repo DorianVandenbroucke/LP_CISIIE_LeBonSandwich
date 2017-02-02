@@ -41,6 +41,8 @@ $app->get('/ingredients[/]', function(Request $req, Response $resp, $args){
     return (new DashBoardController($this))->ListIngredients($req, $resp, $args);
 });
 
-
+$app->get("/authentification[/]", function(Request $req, Response $resp, $args){
+    return (new DashBoardController($this))->authentificationForm($req, $resp, $args);
+});
 
 $app->run();

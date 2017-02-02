@@ -14,4 +14,8 @@ class DashBoardController extends AbstractController
         $categories = Categorie::with('getIngredients')->get();
         return $this->request->view->render($resp, 'commandes.html', ["categories"=>$categories]);
     }
+
+    public function authentificationForm($req, $resp, $args){
+        return $this->request->view->render($resp, "authentification.html", ["url" => DIR."/authentification/verify/"]);
+    }
 }
