@@ -12,13 +12,13 @@ function response_JSON(Request $req, Response $resp, callable $next){
 }
 
 function checkTOKEN(Request $req, Response $resp, callable $next){
-        
+
         $id = $req->getAttribute('route')->getArgument('id');
         $Authorization = $req->getHeader('Authorization');
 
         if(empty($Authorization)){
             $resp = $resp->withStatus(403);
-            $resp->getBody()->write(json_encode(['error'=>'no token']));
+            $resp->getBody()->write(json_encode(['Error'=>'No token']));
             $resp = $resp->withHeader("Content-type", "application/json, charset=utf-8");
             return $resp;
         }
@@ -32,7 +32,7 @@ function checkTOKEN(Request $req, Response $resp, callable $next){
         catch(NotFound $e)
         {
             $resp = $resp->withStatus(403);
-            $resp->getBody()->write(json_encode(['error'=>'invalid token']));
+            $resp->getBody()->write(json_encode(['Error'=>'Invalid token']));
             $resp = $resp->withHeader("Content-type", "application/json, charset=utf-8");
             return $resp;
         }
@@ -48,27 +48,27 @@ function checkACCESS(Request $req, Response $resp, callable $next){
 
     if(empty($Authorization)){
         $resp = $resp->withStatus(403);
-        $resp->getBody()->write(json_encode(['error'=>'no username or password']));
+        $resp->getBody()->write(json_encode(['Error'=>'No username or password']));
         $resp = $resp->withHeader("Content-type", "application/json, charset=utf-8");
         return $resp;
     }
 
     $usernamePassword = base64_decode(substr($Authorization[0],6));
-    $username = substr($usernamePassword ,0,strpos($usernamePassword, ':'));   
+    $username = substr($usernamePassword ,0,strpos($usernamePassword, ':'));
     $password = substr($usernamePassword ,strpos($usernamePassword, ':')+1);
 
     if($username === "admin" && $password === "pass")
-        return $next($req, $resp); 
+        return $next($req, $resp);
 
     $resp = $resp->withStatus(403);
-    $resp->getBody()->write(json_encode(['error'=>'access dined']));
+    $resp->getBody()->write(json_encode(['Error'=>'Access denied']));
     $resp = $resp->withHeader("Content-type", "application/json, charset=utf-8");
     return $resp;
-}   
+}
 
 function simple_cors(Request $req, Response $resp, callable $next) {
     $origin = $req->getHeader('origin');
     if (empty($origin)) $origin = '*';
     $rs = $rs->withHeader('Access-Control-Allow-Origin',$origin );
     return $next($rq, $rs);
-} 
+}
