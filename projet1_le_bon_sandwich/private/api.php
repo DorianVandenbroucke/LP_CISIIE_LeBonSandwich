@@ -41,6 +41,13 @@ $app->get('/ingredients[/]', function(Request $req, Response $resp, $args){
     return (new DashBoardController($this))->ListIngredients($req, $resp, $args);
 });
 
+$app->get('/ingredients/add[/]', function(Request $req, Response $resp, $args){
+    return (new DashBoardController($this))->AddIngredient($req, $resp, $args);
+});
 
+$app->post('/ingredients/add[/]', function(Request $req, Response $resp, $args){
+    $parsedBody = $req->getParsedBody();
+    return (new DashBoardController($this))->AddIngredient($req, $resp, $args, $parsedBody);
+});
 
 $app->run();
