@@ -1,7 +1,7 @@
 <?php
 
 /* ingredients.html */
-class __TwigTemplate_ca0130a6d773a01088c38b077336eab3eebb0d74c881129ba2db397674c9b1c5 extends Twig_Template
+class __TwigTemplate_99a03c81ad59207388f8415900652ea322bc76025cc2393a7eaf78b1a9b20d03 extends Twig_Template
 {
     public function __construct(Twig_Environment $env)
     {
@@ -23,13 +23,17 @@ class __TwigTemplate_ca0130a6d773a01088c38b077336eab3eebb0d74c881129ba2db397674c
 </head>
 <body>
     <h1>Ingredients par catégories</h1>
+    <button><a href=\"";
+        // line 8
+        echo twig_escape_filter($this->env, $this->env->getExtension('Slim\Views\TwigExtension')->pathFor("addIngredient"), "html", null, true);
+        echo "\">Ajouter</a></button>
     <ul>
     ";
-        // line 9
+        // line 10
         $context['_parent'] = $context;
         $context['_seq'] = twig_ensure_traversable((isset($context["categories"]) ? $context["categories"] : null));
         foreach ($context['_seq'] as $context["_key"] => $context["cat"]) {
-            // line 10
+            // line 11
             echo "        <li> <b>";
             echo twig_escape_filter($this->env, $this->getAttribute($context["cat"], "nom", array()), "html", null, true);
             echo " :</b> <i> ";
@@ -37,20 +41,20 @@ class __TwigTemplate_ca0130a6d773a01088c38b077336eab3eebb0d74c881129ba2db397674c
             echo "</i></li>
         <ul>
         ";
-            // line 12
+            // line 13
             $context['_parent'] = $context;
             $context['_seq'] = twig_ensure_traversable($this->getAttribute($context["cat"], "getIngredients", array()));
             foreach ($context['_seq'] as $context["_key"] => $context["ingre"]) {
-                // line 13
+                // line 14
                 echo "            <li> 
                 <b>";
-                // line 14
+                // line 15
                 echo twig_escape_filter($this->env, $this->getAttribute($context["ingre"], "nom", array()), "html", null, true);
                 echo " :</b> <i> ";
                 echo twig_escape_filter($this->env, $this->getAttribute($context["ingre"], "description", array()), "html", null, true);
                 echo "</i>
                 <button><a href=\"";
-                // line 15
+                // line 16
                 echo twig_escape_filter($this->env, (isset($context["base_url"]) ? $context["base_url"] : null), "html", null, true);
                 echo "/ingredients/delete/";
                 echo twig_escape_filter($this->env, $this->getAttribute($context["ingre"], "id", array()), "html", null, true);
@@ -61,14 +65,14 @@ class __TwigTemplate_ca0130a6d773a01088c38b077336eab3eebb0d74c881129ba2db397674c
             $_parent = $context['_parent'];
             unset($context['_seq'], $context['_iterated'], $context['_key'], $context['ingre'], $context['_parent'], $context['loop']);
             $context = array_intersect_key($context, $_parent) + $_parent;
-            // line 18
+            // line 19
             echo "        </ul>
     ";
         }
         $_parent = $context['_parent'];
         unset($context['_seq'], $context['_iterated'], $context['_key'], $context['cat'], $context['_parent'], $context['loop']);
         $context = array_intersect_key($context, $_parent) + $_parent;
-        // line 20
+        // line 21
         echo "    </ul>
 </body>
 </html>";
@@ -86,7 +90,7 @@ class __TwigTemplate_ca0130a6d773a01088c38b077336eab3eebb0d74c881129ba2db397674c
 
     public function getDebugInfo()
     {
-        return array (  72 => 20,  65 => 18,  54 => 15,  48 => 14,  45 => 13,  41 => 12,  33 => 10,  29 => 9,  19 => 1,);
+        return array (  76 => 21,  69 => 19,  58 => 16,  52 => 15,  49 => 14,  45 => 13,  37 => 11,  33 => 10,  28 => 8,  19 => 1,);
     }
 
     /** @deprecated since 1.27 (to be removed in 2.0). Use getSourceContext() instead */
@@ -106,6 +110,7 @@ class __TwigTemplate_ca0130a6d773a01088c38b077336eab3eebb0d74c881129ba2db397674c
 </head>
 <body>
     <h1>Ingredients par catégories</h1>
+    <button><a href=\"{{path_for('addIngredient')}}\">Ajouter</a></button>
     <ul>
     {% for cat in categories %}
         <li> <b>{{ cat.nom }} :</b> <i> {{cat.description}}</i></li>
