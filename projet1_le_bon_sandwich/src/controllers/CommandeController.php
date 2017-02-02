@@ -283,7 +283,7 @@ public function listCommandes()
     public function changerEtatCommande($req, $resp, $args){
 
 
-        $id_commande = $args['id_commande'];
+        $id_commande = $args['id'];
        
 
         try{
@@ -313,15 +313,10 @@ public function listCommandes()
                     break;
 
             }
-       
+       return $this->responseJSON(201, NULL);
     }
 
-    public function getTDB($req, $resp, $args){
-
-        $commande = Commande ::all
-
-
-    }
+    
 
     
 }

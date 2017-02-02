@@ -35,4 +35,9 @@ $app->get("/commandes[/]", function(Request $req, Response $resp, $args){
  return (new CommandeController($this))->filtrageCommandes($req, $resp, $args);
 })->setName('commandes');
 
+$app->put("/commandes/{id}[/]",function(Request $req, Response $resp, $args){
+     return (new CommandeController($this))->changerEtatCommande($req, $resp, $args);
+  });
+
+
 $app->run();
