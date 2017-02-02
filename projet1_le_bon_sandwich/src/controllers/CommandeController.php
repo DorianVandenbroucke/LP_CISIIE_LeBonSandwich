@@ -94,7 +94,7 @@ class CommandeController extends AbstractController{
                       ];
             return $this->responseJSON(200, $chaine);
         }catch(\Illuminate\Database\Eloquent\ModelNotFoundException $e){
-            $chaine = ["erreur" => "Ressource de la commande $id introuvable."];
+            $chaine = ["Erreur" => "Ressource de la commande $id introuvable."];
             return $this->responseJSON(400, $chaine);
         }
   }
@@ -169,7 +169,7 @@ public function listCommandes()
             $commande = Commande::findOrFail($id);
             if ($commande->etat == CREATED) {
                 if ($commande->delete()) {
-                    $chaine = ["Executé" => "La commande a été correctement supprimée"];
+                    $chaine = ["Success" => "La commande a été correctement supprimée"];
                     $status = 200;
                 } else {
                     $chaine = ["Erreur" => "Il y a eu une erreur dans l'execution de la requête"];
@@ -198,7 +198,7 @@ public function listCommandes()
                 $key = $params['key'];
                 $commande->etat = PAID;
                 if ($commande->save()) {
-                    $chaine = ["Executé" => "La commande a été payée"];
+                    $chaine = ["Success" => "La commande a été payée"];
                     $status = 200;
                 }else {
                     $chaine = ["Erreur" => "Le paiement a échoué"];
@@ -234,8 +234,6 @@ public function listCommandes()
                     "ingredients" => $ingredients_tab
                 ]);
             }
-
-            // TODO: MONTANT POUR 1 SANDWICH
 
             if ($commande->etat == DELIVRED) {
                 $chaine = [
