@@ -20,15 +20,16 @@ class CommandeController extends AbstractController{
 
 	public function add($req, $resp){
 		try{
+			$to_add = 5*(3600*24);
 
 			$commande = new Commande();
 			$commande->montant = 0;
-			$commande->date_de_livraison = date('Y-m-d', strtotime(date('Y-m-d + 3 days')));
+			$commande->date_de_livraison = date('Y-m-d');
 			$commande->etat = CREATED;
 			$commande->token = (new \RandomLib\Factory)->getMediumStrengthGenerator()->generateString(32);
 
 			$commande->save();
-			$commande->self = $this->request->router->PathFor('commandes', ['id' => $commande->id]);
+			$commande->link = ["self" => $this->request->router->PathFor('commandes', ['id' => $commande->id])];
 			return $this->responseJSON(201, $commande);
 
 		}catch(\Illuminate\Database\Eloquent\ModelNotFoundException $e){
@@ -40,18 +41,16 @@ class CommandeController extends AbstractController{
       try{
           $commande = Commande::findOrFail($id);
 
-          if($commande->etat != "livrée"){
-              $nom_lien = "lien_de_suppression";
-              $lien = DIR."/commandes/$commande->id/delete";
-          }else{
-              $nom_lien = "lien_de_la_facture";
-              $lien = DIR."/commandes/$commande->id/facture";
-          }
-
-          $links = [
-                    "sandwichs" => DIR."/commandes/$commande->id/sandwichs",
-                    $nom_lien => $lien
-                   ];
+		  if($commande->etat != "livrée"){
+	          $links = [
+	                    "sandwichs" => DIR."/commandes/$commande->id/sandwichs"
+	                   ];
+		  }else{
+	          $links = [
+	                    "sandwichs" => DIR."/commandes/$commande->id/sandwichs",
+	                    "lien_de_la_facture" => DIR."/commandes/$commande->id/facture"
+	                   ];
+		  }
 
           $chaine = [
                     "id" => $commande->id,
@@ -62,7 +61,7 @@ class CommandeController extends AbstractController{
                   ];
         return $this->responseJSON(200, $chaine);
       }catch(\Illuminate\Database\Eloquent\ModelNotFoundException $e){
-            $chaine = ["Erreur", "Ressource de la commande $id introuvable."];
+            $chaine = ["erreur" => "Ressource de la commande $id introuvable."];
             return $this->responseJSON(404, $chaine);
       }
   }
@@ -95,7 +94,7 @@ class CommandeController extends AbstractController{
                       ];
             return $this->responseJSON(200, $chaine);
         }catch(\Illuminate\Database\Eloquent\ModelNotFoundException $e){
-            $chaine = ["Erreur", "Ressource de la commande $id introuvable."];
+            $chaine = ["erreur" => "Ressource de la commande $id introuvable."];
             return $this->responseJSON(400, $chaine);
         }
   }
@@ -260,12 +259,12 @@ public function listCommandes()
 
 
     public function paginationListCommande($req, $resp, $args){
-        
+
         $offset = $req->getParam('offset');
         $size = $req->getParam('size');
         $offset = (isset($offset)) ? $offset : 0 ;
         $size = (isset($size)) ? $size : 10 ;
-        
+
         try
         {
             $liste_commande = Commande::take($size)->skip($offset)->get();
@@ -285,6 +284,7 @@ public function listCommandes()
 
         $id_commande = $args['id'];
        
+
 
         try{
              $commande = Commande::findOrFail($id_commande);
@@ -307,7 +307,7 @@ public function listCommandes()
                 case 3:
                     $commande->etat = 4;
                     break;
-                
+
                 case 4:
                     $commande->etat = 5;
                     break;
@@ -318,5 +318,7 @@ public function listCommandes()
 
     
 
-    
+
 }
+
+   

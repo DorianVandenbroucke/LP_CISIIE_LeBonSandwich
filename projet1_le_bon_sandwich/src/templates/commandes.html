@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title></title>
+</head>
+<body>
+    <h1>Ingredients par catégories</h1>
+    <ul>
+    {% for cat in categories %}
+        <li> <b>{{ cat.nom }} :</b> <i> {{cat.description}}</i></li>
+        <ul>
+        {%for ingre in cat.getIngredients %}
+            <li> 
+                <b>{{ ingre.nom }} :</b> <i> {{ingre.description}}</i>
+                <button click="#">Supprimer</button>
+            </li>
+        {% endfor %}
+        </ul>
+    {% endfor %}
+    </ul>
+</body>
+</html>

@@ -169,7 +169,7 @@ class SandwichController extends AbstractController{
 					}
 					else
 					{
-						$data[] =  ["Warring" => "Il manque une valeur à l'attribut $key"];
+						$data[] =  ["Warning" => "Il manque une valeur à l'attribut $key"];
 					}
 				}
 				$taille->save();
