@@ -66,9 +66,11 @@ function checkACCESS(Request $req, Response $resp, callable $next){
     return $resp;
 }
 
-function simple_cors(Request $req, Response $resp, callable $next) {
+function CORS(Request $req, Response $resp, callable $next) {
     $origin = $req->getHeader('origin');
     if (empty($origin)) $origin = '*';
-    $rs = $rs->withHeader('Access-Control-Allow-Origin',$origin );
-    return $next($rq, $rs);
+    $resp = $resp->withHeader('Access-Control-Allow-Origin',$origin )
+        ->withHeader('Access-Control-Allow-Headers', 'X-Requested-With, Content-Type, Accept, Origin, Authorization')
+        ->withHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, PATCH, OPTIONS');
+    return $next($req, $resp);
 }
