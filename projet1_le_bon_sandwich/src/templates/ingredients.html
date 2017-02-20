@@ -6,18 +6,26 @@
 <body>
     <h1>Ingredients par catégories</h1>
     <button><a href="{{path_for('addIngredient')}}">Ajouter</a></button>
-    <ul>
-    {% for cat in categories %}
-        <li> <b>{{ cat.nom }} :</b> <i> {{cat.description}}</i></li>
-        <ul>
-        {%for ingre in cat.getIngredients %}
-            <li> 
-                <b>{{ ingre.nom }} :</b> <i> {{ingre.description}}</i>
-                <button><a href="{{base_url}}/ingredients/delete/{{ingre.id}}">Supprimer</a></button>
-            </li>
-        {% endfor %}
-        </ul>
+    <table border="1">
+        <tr>
+            <th>Nom</th>
+            <th>Description</th>
+            <th>Fournisseur</th>
+            <th>Image</th>
+            <th>Categorie</th>        
+        </tr>
+    {% for ing in ingredients %}  
+        <tr>
+            <td>{{ing.nom}}</td>
+            <td>{{ing.description}}</td>
+            <td>{{ing.fournisseur}}</td>
+            <td>{{ing.img}}</td>
+            <td>{{ing.getCategory.nom}}</td>
+            <td><button><a href="{{base_url}}/ingredients/delete/{{ing.id}}">Supprimer</a></button></td>
+        </tr>
     {% endfor %}
-    </ul>
+    </table>
+
+
 </body>
 </html>

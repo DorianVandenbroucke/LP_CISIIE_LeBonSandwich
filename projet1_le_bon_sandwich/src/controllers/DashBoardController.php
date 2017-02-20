@@ -11,8 +11,8 @@ class DashBoardController extends AbstractController
 {
 
     public function ListIngredients(Request $req, Response $resp, $args){
-        $categories = Categorie::with('getIngredients')->get();
-        return $this->request->view->render($resp, 'ingredients.html', ["categories"=>$categories, "base_url"=>$args['baseUrl']]);
+        $ingredients = Ingredient::with('getCategory')->get();
+        return $this->request->view->render($resp, 'ingredients.html', ["ingredients"=>$ingredients, "base_url"=>$args['baseUrl']]);
     }
 
     public function AddIngredient(Request $req, Response $resp, $args){
@@ -31,8 +31,8 @@ class DashBoardController extends AbstractController
 
             try{
                 $newIngredient->save();
-                $categories = Categorie::with('getIngredients')->get();
-                return $this->request->view->render($resp, 'ingredients.html', ["categories"=>$categories, "base_url"=>$args['baseUrl']]);
+                $ingredients = Ingredient::with('getCategory')->get();
+                return $this->request->view->render($resp, 'ingredients.html', ["ingredients"=>$ingredients, "base_url"=>$args['baseUrl']]);
             }
             catch(\Illuminate\Database\Eloquent\ModelNotFoundException $e){
                 echo "Page d'erreur en cours d'elaboration";
@@ -43,7 +43,7 @@ class DashBoardController extends AbstractController
     public function DeleteIngredient(Request $req, Response $resp, $args){
         try{
             Ingredient::findOrFail($args['id'])->delete();
-            $categories = Categorie::with('getIngredients')->get();
+            $ingredients = Ingredient::with('getCategory')->get();
             return $this->request->view->render($resp, 'ingredient_deleted.html', ['id'=>$args['id'], "base_url"=>$args['baseUrl']]);
         }
         catch(\Illuminate\Database\Eloquent\ModelNotFoundException $e){
