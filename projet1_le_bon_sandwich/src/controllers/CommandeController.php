@@ -29,7 +29,7 @@ class CommandeController extends AbstractController{
 			$commande->token = (new \RandomLib\Factory)->getMediumStrengthGenerator()->generateString(32);
 
 			$commande->save();
-			$commande->link = ["self" => $this->request->router->PathFor('commandes', ['id' => $commande->id])];
+			$commande->link = ["self" => $this->request->router->PathFor('commandes', ['id' => $commande->id]), "token" => $commande->token];
 			return $this->responseJSON(201, $commande);
 
 		}catch(\Illuminate\Database\Eloquent\ModelNotFoundException $e){
