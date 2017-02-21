@@ -47,3 +47,7 @@ $app->get('/ingredients/delete/{id}[/]', function(Request $req, Response $resp, 
 $app->get("/authentification[/]", function(Request $req, Response $resp, $args){
     return (new DashBoardController($this))->authentificationForm($req, $resp, $args);
 });
+
+$app->post("/authentification[/]", function(Request $req, Response $resp, $args){
+    return (new DashBoardController($this))->authentificationVerify($req, $resp, $args);
+});

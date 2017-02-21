@@ -19,32 +19,32 @@ session_start();
 $container = new \Slim\Container($conf);
 $app = new \Slim\App($container);
 
-$app->get("/commandes/{id}[/]",function(Request $req, Response $resp, $args){
-     return (new CommandeController($this))->detailCommande($req, $resp, $args['id']);
-  })->setName("commandes");
+// $app->get("/commandes/{id}[/]",function(Request $req, Response $resp, $args){
+//      return (new CommandeController($this))->detailCommande($req, $resp, $args['id']);
+//   })->setName("commandes");
+//
+//
+// $app->get("/commandes[/]", function(Request $req, Response $resp, $args){
+//   if(isset($_GET['offset']) || isset($_GET['size']))
+//   {
+//      return(new CommandeController($this))->paginationListCommande($req, $resp, $args);
+//   }
+//  return (new CommandeController($this))->filtrageCommandes($req, $resp, $args);
+// })->setName('commandes');
+//
+//
+// $app->get('/ingredients[/]', function(Request $req, Response $resp, $args){
+//     return (new DashBoardController($this))->ListIngredients($req, $resp, $args);
+// });
 
-
-$app->get("/commandes[/]", function(Request $req, Response $resp, $args){
-  if(isset($_GET['offset']) || isset($_GET['size']))
-  {
-     return(new CommandeController($this))->paginationListCommande($req, $resp, $args);
-  }
- return (new CommandeController($this))->filtrageCommandes($req, $resp, $args);
-})->setName('commandes');
-
-
-$app->get('/ingredients[/]', function(Request $req, Response $resp, $args){
-    return (new DashBoardController($this))->ListIngredients($req, $resp, $args);
-});
-
-$app->get("/authentification[/]", function(Request $req, Response $resp, $args){
-    return (new DashBoardController($this))->authentificationForm($req, $resp, $args);
-});
+// $app->get("/authentification[/]", function(Request $req, Response $resp, $args){
+//     return (new DashBoardController($this))->authentificationForm($req, $resp, $args);
+// });
+//
+// $app->post("/authentification[/]", function(Request $req, Response $resp, $args){
+//     return (new DashBoardController($this))->authentificationVerify($req, $resp, $args);
+// });
 
 require('../src/routes/private_route.php');
-
-$app->post("/authentification[/]", function(Request $req, Response $resp, $args){
-    return (new DashBoardController($this))->authentificationVerify($req, $resp, $args);
-});
 
 $app->run();
