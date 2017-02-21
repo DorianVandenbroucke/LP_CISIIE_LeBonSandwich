@@ -5,7 +5,7 @@ use \Psr\Http\Message\ServerRequestInterface as Request;
 use \Psr\Http\Message\ResponseInterface as Response;
 use src\models\Ingredient;
 use src\models\Categorie;
-
+use src\models\User;
 
 class DashBoardController extends AbstractController
 {
@@ -69,7 +69,19 @@ class DashBoardController extends AbstractController
 
     public function authentificationVerify($req, $resp, $args){
         if($_SESSION['tokenFormAuthentification'] == $req->getParams()['valueKey']){
-            var_dump($req->getParams());die;
+            $user = User::where('name', $req->getParams()['login'])->get();
+            var_dump($user);die;
+            if(isset($user->password)){
+                if($user->passwor == password_verify($req->getParams()['password'])){
+                    $this->ListIngredients($req, $resp,$args);
+                }else{
+                    echo "Mot de passe incorrecte.";
+                    $this->authentificationForm($req, $resp, $args);
+                }
+            }else{
+                echo "Utilisateur inconnu.";
+                $this->authentificationForm($req, $resp, $args);
+            }
         }
     }
 }

@@ -3,7 +3,7 @@
 -- http://www.phpmyadmin.net
 --
 -- Client :  127.0.0.1
--- Généré le :  Mar 21 Février 2017 à 20:15
+-- Généré le :  Mar 21 Février 2017 à 20:46
 -- Version du serveur :  5.7.11
 -- Version de PHP :  7.0.4
 
@@ -163,6 +163,25 @@ INSERT INTO `sandwich` (`id`, `type_de_pain`, `taille`, `id_commande`) VALUES
 (15, 'blanc', 'ogre', 15),
 (16, 'blanc', 'ogre', 15);
 
+-- --------------------------------------------------------
+
+--
+-- Structure de la table `user`
+--
+
+CREATE TABLE `user` (
+  `id` int(11) NOT NULL,
+  `name` varchar(255) NOT NULL,
+  `password` varchar(255) NOT NULL
+) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+
+--
+-- Contenu de la table `user`
+--
+
+INSERT INTO `user` (`id`, `name`, `password`) VALUES
+(1, 'dorian', '$2y$10$7OcZMIYmRG05CZyJuw7ubuPDSq9Ra3IvK4w1JG./ClMcFpJGW.nNm');
+
 --
 -- Index pour les tables exportées
 --
@@ -192,6 +211,12 @@ ALTER TABLE `sandwich`
   ADD PRIMARY KEY (`id`);
 
 --
+-- Index pour la table `user`
+--
+ALTER TABLE `user`
+  ADD PRIMARY KEY (`id`);
+
+--
 -- AUTO_INCREMENT pour les tables exportées
 --
 
@@ -215,6 +240,11 @@ ALTER TABLE `ingredient`
 --
 ALTER TABLE `sandwich`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=17;
+--
+-- AUTO_INCREMENT pour la table `user`
+--
+ALTER TABLE `user`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
 /*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
