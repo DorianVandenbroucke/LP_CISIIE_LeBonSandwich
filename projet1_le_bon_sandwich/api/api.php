@@ -29,12 +29,12 @@ $app->get( "/categories[/]", function(Request $req, Response $resp, $args){
 // On affiche le détail d'une catégorie
 $app->get("/categories/{id}[/]",function(Request $req, Response $resp, $args){
 	return (new CategorieController($this))->detailCategory($resp, $args['id']);
-})->setName("categories");
+})->setName("category");
 
 // On affiche une collection d'ingredients appartenant à une catégorie donnée
 $app->get("/categories/{id}/ingredients[/]",function(Request $req, Response $resp, $args){
     return (new CategorieController($this))->ingredientsByCategorie($resp, $args['id']);
-})->setName("categories");
+})->setName("categories_ingredients");
 
 $app->get("/ingredients[/]",function(Request $req, Response $resp, $args){
   return (new IngredientController($this))->listIngredients($req, $resp, $args);

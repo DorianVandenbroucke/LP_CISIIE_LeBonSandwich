@@ -19,9 +19,11 @@ $conf = ['settings' => ['displayErrorDetails' => true, 'tmpl_dir' => '..\src\tem
           'view' => function($c){
             return new \Slim\Views\Twig($c['settings']['tmpl_dir'], ['debug'=>true, 'cache'=> $c['settings']['tmpl_dir']]);
           }];
+
+session_start();
+
 $container = new \Slim\Container($conf);
 $app = new \Slim\App($container);
-
 
 $app->get("/commandes/{id}[/]",function(Request $req, Response $resp, $args){
      return (new CommandeController($this))->detailCommande($req, $resp, $args['id']);
@@ -43,6 +45,10 @@ $app->get('/ingredients[/]', function(Request $req, Response $resp, $args){
 
 $app->get("/authentification[/]", function(Request $req, Response $resp, $args){
     return (new DashBoardController($this))->authentificationForm($req, $resp, $args);
+});
+
+$app->post("/authentification[/]", function(Request $req, Response $resp, $args){
+    return (new DashBoardController($this))->authentificationVerify($req, $resp, $args);
 });
 
 $app->run();

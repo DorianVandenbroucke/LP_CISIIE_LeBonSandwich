@@ -13,9 +13,10 @@ class CategorieController extends AbstractController{
 
     $categories_tab = [];
     foreach($categories as $c){
+      $url = $this->request->router->PathFor('category', array('id' => $c->id));
       $lien = array(
                       "nom" => $c->nom,
-                      "lien" => ["self" => DIR."/categories/$c->id/"]
+                      "liks" => ["self" => $url]
                     );
       array_push($categories_tab, $lien);
     }
@@ -30,7 +31,8 @@ class CategorieController extends AbstractController{
   public function detailCategory($resp, $id){
      try{
         $category = Categorie::findOrFail($id);
-        $lien_ingredients = ["ingredients" => DIR."/categories/$category->id/ingredients/"];
+        $url = $this->request->router->PathFor('categories_ingredients', array('id' => $category->id));
+        $lien_ingredients = ["ingredients" => $url];
         $chaine = [
                     "id" => $category->id,
                     "nom" => $category->nom,
@@ -52,12 +54,13 @@ class CategorieController extends AbstractController{
 
         $ingredients_tab = [];
         foreach($ingredients as $i){
+          $url = $this->request->router->PathFor('ingredient', array('id' => $i->id));
           array_push(
                       $ingredients_tab,
                       [
                         "id" => $i->id,
                         "nom" => $i->nom,
-                        "link" => ["self" => DIR."/ingredients/$i->id/"]
+                        "links" => ["self" => $url]
                       ]
                     );
         }
