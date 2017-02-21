@@ -75,7 +75,8 @@ class SandwichController extends AbstractController{
 							  ];
 					return $this->responseJSON(200, $chaine);
 				}else{
-					return $this->responseJSON(400, ["erreur", "Une erreur est survenue lors de l'exécution de la requête."]);
+                    $chaine = ["erreur" => "Une erreur est survenue lors de l'exécution de la requête."];
+					return $this->responseJSON(400, $chaine);
 				}
 
 			}else{
@@ -84,7 +85,7 @@ class SandwichController extends AbstractController{
 			}
 
 		}catch(\Illuminate\Database\Eloquent\ModelNotFoundException $e){
-            $chaine = ["Erreur", "Ressource du sandwich $id_sandwich introuvable."];
+            $chaine = ["Erreur" => "Ressource du sandwich $id_sandwich introuvable."];
             return $this->responseJSON(404, $chaine);
 		}
 
