@@ -765,6 +765,8 @@
 *
 * Retourne une représentation json de la ressource
 *
+* @apiError (Erreur : 400) BadRequest Requete invalide
+*
 * @apiErrorExample {json} Exemple de réponse en cas d'erreur
 *     HTTP/1.1 400 BadRequest
 *
@@ -772,13 +774,5 @@
 *      "Erreur": "Impossible de modifier le sandwich"
 *    }
 *
-* @apiError (Erreur : 404) NotFound Ressource inconnue
-*
-* @apiErrorExample {json} Exemple de réponse en cas d'erreur
-*     HTTP/1.1 404 NotFound
-*
-*    {
-*      "Erreur": "Ressource de la commande 12 introuvable."
-*    }
 *
 */

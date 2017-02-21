@@ -1361,6 +1361,25 @@ define({ "api": [
     "url": "/commandes/{id_commande}/sandwichs/{id_sandwich}[/]",
     "title": "Modifier sandwich",
     "description": "<p>On modifie un sandwich</p> <p>Retourne une représentation json de la ressource</p>",
+    "error": {
+      "fields": {
+        "Erreur : 400": [
+          {
+            "group": "Erreur : 400",
+            "optional": false,
+            "field": "BadRequest",
+            "description": "<p>Requete invalide</p>"
+          }
+        ]
+      },
+      "examples": [
+        {
+          "title": "Exemple de réponse en cas d'erreur",
+          "content": " HTTP/1.1 400 BadRequest\n\n{\n  \"Erreur\": \"Impossible de modifier le sandwich\"\n}",
+          "type": "json"
+        }
+      ]
+    },
     "filename": "input/doc.php",
     "groupTitle": "Sandwichs"
   }
