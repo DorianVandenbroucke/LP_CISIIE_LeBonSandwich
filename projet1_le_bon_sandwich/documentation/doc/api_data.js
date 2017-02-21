@@ -605,8 +605,68 @@ define({ "api": [
     "version": "0.1.0",
     "type": "get",
     "url": "/commandes/{id}/sandwichs[/]",
-    "title": "Sandwich",
+    "title": "Sandwichs",
     "description": "<p>On affiche les sandwichs d'une commande</p> <p>Retourne une représentation json de la ressource</p>",
+    "success": {
+      "fields": {
+        "Succès : 200": [
+          {
+            "group": "Succès : 200",
+            "type": "Number",
+            "optional": false,
+            "field": "id",
+            "description": "<p>Id de la commande</p>"
+          },
+          {
+            "group": "Succès : 200",
+            "type": "Number",
+            "optional": false,
+            "field": "nb_sandwichs",
+            "description": "<p>Nombre de sandwichs contenus dans la commande</p>"
+          },
+          {
+            "group": "Succès : 200",
+            "type": "Array",
+            "optional": false,
+            "field": "liens",
+            "description": "<p>Tableau contenant les liens liés à la commande</p>"
+          },
+          {
+            "group": "Succès : 200",
+            "type": "Link",
+            "optional": false,
+            "field": "paiement",
+            "description": "<p>Lien vers le paiement de la commande</p>"
+          }
+        ]
+      },
+      "examples": [
+        {
+          "title": "Exemple de réponse en cas de succès",
+          "content": " HTTP/1.1 200 OK\n{\n  \"id_commande\": 2,\n  \"nb_sandwichs\": 2,\n  \"sandwichs\": [\n    {\n      \"taille\": \"456cm\",\n      \"type_de_pain\": \"blanc\"\n    },\n    {\n       ...\n    }\n  ],\n  \"liens\": {\n    \"paiement\": \"/commandes/2/paiement/\"\n  }\n}",
+          "type": "json"
+        }
+      ]
+    },
+    "error": {
+      "fields": {
+        "Erreur : 404": [
+          {
+            "group": "Erreur : 404",
+            "optional": false,
+            "field": "NotFound",
+            "description": "<p>Ressource inconnue</p>"
+          }
+        ]
+      },
+      "examples": [
+        {
+          "title": "Exemple de réponse en cas d'erreur",
+          "content": " HTTP/1.1 404 NotFound\n\n{\n  \"Erreur\": \"Ressource de la commande 12 introuvable.\"\n}",
+          "type": "json"
+        }
+      ]
+    },
     "filename": "input/doc.php",
     "groupTitle": "Commande"
   },
@@ -1115,6 +1175,106 @@ define({ "api": [
     "url": "/commandes/{id}/sandwichs[/]",
     "title": "Ajouter",
     "description": "<p>On ajoute un sandwich à une commande</p> <p>Retourne une représentation json de la ressource</p>",
+    "parameter": {
+      "fields": {
+        "Paramètres requis": [
+          {
+            "group": "Paramètres requis",
+            "type": "String",
+            "optional": false,
+            "field": "taille",
+            "description": "<p>Taille du sandwich</p>"
+          },
+          {
+            "group": "Paramètres requis",
+            "type": "String",
+            "optional": false,
+            "field": "type",
+            "description": "<p>Type de pain du sandwich</p>"
+          }
+        ]
+      }
+    },
+    "success": {
+      "fields": {
+        "Succès : 200": [
+          {
+            "group": "Succès : 200",
+            "type": "String",
+            "optional": false,
+            "field": "taille",
+            "description": "<p>Taille du sandwich</p>"
+          },
+          {
+            "group": "Succès : 200",
+            "type": "String",
+            "optional": false,
+            "field": "type_de_pain",
+            "description": "<p>Type de pain du sandwich</p>"
+          },
+          {
+            "group": "Succès : 200",
+            "type": "Array",
+            "optional": false,
+            "field": "links",
+            "description": "<p>Tableau contenant les liens liés à la commande</p>"
+          },
+          {
+            "group": "Succès : 200",
+            "type": "Link",
+            "optional": false,
+            "field": "commande",
+            "description": "<p>Lien vers la commande</p>"
+          },
+          {
+            "group": "Succès : 200",
+            "type": "Link",
+            "optional": false,
+            "field": "ingredients",
+            "description": "<p>Lien vers les ingrédients du sandwich</p>"
+          }
+        ]
+      },
+      "examples": [
+        {
+          "title": "Exemple de réponse en cas de succès",
+          "content": " HTTP/1.1 200 OK\n{\n  \"taille\": \"grosse faim\",\n  \"type_de_pain\": \"blanc\",\n  \"links\": {\n    \"commande\": \"/commandes/2/\",\n    \"ingredients\": \"/commandes/2/sandwichs/7/ingredients/\"\n  }\n}",
+          "type": "json"
+        }
+      ]
+    },
+    "error": {
+      "fields": {
+        "Erreur : 400": [
+          {
+            "group": "Erreur : 400",
+            "optional": false,
+            "field": "BadRequest",
+            "description": "<p>Requete invalide</p>"
+          }
+        ],
+        "Erreur : 404": [
+          {
+            "group": "Erreur : 404",
+            "optional": false,
+            "field": "NotFound",
+            "description": "<p>Ressource inconnue</p>"
+          }
+        ]
+      },
+      "examples": [
+        {
+          "title": "Exemple de réponse en cas d'erreur",
+          "content": " HTTP/1.1 400 BadRequest\n\n{\n  \"erreur\": \"Le type ou la taille entré n'est pas valide\"\n}",
+          "type": "json"
+        },
+        {
+          "title": "Exemple de réponse en cas d'erreur",
+          "content": " HTTP/1.1 404 NotFound\n\n{\n  \"Erreur\": \"Ressource de la commande 12 introuvable.\"\n}",
+          "type": "json"
+        }
+      ]
+    },
     "filename": "input/doc.php",
     "groupTitle": "Sandwichs"
   },

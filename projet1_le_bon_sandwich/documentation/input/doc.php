@@ -614,11 +614,44 @@
 * @apiName sandwichsByCommande
 * @apiVersion 0.1.0
 *
-* @api {get} /commandes/{id}/sandwichs[/]  Sandwich
+* @api {get} /commandes/{id}/sandwichs[/]  Sandwichs
 *
 * @apiDescription On affiche les sandwichs d'une commande
 *
 * Retourne une représentation json de la ressource
+*
+* @apiSuccess (Succès : 200) {Number} id Id de la commande
+* @apiSuccess (Succès : 200) {Number} nb_sandwichs Nombre de sandwichs contenus dans la commande
+* @apiSuccess (Succès : 200) {Array} liens Tableau contenant les liens liés à la commande
+* @apiSuccess (Succès : 200) {Link} paiement Lien vers le paiement de la commande
+*
+* @apiSuccessExample {json} Exemple de réponse en cas de succès
+*     HTTP/1.1 200 OK
+*    {
+*      "id_commande": 2,
+*      "nb_sandwichs": 2,
+*      "sandwichs": [
+*        {
+*          "taille": "456cm",
+*          "type_de_pain": "blanc"
+*        },
+*        {
+*           ...
+*        }
+*      ],
+*      "liens": {
+*        "paiement": "/commandes/2/paiement/"
+*      }
+*    }
+*
+* @apiError (Erreur : 404) NotFound Ressource inconnue
+*
+* @apiErrorExample {json} Exemple de réponse en cas d'erreur
+*     HTTP/1.1 404 NotFound
+*
+*    {
+*      "Erreur": "Ressource de la commande 12 introuvable."
+*    }
 *
 */
 
@@ -632,6 +665,44 @@
 * @apiDescription On ajoute un sandwich à une commande
 *
 * Retourne une représentation json de la ressource
+*
+* @apiParam (Paramètres requis) {String} taille Taille du sandwich
+* @apiParam (Paramètres requis) {String} type Type de pain du sandwich
+*
+* @apiSuccess (Succès : 200) {String} taille Taille du sandwich
+* @apiSuccess (Succès : 200) {String} type_de_pain Type de pain du sandwich
+* @apiSuccess (Succès : 200) {Array} links Tableau contenant les liens liés à la commande
+* @apiSuccess (Succès : 200) {Link} commande Lien vers la commande
+* @apiSuccess (Succès : 200) {Link} ingredients Lien vers les ingrédients du sandwich
+*
+* @apiSuccessExample {json} Exemple de réponse en cas de succès
+*     HTTP/1.1 200 OK
+*    {
+*      "taille": "grosse faim",
+*      "type_de_pain": "blanc",
+*      "links": {
+*        "commande": "/commandes/2/",
+*        "ingredients": "/commandes/2/sandwichs/7/ingredients/"
+*      }
+*    }
+*
+* @apiError (Erreur : 400) BadRequest Requete invalide
+*
+* @apiErrorExample {json} Exemple de réponse en cas d'erreur
+*     HTTP/1.1 400 BadRequest
+*
+*    {
+*      "erreur": "Le type ou la taille entré n'est pas valide"
+*    }
+*
+* @apiError (Erreur : 404) NotFound Ressource inconnue
+*
+* @apiErrorExample {json} Exemple de réponse en cas d'erreur
+*     HTTP/1.1 404 NotFound
+*
+*    {
+*      "Erreur": "Ressource de la commande 12 introuvable."
+*    }
 *
 */
 
