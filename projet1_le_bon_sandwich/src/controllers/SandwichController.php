@@ -50,7 +50,7 @@ class SandwichController extends AbstractController{
 			return $this->responseJSON(400, ["erreur" => "Le type ou la taille entré n'est pas valide"]);
 		}
       }catch(\Illuminate\Database\Eloquent\ModelNotFoundException $e){
-            $chaine = ["Erreur", "Ressource de la commande $id_commande introuvable."];
+            $chaine = ["Erreur" => "Ressource de la commande $id_commande introuvable."];
             return $this->responseJSON(404, $chaine);
       }
   }
