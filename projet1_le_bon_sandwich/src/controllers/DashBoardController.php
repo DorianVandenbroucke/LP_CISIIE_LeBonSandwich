@@ -55,7 +55,7 @@ class DashBoardController extends AbstractController
         $slimGuard = new \Slim\Csrf\Guard;
         $slimGuard->validateStorage();
         $key = $slimGuard->generateToken();
-        $nameKey = $key['csrf_name'];
+        $nameKey = $key['csrf_name'] = "tokenFormAuthentification";
         $valueKey = $key['csrf_value'];
         $_SESSION[$nameKey] = $valueKey;
         $data = [
@@ -68,6 +68,8 @@ class DashBoardController extends AbstractController
     }
 
     public function authentificationVerify($req, $resp, $args){
-        var_dump($req->getParams());die;
+        if($_SESSION['tokenFormAuthentification'] == $req->getParams()['valueKey']){
+            var_dump($req->getParams());die;
+        }
     }
 }
