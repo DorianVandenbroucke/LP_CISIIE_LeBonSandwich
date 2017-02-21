@@ -384,9 +384,9 @@
 * @apiParam {Number} id Id de la commande
 *
 * @apiSuccess (Succès : 200) {Number} id Date de livraison de la commande
-* @apiSuccess (Succès : 200) {String} montant Montant de la commande
+* @apiSuccess (Succès : 200) {Number} montant Montant de la commande
 * @apiSuccess (Succès : 200) {String} date_de_livraison Date de livraison de la commande
-* @apiSuccess (Succès : 200) {Number} etat Date de livraison de la commande
+* @apiSuccess (Succès : 200) {Number} etat Etat de la commande
 * @apiSuccess (Succès : 200) {Array} links Tableau contenant les liens de la commande
 * @apiSuccess (Succès : 200) {Link} sandwichs Lien pour accèder aux sandwichs de la commande
 *
@@ -430,7 +430,7 @@
 *
 * @apiDescription On crée une commande
 *
-* @apiSuccess (Succès : 201) {String} montant Montant de la commande
+* @apiSuccess (Succès : 201) {Number} montant Montant de la commande
 * @apiSuccess (Succès : 201) {String} date_de_livraison Date de livraison de la commande
 * @apiSuccess (Succès : 201) {Number} etat Etat de la commande
 * @apiSuccess (Succès : 201) {String} token Token lié à la commande
@@ -519,11 +519,39 @@
 * @apiName payCommande
 * @apiVersion 0.1.0
 *
-* @api {post} /commandes/{id}[/]  Payer
+* @api {post} /commandes/{id}/paiement[/]  Payer
 *
 * @apiDescription On paye une commande si celle-ci n'est pas encore payée
 *
 * Retourne une représentation json de la ressource
+*
+* @apiParam (Paramètres requis) {Number} num_carte Numéro de la carte
+* @apiParam (Paramètres requis) {Number} date_validite Validité de la carte
+* @apiParam (Paramètres requis) {Number} key Cryptogramme de la carte
+*
+* @apiSuccessExample {json} Exemple de réponse en cas de succès
+*     HTTP/1.1 200 OK
+*    {
+*      "Success": "La commande a été payée"
+*    }
+*
+* @apiError (Erreur : 404) NotFound Ressource inconnue
+*
+* @apiErrorExample {json} Exemple de réponse en cas d'erreur
+*     HTTP/1.1 404 NotFound
+*
+*    {
+*      "Erreur": "La commande est introuvable ou n'existe pas"
+*    }
+*
+* @apiError (Erreur : 400) BadRequest Requete invalide
+*
+* @apiErrorExample {json} Exemple de réponse en cas d'erreur
+*     HTTP/1.1 400 BadRequest
+*
+*    {
+*      "Erreur": "La commande a déjà été payée ou livrée"
+*    }
 *
 */
 
@@ -537,6 +565,47 @@
 * @apiDescription On paye une commande si celle-ci n'est pas encore payée
 *
 * Retourne une représentation json de la ressource
+*
+* @apiSuccess (Succès : 200) {Number} montant Montant de la commande
+* @apiSuccess (Succès : 200) {String} date_de_livraison Date de livraison de la commande
+* @apiSuccess (Succès : 200) {Number} nombre_de_sandwichs Nombre de sandwichs dans la commande
+* @apiSuccess (Succès : 200) {Array} sandwich Tableau contenant les sandwichs de la commande
+*
+* @apiSuccessExample {json} Exemple de réponse en cas de succès
+*     HTTP/1.1 200 OK
+*    {
+*      "montant": 58,
+*      "date_de_livraison": "2016-12-27",
+*      "nombre_de_sandwichs": 2,
+*      "sandwich": [
+*        {
+*          "type_de_pain": "blanc",
+*          "taille": "456cm",
+*          "ingredients": []
+*        },
+*        {
+*          ...
+*        }
+*      ]
+*    }
+*
+* @apiError (Erreur : 404) NotFound Ressource inconnue
+*
+* @apiErrorExample {json} Exemple de réponse en cas d'erreur
+*     HTTP/1.1 404 NotFound
+*
+*    {
+*      "Erreur": "La commande est introuvable ou n'existe pas"
+*    }
+*
+* @apiError (Erreur : 400) BadRequest Requete invalide
+*
+* @apiErrorExample {json} Exemple de réponse en cas d'erreur
+*     HTTP/1.1 400 BadRequest
+*
+*    {
+*      "Erreur": "Impossible d'obtenir une facture, la commande n'a pas encore été livrée"
+*    }
 *
 */
 

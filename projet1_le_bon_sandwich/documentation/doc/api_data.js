@@ -260,7 +260,7 @@ define({ "api": [
         "Succès : 201": [
           {
             "group": "Succès : 201",
-            "type": "String",
+            "type": "Number",
             "optional": false,
             "field": "montant",
             "description": "<p>Montant de la commande</p>"
@@ -366,7 +366,7 @@ define({ "api": [
           },
           {
             "group": "Succès : 200",
-            "type": "String",
+            "type": "Number",
             "optional": false,
             "field": "montant",
             "description": "<p>Montant de la commande</p>"
@@ -383,7 +383,7 @@ define({ "api": [
             "type": "Number",
             "optional": false,
             "field": "etat",
-            "description": "<p>Date de livraison de la commande</p>"
+            "description": "<p>Etat de la commande</p>"
           },
           {
             "group": "Succès : 200",
@@ -444,6 +444,79 @@ define({ "api": [
     "url": "/commandes/{id}/facture[/]",
     "title": "Facture",
     "description": "<p>On paye une commande si celle-ci n'est pas encore payée</p> <p>Retourne une représentation json de la ressource</p>",
+    "success": {
+      "fields": {
+        "Succès : 200": [
+          {
+            "group": "Succès : 200",
+            "type": "Number",
+            "optional": false,
+            "field": "montant",
+            "description": "<p>Montant de la commande</p>"
+          },
+          {
+            "group": "Succès : 200",
+            "type": "String",
+            "optional": false,
+            "field": "date_de_livraison",
+            "description": "<p>Date de livraison de la commande</p>"
+          },
+          {
+            "group": "Succès : 200",
+            "type": "Number",
+            "optional": false,
+            "field": "nombre_de_sandwichs",
+            "description": "<p>Nombre de sandwichs dans la commande</p>"
+          },
+          {
+            "group": "Succès : 200",
+            "type": "Array",
+            "optional": false,
+            "field": "sandwich",
+            "description": "<p>Tableau contenant les sandwichs de la commande</p>"
+          }
+        ]
+      },
+      "examples": [
+        {
+          "title": "Exemple de réponse en cas de succès",
+          "content": " HTTP/1.1 200 OK\n{\n  \"montant\": 58,\n  \"date_de_livraison\": \"2016-12-27\",\n  \"nombre_de_sandwichs\": 2,\n  \"sandwich\": [\n    {\n      \"type_de_pain\": \"blanc\",\n      \"taille\": \"456cm\",\n      \"ingredients\": []\n    },\n    {\n      ...\n    }\n  ]\n}",
+          "type": "json"
+        }
+      ]
+    },
+    "error": {
+      "fields": {
+        "Erreur : 404": [
+          {
+            "group": "Erreur : 404",
+            "optional": false,
+            "field": "NotFound",
+            "description": "<p>Ressource inconnue</p>"
+          }
+        ],
+        "Erreur : 400": [
+          {
+            "group": "Erreur : 400",
+            "optional": false,
+            "field": "BadRequest",
+            "description": "<p>Requete invalide</p>"
+          }
+        ]
+      },
+      "examples": [
+        {
+          "title": "Exemple de réponse en cas d'erreur",
+          "content": " HTTP/1.1 404 NotFound\n\n{\n  \"Erreur\": \"La commande est introuvable ou n'existe pas\"\n}",
+          "type": "json"
+        },
+        {
+          "title": "Exemple de réponse en cas d'erreur",
+          "content": " HTTP/1.1 400 BadRequest\n\n{\n  \"Erreur\": \"Impossible d'obtenir une facture, la commande n'a pas encore été livrée\"\n}",
+          "type": "json"
+        }
+      ]
+    },
     "filename": "input/doc.php",
     "groupTitle": "Commande"
   },
@@ -452,9 +525,77 @@ define({ "api": [
     "name": "payCommande",
     "version": "0.1.0",
     "type": "post",
-    "url": "/commandes/{id}[/]",
+    "url": "/commandes/{id}/paiement[/]",
     "title": "Payer",
     "description": "<p>On paye une commande si celle-ci n'est pas encore payée</p> <p>Retourne une représentation json de la ressource</p>",
+    "parameter": {
+      "fields": {
+        "Paramètres requis": [
+          {
+            "group": "Paramètres requis",
+            "type": "Number",
+            "optional": false,
+            "field": "num_carte",
+            "description": "<p>Numéro de la carte</p>"
+          },
+          {
+            "group": "Paramètres requis",
+            "type": "Number",
+            "optional": false,
+            "field": "date_validite",
+            "description": "<p>Validité de la carte</p>"
+          },
+          {
+            "group": "Paramètres requis",
+            "type": "Number",
+            "optional": false,
+            "field": "key",
+            "description": "<p>Cryptogramme de la carte</p>"
+          }
+        ]
+      }
+    },
+    "success": {
+      "examples": [
+        {
+          "title": "Exemple de réponse en cas de succès",
+          "content": " HTTP/1.1 200 OK\n{\n  \"Success\": \"La commande a été payée\"\n}",
+          "type": "json"
+        }
+      ]
+    },
+    "error": {
+      "fields": {
+        "Erreur : 404": [
+          {
+            "group": "Erreur : 404",
+            "optional": false,
+            "field": "NotFound",
+            "description": "<p>Ressource inconnue</p>"
+          }
+        ],
+        "Erreur : 400": [
+          {
+            "group": "Erreur : 400",
+            "optional": false,
+            "field": "BadRequest",
+            "description": "<p>Requete invalide</p>"
+          }
+        ]
+      },
+      "examples": [
+        {
+          "title": "Exemple de réponse en cas d'erreur",
+          "content": " HTTP/1.1 404 NotFound\n\n{\n  \"Erreur\": \"La commande est introuvable ou n'existe pas\"\n}",
+          "type": "json"
+        },
+        {
+          "title": "Exemple de réponse en cas d'erreur",
+          "content": " HTTP/1.1 400 BadRequest\n\n{\n  \"Erreur\": \"La commande a déjà été payée ou livrée\"\n}",
+          "type": "json"
+        }
+      ]
+    },
     "filename": "input/doc.php",
     "groupTitle": "Commande"
   },
