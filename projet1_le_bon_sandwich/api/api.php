@@ -19,7 +19,11 @@ $conf = ['settings' => ['displayErrorDetails' => true, 'tmpl_dir' => '..\templat
             return new \Slim\Views\Twig($c['settings']['tmpl_dir'], ['debug'=>true, 'cache'=> $c['settings']['tmpl_dir']]);
           }];
 $errorDetails = new \Slim\Container($conf);
-$app = new \Slim\App($errorDetails);
+$app = (new \Slim\App($errorDetails))->add('CORS');
+
+$app->options('/{routes:.+}', function ($request, $response, $args) {
+    return $response;
+})->add('CORS');
 
 // On affiche une collection des catégories
 $app->get( "/categories[/]", function(Request $req, Response $resp, $args){

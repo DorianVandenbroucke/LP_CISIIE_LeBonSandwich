@@ -63,7 +63,6 @@ class IngredientController extends AbstractController{
     //Create
     public function addIngredient($req, $res, $ingredient)
     {
-
         $ingredient = $this->issetIngredient($ingredient);
         $ingredient = $this->filterIngredient($ingredient);
         $newIngredient = new Ingredient();

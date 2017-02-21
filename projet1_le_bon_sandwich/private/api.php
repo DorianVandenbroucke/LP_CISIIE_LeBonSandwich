@@ -6,18 +6,12 @@ require("../vendor/autoload.php");
 require("../src/utils/Authentification.php");
 src\utils\AppInit::bootEloquent('../conf/conf.ini');
 
-use \Psr\Http\Message\ServerRequestInterface as Request;
-use \Psr\Http\Message\ResponseInterface as Response;
-use \Slim\Extras\Middleware\HttpBasicAuth;
-use src\controllers\CategorieController as CategorieController;
-use src\controllers\CommandeController as CommandeController;
-use src\controllers\SandwichController as SandwichController;
-use src\controllers\IngredientController as IngredientController;
-use src\controllers\DashBoardController as DashBoardController;
-
 $conf = ['settings' => ['displayErrorDetails' => true, 'tmpl_dir' => '..\src\templates'],
           'view' => function($c){
-            return new \Slim\Views\Twig($c['settings']['tmpl_dir'], ['debug'=>true, 'cache'=> $c['settings']['tmpl_dir']]);
+            $view = new \Slim\Views\Twig($c['settings']['tmpl_dir'], ['debug'=>true, 'cache'=> $c['settings']['tmpl_dir']]);
+            $basePath = rtrim(str_ireplace('index.php', '', $c['request']->getUri()->getBasePath()), '/');
+            $view->addExtension(new Slim\Views\TwigExtension($c['router'], $basePath));
+            return $view;
           }];
 
 session_start();
@@ -46,6 +40,8 @@ $app->get('/ingredients[/]', function(Request $req, Response $resp, $args){
 $app->get("/authentification[/]", function(Request $req, Response $resp, $args){
     return (new DashBoardController($this))->authentificationForm($req, $resp, $args);
 });
+
+require('../src/routes/private_route.php');
 
 $app->post("/authentification[/]", function(Request $req, Response $resp, $args){
     return (new DashBoardController($this))->authentificationVerify($req, $resp, $args);
