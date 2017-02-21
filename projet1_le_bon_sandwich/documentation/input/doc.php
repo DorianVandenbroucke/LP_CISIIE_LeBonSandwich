@@ -717,6 +717,28 @@
 *
 * Retourne une représentation json de la ressource
 *
+* @apiSuccess (Succès : 200) {String} cle Message
+* @apiSuccess (Succès : 200) {Array} liens Tableau contenant les liens liés au sandwich
+* @apiSuccess (Succès : 200) {Link} commande Lien vers la commande
+*
+* @apiSuccessExample {json} Exemple de réponse en cas de succès
+*     HTTP/1.1 200 OK
+*    {
+*      "0": "Le sandwich a été supprimé avec succés.",
+*      "liens": {
+*        "commande": "/commandes/2"
+*      }
+*    }
+*
+* @apiError (Erreur : 404) NotFound Ressource inconnue
+*
+* @apiErrorExample {json} Exemple de réponse en cas d'erreur
+*     HTTP/1.1 404 NotFound
+*
+*    {
+*      "Erreur": "Ressource du sandwich 9 introuvable."
+*    }
+*
 */
 
 /**
@@ -724,7 +746,7 @@
 * @apiName modifyIngredient
 * @apiVersion 0.1.0
 *
-* @api {put} /commandes/sandwichs/{id_sandwich}/ingredients/{id_ingredient}[/]  Modifier
+* @api {put} /commandes/sandwichs/{id_sandwich}/ingredients/{id_ingredient}[/]  Modifier ingrédients
 *
 * @apiDescription On ajoute ou supprime un ingrédient dans un sandwich si celui-ci existe déjà
 *
@@ -737,10 +759,26 @@
 * @apiName modifySandwich
 * @apiVersion 0.1.0
 *
-* @api {put} /commandes/{id_commande}/sandwichs/{id_sandwich}[/]  Modifier
+* @api {put} /commandes/{id_commande}/sandwichs/{id_sandwich}[/]  Modifier sandwich
 *
-* @apiDescription On fait quelque chose mais c'est pas encore défini parce que c'est pas fini
+* @apiDescription On modifie un sandwich
 *
 * Retourne une représentation json de la ressource
+*
+* @apiErrorExample {json} Exemple de réponse en cas d'erreur
+*     HTTP/1.1 400 BadRequest
+*
+*    {
+*      "Erreur": "Impossible de modifier le sandwich"
+*    }
+*
+* @apiError (Erreur : 404) NotFound Ressource inconnue
+*
+* @apiErrorExample {json} Exemple de réponse en cas d'erreur
+*     HTTP/1.1 404 NotFound
+*
+*    {
+*      "Erreur": "Ressource de la commande 12 introuvable."
+*    }
 *
 */

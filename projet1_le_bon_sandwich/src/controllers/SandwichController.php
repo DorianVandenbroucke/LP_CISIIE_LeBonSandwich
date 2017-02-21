@@ -5,6 +5,11 @@ namespace src\controllers;
 const TYPES = ["blanc", "complet", "céréales"];
 const SIZES = ["petite faim", "moyenne faim", "grosse faim", "ogre"];
 const PRICES = ["petite faim" => 1.00, "moyenne faim" => 1.75, "grosse faim" => 2.30, "ogre" => 2.65];
+const CREATED = 1;
+const PAID = 2;
+const HANDLED = 3;
+const READ = 4;
+const DELIVRED = 5;
 
 
 use src\models\Commande as Commande;
@@ -63,7 +68,7 @@ class SandwichController extends AbstractController{
 			$sandwich = Sandwich::findOrFail($id_sandwich);
 			$commande = Commande::findOrFail($sandwich->id_commande);
 
-			$status_commande = ["créée", "payée"];
+			$status_commande = [CREATED, PAID];
 
 			if(!in_array($commande->etat, $status_commande)){
 
@@ -99,7 +104,7 @@ class SandwichController extends AbstractController{
             $id_commande = $sandwich->id_commande;
             $commande = Commande::findOrfail($id_commande);
 
-          if($commande->etat == "payé" || $commande->etat == "créé"){
+          if($commande->etat == PAID || $commande->etat == CREATED){
 
               $taille = $sandwich->taille;
               $type_de_pain = $sandwich->type_de_pain;
@@ -110,18 +115,17 @@ class SandwichController extends AbstractController{
                   "lien_modification_ingredients"=> DIR."/commandes
                   /$id_commande/sandwichs/$id_sandwich/ingredients"
               ];
-              $resp->getBody()->write(json_encode($chaine));
-              return $resp;
+              return $this->responseJSON(200, $chaine);
           }
           else{
             $chaine = ["Erreur" => "Impossible de modifier le sandwich"];
-            $resp = $resp->withHeader('Content-type', 'application/json');
-            $resp->getBody()->write(json_encode($chaine));
+            return $this->responseJSON(400, $chaine);
+
           }
       } catch(ModelNotFoundExceptionn $e){
             $chaine = ["Erreur" => "La sandwich est introuvable"];
-            $resp = $resp->withStatus(404)->withHeader('Content-type', 'application/json');
-            $resp->getBody()->write(json_encode($chaine));
+            return $this->responseJSON(404, $chaine);
+
 
       }
 	}
@@ -181,8 +185,8 @@ class SandwichController extends AbstractController{
 
 				}catch(ModelNotFoundExceptionn $e){
 					$chaine = ["Erreur" => "La sandwich est introuvable"];
-					$resp = $resp->withStatus(404)->withHeader('Content-type', 'application/json');
-					$resp->getBody()->write(json_encode($chaine));
+                    return $this->responseJSON(404, $chaine);
+
 				}
 			}
 

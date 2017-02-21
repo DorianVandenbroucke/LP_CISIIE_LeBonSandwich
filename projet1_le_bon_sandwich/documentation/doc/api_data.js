@@ -1286,6 +1286,59 @@ define({ "api": [
     "url": "/commandes/{id}/sandwichs[/]",
     "title": "Supprimer",
     "description": "<p>On ajoute un sandwich à une commande</p> <p>Retourne une représentation json de la ressource</p>",
+    "success": {
+      "fields": {
+        "Succès : 200": [
+          {
+            "group": "Succès : 200",
+            "type": "String",
+            "optional": false,
+            "field": "cle",
+            "description": "<p>Message</p>"
+          },
+          {
+            "group": "Succès : 200",
+            "type": "Array",
+            "optional": false,
+            "field": "liens",
+            "description": "<p>Tableau contenant les liens liés au sandwich</p>"
+          },
+          {
+            "group": "Succès : 200",
+            "type": "Link",
+            "optional": false,
+            "field": "commande",
+            "description": "<p>Lien vers la commande</p>"
+          }
+        ]
+      },
+      "examples": [
+        {
+          "title": "Exemple de réponse en cas de succès",
+          "content": " HTTP/1.1 200 OK\n{\n  \"0\": \"Le sandwich a été supprimé avec succés.\",\n  \"liens\": {\n    \"commande\": \"/commandes/2\"\n  }\n}",
+          "type": "json"
+        }
+      ]
+    },
+    "error": {
+      "fields": {
+        "Erreur : 404": [
+          {
+            "group": "Erreur : 404",
+            "optional": false,
+            "field": "NotFound",
+            "description": "<p>Ressource inconnue</p>"
+          }
+        ]
+      },
+      "examples": [
+        {
+          "title": "Exemple de réponse en cas d'erreur",
+          "content": " HTTP/1.1 404 NotFound\n\n{\n  \"Erreur\": \"Ressource du sandwich 9 introuvable.\"\n}",
+          "type": "json"
+        }
+      ]
+    },
     "filename": "input/doc.php",
     "groupTitle": "Sandwichs"
   },
@@ -1295,7 +1348,7 @@ define({ "api": [
     "version": "0.1.0",
     "type": "put",
     "url": "/commandes/sandwichs/{id_sandwich}/ingredients/{id_ingredient}[/]",
-    "title": "Modifier",
+    "title": "Modifier ingrédients",
     "description": "<p>On ajoute ou supprime un ingrédient dans un sandwich si celui-ci existe déjà</p> <p>Retourne une représentation json de la ressource</p>",
     "filename": "input/doc.php",
     "groupTitle": "Sandwichs"
@@ -1306,8 +1359,8 @@ define({ "api": [
     "version": "0.1.0",
     "type": "put",
     "url": "/commandes/{id_commande}/sandwichs/{id_sandwich}[/]",
-    "title": "Modifier",
-    "description": "<p>On fait quelque chose mais c'est pas encore défini parce que c'est pas fini</p> <p>Retourne une représentation json de la ressource</p>",
+    "title": "Modifier sandwich",
+    "description": "<p>On modifie un sandwich</p> <p>Retourne une représentation json de la ressource</p>",
     "filename": "input/doc.php",
     "groupTitle": "Sandwichs"
   }
