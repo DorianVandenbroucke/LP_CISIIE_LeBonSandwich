@@ -168,7 +168,7 @@
       "examples": [
         {
           "title": "Exemple de réponse en cas de succès",
-          "content": " HTTP/1.1 200 OK\n\n{\n  \"nombre_d_ingredient\": 2,\n  \"ingredients\": [\n    {\n      \"id\": 1,\n      \"nom\": \"laitue\",\n      \"cat_id\": 1,\n      \"description\": \"belle laitue verte\",\n      \"fournisseur\": \"ferme \\\"la bonne salade\\\"\",\n      \"img\": null,\n      \"link\": {\n        \"detail\": \"/LP/Prog_Web-Serveur/Projet/LeBonSandwich/projet1_le_bon_sandwich/api/api.php/ingredients/1/\"\n      }\n    },\n    {\n        ...\n    }\n{",
+          "content": " HTTP/1.1 200 OK\n\n{\n  \"nombre_d_ingredient\": 2,\n  \"ingredients\": [\n    {\n      \"id\": 1,\n      \"nom\": \"laitue\",\n      \"cat_id\": 1,\n      \"description\": \"belle laitue verte\",\n      \"fournisseur\": \"ferme \\\"la bonne salade\\\"\",\n      \"img\": null,\n      \"link\": {\n        \"detail\": \"/ingredients/1/\"\n      }\n    },\n    {\n        ...\n    }\n}",
           "type": "json"
         }
       ]
@@ -239,7 +239,7 @@
       "examples": [
         {
           "title": "Exemple de réponse en cas de succès",
-          "content": " HTTP/1.1 200 OK\n\n{\n  \"nombre_de_categories\": 2,\n  \"categories\": [\n    {\n      \"nom\": \"crudités\",\n      \"lien\": \"/LP/Prog_Web-Serveur/Projet/LeBonSandwich/projet1_le_bon_sandwich/api/api.php/categories/2/\"\n    },\n    {\n        ...\n    }\n  ]\n}",
+          "content": " HTTP/1.1 200 OK\n\n{\n  \"nombre_de_categories\": 2,\n  \"categories\": [\n    {\n      \"nom\": \"crudités\",\n      \"lien\": \"/categories/2/\"\n    },\n    {\n        ...\n    }\n  ]\n}",
           "type": "json"
         }
       ]
@@ -254,7 +254,62 @@
     "type": "post",
     "url": "/commandes[/]",
     "title": "Ajouter",
-    "description": "<p>On crée une commande</p> <p>Retourne une représentation json de la ressource</p>",
+    "description": "<p>On crée une commande</p>",
+    "success": {
+      "fields": {
+        "Succès : 201": [
+          {
+            "group": "Succès : 201",
+            "type": "String",
+            "optional": false,
+            "field": "montant",
+            "description": "<p>Montant de la commande</p>"
+          },
+          {
+            "group": "Succès : 201",
+            "type": "String",
+            "optional": false,
+            "field": "date_de_livraison",
+            "description": "<p>Date de livraison de la commande</p>"
+          },
+          {
+            "group": "Succès : 201",
+            "type": "Number",
+            "optional": false,
+            "field": "etat",
+            "description": "<p>Etat de la commande</p>"
+          },
+          {
+            "group": "Succès : 201",
+            "type": "String",
+            "optional": false,
+            "field": "token",
+            "description": "<p>Token lié à la commande</p>"
+          },
+          {
+            "group": "Succès : 201",
+            "type": "Number",
+            "optional": false,
+            "field": "id",
+            "description": "<p>Id de la commande</p>"
+          },
+          {
+            "group": "Succès : 201",
+            "type": "Link",
+            "optional": false,
+            "field": "links",
+            "description": "<p>Lien pour accèder à la commande</p>"
+          }
+        ]
+      },
+      "examples": [
+        {
+          "title": "Exemple de réponse en cas de succès",
+          "content": " HTTP/1.1 201 Created\n{\n  \"montant\": 0,\n  \"date_de_livraison\": \"2017-02-21\",\n  \"etat\": 1,\n  \"token\": \"tc8LzKxNHaPcQEukS+4go9ChXK8X4HZX\",\n  \"id\": 4,\n  \"link\": {\n    \"self\": \"/commandes/4/\"\n  }\n}",
+          "type": "json"
+        }
+      ]
+    },
     "filename": "input/doc.php",
     "groupTitle": "Commande"
   },
@@ -265,7 +320,16 @@
     "type": "delete",
     "url": "/commandes/{id}[/]",
     "title": "Supprimer",
-    "description": "<p>On supprime une commande si celle-ci n'est pas encore payée</p> <p>Retourne une représentation json de la ressource</p>",
+    "description": "<p>On supprime une commande si celle-ci n'est pas encore payée</p>",
+    "success": {
+      "examples": [
+        {
+          "title": "Exemple de réponse en cas de succès",
+          "content": " HTTP/1.1 200 OK\n{\n  \"Success\": \"La commande a été correctement supprimée\"\n}",
+          "type": "json"
+        }
+      ]
+    },
     "filename": "input/doc.php",
     "groupTitle": "Commande"
   },
@@ -277,6 +341,98 @@
     "url": "/commandes/{id}[/]",
     "title": "Détail",
     "description": "<p>On obtient le détail de la commande</p> <p>Retourne une représentation json de la ressource</p>",
+    "parameter": {
+      "fields": {
+        "Parameter": [
+          {
+            "group": "Parameter",
+            "type": "Number",
+            "optional": false,
+            "field": "id",
+            "description": "<p>Id de la commande</p>"
+          }
+        ]
+      }
+    },
+    "success": {
+      "fields": {
+        "Succès : 200": [
+          {
+            "group": "Succès : 200",
+            "type": "Number",
+            "optional": false,
+            "field": "id",
+            "description": "<p>Date de livraison de la commande</p>"
+          },
+          {
+            "group": "Succès : 200",
+            "type": "String",
+            "optional": false,
+            "field": "montant",
+            "description": "<p>Montant de la commande</p>"
+          },
+          {
+            "group": "Succès : 200",
+            "type": "String",
+            "optional": false,
+            "field": "date_de_livraison",
+            "description": "<p>Date de livraison de la commande</p>"
+          },
+          {
+            "group": "Succès : 200",
+            "type": "Number",
+            "optional": false,
+            "field": "etat",
+            "description": "<p>Date de livraison de la commande</p>"
+          },
+          {
+            "group": "Succès : 200",
+            "type": "Array",
+            "optional": false,
+            "field": "links",
+            "description": "<p>Tableau contenant les liens de la commande</p>"
+          },
+          {
+            "group": "Succès : 200",
+            "type": "Link",
+            "optional": false,
+            "field": "sandwichs",
+            "description": "<p>Lien pour accèder aux sandwichs de la commande</p>"
+          }
+        ]
+      },
+      "examples": [
+        {
+          "title": "Exemple de réponse en cas de succès",
+          "content": " HTTP/1.1 200 OK\n\n{\n  \"id\": 1,\n  \"montant\": 58,\n  \"date_de_livraison\": \"2003-02-02\",\n  \"etat\": \"1\",\n  \"links\": {\n    \"sandwichs\": \"/commandes/1/sandwichs\"\n  }\n}",
+          "type": "json"
+        }
+      ]
+    },
+    "error": {
+      "fields": {
+        "Erreur : 403": [
+          {
+            "group": "Erreur : 403",
+            "optional": false,
+            "field": "Forbidden",
+            "description": "<p>Accès interdit</p>"
+          }
+        ]
+      },
+      "examples": [
+        {
+          "title": "Exemple de réponse en cas d'erreur",
+          "content": " HTTP/1.1 403 Forbidden\n\n{\n  \"Error\": \"No token\"\n}",
+          "type": "json"
+        },
+        {
+          "title": "Exemple de réponse en cas d'erreur",
+          "content": " HTTP/1.1 403 Forbidden\n\n{\n  \"Error\": \"Invalid token\"\n}",
+          "type": "json"
+        }
+      ]
+    },
     "filename": "input/doc.php",
     "groupTitle": "Commande"
   },
@@ -321,6 +477,60 @@
     "url": "/commandes/{id}[/]",
     "title": "Modifier",
     "description": "<p>On modifie la date de livraison d'une commande si celle-ci n'est pas encore payée</p> <p>Retourne une représentation json de la ressource</p>",
+    "parameter": {
+      "fields": {
+        "Paramètre requis": [
+          {
+            "group": "Paramètre requis",
+            "type": "String",
+            "optional": false,
+            "field": "date_de_livraison",
+            "description": "<p>Date de livraison de la commande</p>"
+          }
+        ]
+      }
+    },
+    "success": {
+      "examples": [
+        {
+          "title": "Exemple de réponse en cas de succès",
+          "content": " HTTP/1.1 200 OK\n\n{\n  \"id\": 1,\n  \"montant\": 58,\n  \"date_de_livraison\": \"2015-11-11\",\n  \"etat\": \"créée\"\n}",
+          "type": "json"
+        }
+      ]
+    },
+    "error": {
+      "fields": {
+        "Erreur : 404": [
+          {
+            "group": "Erreur : 404",
+            "optional": false,
+            "field": "NotFound",
+            "description": "<p>Ressource inconnue</p>"
+          }
+        ],
+        "Erreur : 400": [
+          {
+            "group": "Erreur : 400",
+            "optional": false,
+            "field": "BadRequest",
+            "description": "<p>Requete invalide</p>"
+          }
+        ]
+      },
+      "examples": [
+        {
+          "title": "Exemple de réponse en cas d'erreur",
+          "content": " HTTP/1.1 404 NotFound\n\n{\n  \"Erreur\": \"La commande est introuvable ou n'existe pas\"\n}",
+          "type": "json"
+        },
+        {
+          "title": "Exemple de réponse en cas d'erreur",
+          "content": " HTTP/1.1 400 BadRequest\n\n{\n  \"Erreur\": \"La commande a déjà été payée ou livrée\"\n}",
+          "type": "json"
+        }
+      ]
+    },
     "filename": "input/doc.php",
     "groupTitle": "Commande"
   },
@@ -332,6 +542,64 @@
     "url": "/ingredients[/]",
     "title": "Ajouter",
     "description": "<p>On ajoute un ingrédient</p> <p>Retourne une représentation json de la ressource</p>",
+    "parameter": {
+      "fields": {
+        "Paramètres requis": [
+          {
+            "group": "Paramètres requis",
+            "type": "String",
+            "optional": false,
+            "field": "nom",
+            "description": "<p>Nom de la catégorie</p>"
+          },
+          {
+            "group": "Paramètres requis",
+            "type": "Number",
+            "optional": false,
+            "field": "cat_id",
+            "description": "<p>Id de la catégorie</p>"
+          },
+          {
+            "group": "Paramètres requis",
+            "type": "String",
+            "optional": false,
+            "field": "description",
+            "description": "<p>Description de l'ingrédient</p>"
+          },
+          {
+            "group": "Paramètres requis",
+            "type": "String",
+            "optional": false,
+            "field": "fournisseur",
+            "description": "<p>Nom du fournisseur de l'ingrédient</p>"
+          }
+        ]
+      }
+    },
+    "error": {
+      "fields": {
+        "Erreur : 403": [
+          {
+            "group": "Erreur : 403",
+            "optional": false,
+            "field": "Forbidden",
+            "description": "<p>Accès interdit</p>"
+          }
+        ]
+      },
+      "examples": [
+        {
+          "title": "Exemple de réponse en cas d'erreur",
+          "content": " HTTP/1.1 403 Forbidden\n\n{\n  \"Error\": \"Access denied\"\n}",
+          "type": "json"
+        },
+        {
+          "title": "Exemple de réponse en cas d'erreur",
+          "content": " HTTP/1.1 403 Forbidden\n\n{\n  \"Error\": \"No username or password\"\n}",
+          "type": "json"
+        }
+      ]
+    },
     "filename": "input/doc.php",
     "groupTitle": "Ingredients"
   },
@@ -343,6 +611,43 @@
     "url": "/ingredients/{id}[/]",
     "title": "Supprimer",
     "description": "<p>On supprime un ingrédient</p>",
+    "parameter": {
+      "fields": {
+        "Parameter": [
+          {
+            "group": "Parameter",
+            "type": "Number",
+            "optional": false,
+            "field": "id",
+            "description": "<p>Id de l'ingrédient</p>"
+          }
+        ]
+      }
+    },
+    "error": {
+      "fields": {
+        "Erreur : 403": [
+          {
+            "group": "Erreur : 403",
+            "optional": false,
+            "field": "Forbidden",
+            "description": "<p>Accès interdit</p>"
+          }
+        ]
+      },
+      "examples": [
+        {
+          "title": "Exemple de réponse en cas d'erreur",
+          "content": " HTTP/1.1 403 Forbidden\n\n{\n  \"Error\": \"Access denied\"\n}",
+          "type": "json"
+        },
+        {
+          "title": "Exemple de réponse en cas d'erreur",
+          "content": " HTTP/1.1 403 Forbidden\n\n{\n  \"Error\": \"No username or password\"\n}",
+          "type": "json"
+        }
+      ]
+    },
     "filename": "input/doc.php",
     "groupTitle": "Ingredients"
   },
@@ -354,6 +659,46 @@
     "url": "/ingredients/{id}/categorie[/]",
     "title": "Catégorie",
     "description": "<p>On obtient la catégorie de l'ingrédient</p> <p>Retourne une représentation json de la ressource</p>",
+    "parameter": {
+      "fields": {
+        "Parameter": [
+          {
+            "group": "Parameter",
+            "type": "Number",
+            "optional": false,
+            "field": "id",
+            "description": "<p>Id de l'ingrédient</p>"
+          }
+        ]
+      }
+    },
+    "success": {
+      "fields": {
+        "Succès : 200": [
+          {
+            "group": "Succès : 200",
+            "type": "String",
+            "optional": false,
+            "field": "nom",
+            "description": "<p>Nom de la catégorie</p>"
+          },
+          {
+            "group": "Succès : 200",
+            "type": "String",
+            "optional": false,
+            "field": "description",
+            "description": "<p>Description de l'ingrédient</p>"
+          }
+        ]
+      },
+      "examples": [
+        {
+          "title": "Exemple de réponse en cas de succès",
+          "content": " HTTP/1.1 200 OK\n\n{\n  \"nom\": \"salades\",\n  \"description\": \"Nos bonnes salades, fraichement livrées par nos producteurs bios et locaux\"\n}",
+          "type": "json"
+        }
+      ]
+    },
     "filename": "input/doc.php",
     "groupTitle": "Ingredients"
   },
@@ -365,6 +710,93 @@
     "url": "/ingredients/{id}[/]",
     "title": "Détail",
     "description": "<p>On affiche le détail d'un ingrédient</p> <p>Retourne une représentation json de la ressource</p> <p>Le résultat inclut un lien pour accéder à la catégorie dans laquelle se trouve l'ingrédient</p>",
+    "parameter": {
+      "fields": {
+        "Parameter": [
+          {
+            "group": "Parameter",
+            "type": "Number",
+            "optional": false,
+            "field": "id",
+            "description": "<p>Id de l'ingrédient</p>"
+          }
+        ]
+      }
+    },
+    "success": {
+      "fields": {
+        "Succès : 200": [
+          {
+            "group": "Succès : 200",
+            "type": "Array",
+            "optional": false,
+            "field": "ingredients",
+            "description": "<p>Tableau contenant les informations de l'ingrédient</p>"
+          },
+          {
+            "group": "Succès : 200",
+            "type": "String",
+            "optional": false,
+            "field": "nom",
+            "description": "<p>Nom de l'ingrédient</p>"
+          },
+          {
+            "group": "Succès : 200",
+            "type": "String",
+            "optional": false,
+            "field": "description",
+            "description": "<p>Description de l'ingrédient</p>"
+          },
+          {
+            "group": "Succès : 200",
+            "type": "String",
+            "optional": false,
+            "field": "fournisseur",
+            "description": "<p>Nom du fournisseur de l'ingrédient</p>"
+          },
+          {
+            "group": "Succès : 200",
+            "type": "Array",
+            "optional": false,
+            "field": "categorie",
+            "description": "<p>Tableau contenant les informations de la catégorie de l'ingrédient</p>"
+          },
+          {
+            "group": "Succès : 200",
+            "type": "Link",
+            "optional": false,
+            "field": "categorie_link",
+            "description": "<p>Lien vers la catégorie</p>"
+          }
+        ]
+      },
+      "examples": [
+        {
+          "title": "Exemple de réponse en cas de succès",
+          "content": " HTTP/1.1 200 OK\n\n{\n  \"ingredient\": {\n    \"nom\": \"laitue\",\n    \"description\": \"belle laitue verte\",\n    \"fournisseur\": \"ferme \\\"la bonne salade\\\"\",\n    \"img\": null,\n    \"categorie\": [\n      {\n        \"nom\": \"salades\",\n        \"description\": \"Nos bonnes salades, fraichement livrées par nos producteurs bios et locaux\"\n      }\n    ]\n  },\n  \"categorie_link\": \"/ingredients/1/categorie/\"\n}",
+          "type": "json"
+        }
+      ]
+    },
+    "error": {
+      "fields": {
+        "Erreur : 404": [
+          {
+            "group": "Erreur : 404",
+            "optional": false,
+            "field": "NotFound",
+            "description": "<p>Ingrédient inexistant</p>"
+          }
+        ]
+      },
+      "examples": [
+        {
+          "title": "Exemple de réponse en cas d'erreur",
+          "content": " HTTP/1.1 404 Not Found\n\n{\n  \"Error\": \"Ingredient 56 introuvable\"\n}",
+          "type": "json"
+        }
+      ]
+    },
     "filename": "input/doc.php",
     "groupTitle": "Ingredients"
   },
@@ -376,6 +808,92 @@
     "url": "/ingredients[/]",
     "title": "Afficher",
     "description": "<p>On affiche les ingrédients</p> <p>Retourne une représentation json de la ressource</p> <p>Le résultat inclut un lien pour accéder à l'ingrédient que l'on souhaite</p>",
+    "success": {
+      "fields": {
+        "Succès : 200": [
+          {
+            "group": "Succès : 200",
+            "type": "Array",
+            "optional": false,
+            "field": "ingredients",
+            "description": "<p>Tableau contenant les informations de l'ingrédient</p>"
+          },
+          {
+            "group": "Succès : 200",
+            "type": "Number",
+            "optional": false,
+            "field": "id",
+            "description": "<p>Id de l'ingrédient</p>"
+          },
+          {
+            "group": "Succès : 200",
+            "type": "String",
+            "optional": false,
+            "field": "nom",
+            "description": "<p>Nom de la catégorie</p>"
+          },
+          {
+            "group": "Succès : 200",
+            "type": "Number",
+            "optional": false,
+            "field": "cat_id",
+            "description": "<p>Id de la catégorie</p>"
+          },
+          {
+            "group": "Succès : 200",
+            "type": "String",
+            "optional": false,
+            "field": "description",
+            "description": "<p>Description de l'ingrédient</p>"
+          },
+          {
+            "group": "Succès : 200",
+            "type": "String",
+            "optional": false,
+            "field": "fournisseur",
+            "description": "<p>Nom du fournisseur de l'ingrédient</p>"
+          },
+          {
+            "group": "Succès : 200",
+            "type": "Link",
+            "optional": false,
+            "field": "links",
+            "description": "<p>Lien vers le détail de l'ingrédient</p>"
+          }
+        ]
+      },
+      "examples": [
+        {
+          "title": "Exemple de réponse en cas de succès",
+          "content": " HTTP/1.1 200 OK\n\n{\n  \"ingredients\": [\n    {\n      \"id\": 1,\n      \"nom\": \"laitue\",\n      \"cat_id\": 1,\n      \"description\": \"belle laitue verte\",\n      \"fournisseur\": \"ferme \\\"la bonne salade\\\"\",\n      \"img\": null,\n      \"link\": {\n        \"detail\": \"/ingredients/1/\"\n      }\n    },\n    {\n        ...\n    }\n}",
+          "type": "json"
+        }
+      ]
+    },
+    "error": {
+      "fields": {
+        "Erreur : 403": [
+          {
+            "group": "Erreur : 403",
+            "optional": false,
+            "field": "Forbidden",
+            "description": "<p>Accès interdit</p>"
+          }
+        ]
+      },
+      "examples": [
+        {
+          "title": "Exemple de réponse en cas d'erreur",
+          "content": " HTTP/1.1 403 Forbidden\n\n{\n  \"Error\": \"Access denied\"\n}",
+          "type": "json"
+        },
+        {
+          "title": "Exemple de réponse en cas d'erreur",
+          "content": " HTTP/1.1 403 Forbidden\n\n{\n  \"Error\": \"No username or password\"\n}",
+          "type": "json"
+        }
+      ]
+    },
     "filename": "input/doc.php",
     "groupTitle": "Ingredients"
   },
@@ -387,6 +905,64 @@
     "url": "/ingredients/{id}[/]",
     "title": "Modifier",
     "description": "<p>On modifie un ingrédient</p> <p>Retourne une représentation json de la ressource modifiée</p>",
+    "parameter": {
+      "fields": {
+        "Paramètres possible": [
+          {
+            "group": "Paramètres possible",
+            "type": "String",
+            "optional": false,
+            "field": "nom",
+            "description": "<p>Nom de la catégorie</p>"
+          },
+          {
+            "group": "Paramètres possible",
+            "type": "Number",
+            "optional": false,
+            "field": "cat_id",
+            "description": "<p>Id de la catégorie</p>"
+          },
+          {
+            "group": "Paramètres possible",
+            "type": "String",
+            "optional": false,
+            "field": "description",
+            "description": "<p>Description de l'ingrédient</p>"
+          },
+          {
+            "group": "Paramètres possible",
+            "type": "String",
+            "optional": false,
+            "field": "fournisseur",
+            "description": "<p>Nom du fournisseur de l'ingrédient</p>"
+          }
+        ]
+      }
+    },
+    "error": {
+      "fields": {
+        "Erreur : 403": [
+          {
+            "group": "Erreur : 403",
+            "optional": false,
+            "field": "Forbidden",
+            "description": "<p>Accès interdit</p>"
+          }
+        ]
+      },
+      "examples": [
+        {
+          "title": "Exemple de réponse en cas d'erreur",
+          "content": " HTTP/1.1 403 Forbidden\n\n{\n  \"Error\": \"Access denied\"\n}",
+          "type": "json"
+        },
+        {
+          "title": "Exemple de réponse en cas d'erreur",
+          "content": " HTTP/1.1 403 Forbidden\n\n{\n  \"Error\": \"No username or password\"\n}",
+          "type": "json"
+        }
+      ]
+    },
     "filename": "input/doc.php",
     "groupTitle": "Ingredients"
   },
