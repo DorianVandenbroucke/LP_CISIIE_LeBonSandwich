@@ -5,6 +5,11 @@ namespace src\controllers;
 const TYPES = ["blanc", "complet", "céréales"];
 const SIZES = ["petite faim", "moyenne faim", "grosse faim", "ogre"];
 const PRICES = ["petite faim" => 1.00, "moyenne faim" => 1.75, "grosse faim" => 2.30, "ogre" => 2.65];
+const CREATED = 1;
+const PAID = 2;
+const HANDLED = 3;
+const READ = 4;
+const DELIVRED = 5;
 
 
 use src\models\Commande as Commande;
@@ -50,7 +55,7 @@ class SandwichController extends AbstractController{
 			return $this->responseJSON(400, ["erreur" => "Le type ou la taille entré n'est pas valide"]);
 		}
       }catch(\Illuminate\Database\Eloquent\ModelNotFoundException $e){
-            $chaine = ["Erreur", "Ressource de la commande $id_commande introuvable."];
+            $chaine = ["Erreur" => "Ressource de la commande $id_commande introuvable."];
             return $this->responseJSON(404, $chaine);
       }
   }
@@ -63,7 +68,7 @@ class SandwichController extends AbstractController{
 			$sandwich = Sandwich::findOrFail($id_sandwich);
 			$commande = Commande::findOrFail($sandwich->id_commande);
 
-			$status_commande = ["créée", "payée"];
+			$status_commande = [CREATED, PAID];
 
 			if(!in_array($commande->etat, $status_commande)){
 
@@ -75,7 +80,8 @@ class SandwichController extends AbstractController{
 							  ];
 					return $this->responseJSON(200, $chaine);
 				}else{
-					return $this->responseJSON(400, ["erreur", "Une erreur est survenue lors de l'exécution de la requête."]);
+                    $chaine = ["erreur" => "Une erreur est survenue lors de l'exécution de la requête."];
+					return $this->responseJSON(400, $chaine);
 				}
 
 			}else{
@@ -84,7 +90,7 @@ class SandwichController extends AbstractController{
 			}
 
 		}catch(\Illuminate\Database\Eloquent\ModelNotFoundException $e){
-            $chaine = ["Erreur", "Ressource du sandwich $id_sandwich introuvable."];
+            $chaine = ["Erreur" => "Ressource du sandwich $id_sandwich introuvable."];
             return $this->responseJSON(404, $chaine);
 		}
 
@@ -98,29 +104,28 @@ class SandwichController extends AbstractController{
             $id_commande = $sandwich->id_commande;
             $commande = Commande::findOrfail($id_commande);
 
-          if($commande->etat == "payé" || $commande->etat == "créé"){
-
-              $taille = $sandwich->taille;
-              $type_de_pain = $sandwich->type_de_pain;
+          if($commande->etat == CREATED){
+              $taille = $req->getParams()['taille'];
+              $type_de_pain = $req->getParams()['type'];
+              $sandwich->type_de_pain = $type_de_pain;
+              $sandwich->taille = $taille;
               $sandwich->save();
               $chaine = [
                   "taille"=> $taille,
                   "type"=> $type_de_pain,
-                  "lien_modification_ingredients"=> DIR."/commandes
-                  /$id_commande/sandwichs/$id_sandwich/ingredients"
+                  "lien_modification_ingredients"=> DIR."/commandes/$id_commande/sandwichs/$id_sandwich/ingredients"
               ];
-              $resp->getBody()->write(json_encode($chaine));
-              return $resp;
+              return $this->responseJSON(200, $chaine);
           }
           else{
-            $chaine = ["Erreur" => "Impossible de modifier le sandwich"];
-            $resp = $resp->withHeader('Content-type', 'application/json');
-            $resp->getBody()->write(json_encode($chaine));
+            $chaine = ["Erreur" => "Impossible de modifier le sandwich car la commande à déjà été payée ou livrée"];
+            return $this->responseJSON(400, $chaine);
+
           }
       } catch(ModelNotFoundExceptionn $e){
             $chaine = ["Erreur" => "La sandwich est introuvable"];
-            $resp = $resp->withStatus(404)->withHeader('Content-type', 'application/json');
-            $resp->getBody()->write(json_encode($chaine));
+            return $this->responseJSON(404, $chaine);
+
 
       }
 	}
@@ -180,8 +185,8 @@ class SandwichController extends AbstractController{
 
 				}catch(ModelNotFoundExceptionn $e){
 					$chaine = ["Erreur" => "La sandwich est introuvable"];
-					$resp = $resp->withStatus(404)->withHeader('Content-type', 'application/json');
-					$resp->getBody()->write(json_encode($chaine));
+                    return $this->responseJSON(404, $chaine);
+
 				}
 			}
 

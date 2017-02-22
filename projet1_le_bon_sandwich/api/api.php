@@ -19,7 +19,11 @@ $conf = ['settings' => ['displayErrorDetails' => true, 'tmpl_dir' => '..\templat
             return new \Slim\Views\Twig($c['settings']['tmpl_dir'], ['debug'=>true, 'cache'=> $c['settings']['tmpl_dir']]);
           }];
 $errorDetails = new \Slim\Container($conf);
-$app = new \Slim\App($errorDetails);
+$app = (new \Slim\App($errorDetails))->add('CORS');
+
+$app->options('/{routes:.+}', function ($request, $response, $args) {
+    return $response;
+})->add('CORS');
 
 // On affiche une collection des catégories
 $app->get( "/categories[/]", function(Request $req, Response $resp, $args){
@@ -29,12 +33,12 @@ $app->get( "/categories[/]", function(Request $req, Response $resp, $args){
 // On affiche le détail d'une catégorie
 $app->get("/categories/{id}[/]",function(Request $req, Response $resp, $args){
 	return (new CategorieController($this))->detailCategory($resp, $args['id']);
-})->setName("categories");
+})->setName("category");
 
 // On affiche une collection d'ingredients appartenant à une catégorie donnée
 $app->get("/categories/{id}/ingredients[/]",function(Request $req, Response $resp, $args){
     return (new CategorieController($this))->ingredientsByCategorie($resp, $args['id']);
-})->setName("categories");
+})->setName("categories_ingredients");
 
 $app->get("/ingredients[/]",function(Request $req, Response $resp, $args){
   return (new IngredientController($this))->listIngredients($req, $resp, $args);
@@ -136,7 +140,7 @@ $app->put("/commandes/{id_commande}/sandwichs/{id_sandwich}[/]",
 );
 
 // On affiche les ingrédients d'un sandwich
-$app->get("/commandes/{id}/sandwichs/{id_sandwich}/ingredients/[/]",
+$app->get("/commandes/{id}/sandwichs/{id_sandwich}/ingredients[/]",
     function(Request $req, Response $resp, $args){
       return (new SandwichController($this))->listIngredients($req, $resp, $args);
     }

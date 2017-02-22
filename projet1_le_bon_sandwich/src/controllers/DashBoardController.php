@@ -5,15 +5,19 @@ use \Psr\Http\Message\ServerRequestInterface as Request;
 use \Psr\Http\Message\ResponseInterface as Response;
 use src\models\Ingredient;
 use src\models\Categorie;
+<<<<<<< HEAD
 use src\models\Taille as Taille;
 
+=======
+use src\models\User;
+>>>>>>> fe9c6475669683ee1b812d6e05809c6bb1acf38f
 
 class DashBoardController extends AbstractController
 {
 
     public function ListIngredients(Request $req, Response $resp, $args){
-        $categories = Categorie::with('getIngredients')->get();
-        return $this->request->view->render($resp, 'ingredients.html', ["categories"=>$categories, "base_url"=>$args['baseUrl']]);
+        $ingredients = Ingredient::with('getCategory')->get();
+        return $this->request->view->render($resp, 'ingredients.html', ["ingredients"=>$ingredients, "base_url"=>$args['baseUrl']]);
     }
 
     public function AddIngredient(Request $req, Response $resp, $args){
@@ -32,8 +36,8 @@ class DashBoardController extends AbstractController
 
             try{
                 $newIngredient->save();
-                $categories = Categorie::with('getIngredients')->get();
-                return $this->request->view->render($resp, 'ingredients.html', ["categories"=>$categories, "base_url"=>$args['baseUrl']]);
+                $ingredients = Ingredient::with('getCategory')->get();
+                return $this->request->view->render($resp, 'ingredients.html', ["ingredients"=>$ingredients, "base_url"=>$args['baseUrl']]);
             }
             catch(\Illuminate\Database\Eloquent\ModelNotFoundException $e){
                 echo "Page d'erreur en cours d'elaboration";
@@ -44,7 +48,7 @@ class DashBoardController extends AbstractController
     public function DeleteIngredient(Request $req, Response $resp, $args){
         try{
             Ingredient::findOrFail($args['id'])->delete();
-            $categories = Categorie::with('getIngredients')->get();
+            $ingredients = Ingredient::with('getCategory')->get();
             return $this->request->view->render($resp, 'ingredient_deleted.html', ['id'=>$args['id'], "base_url"=>$args['baseUrl']]);
         }
         catch(\Illuminate\Database\Eloquent\ModelNotFoundException $e){
@@ -53,9 +57,27 @@ class DashBoardController extends AbstractController
     }
 
     public function authentificationForm($req, $resp, $args){
-        return $this->request->view->render($resp, "authentification.html", ["url" => DIR."/authentification/verify/"]);
+
+        if(isset($_SESSION['is_connected'])){
+            $this->ListIngredients($req, $resp, $args);
+        }else{
+            $slimGuard = new \Slim\Csrf\Guard;
+            $slimGuard->validateStorage();
+            $key = $slimGuard->generateToken();
+            $nameKey = $key['csrf_name'] = "tokenFormAuthentification";
+            $valueKey = $key['csrf_value'];
+            $_SESSION[$nameKey] = $valueKey;
+            $data = [
+                        "token" => [
+                                    "nameKey" => $nameKey,
+                                    "valueKey" => $valueKey
+                                   ]
+                    ];
+            return $this->request->view->render($resp, "authentification.html", $data);
+        }
     }
 
+<<<<<<< HEAD
     public function modifierTaille(Request $req, Response $resp, $args){
         
         try{
@@ -93,4 +115,34 @@ class DashBoardController extends AbstractController
 
       
     }
+=======
+    public function authentificationVerify($req, $resp, $args){
+        if(isset($_SESSION['is_connected'])){
+            $this->ListIngredients($req, $resp, $args);
+        }else{
+
+            if($_SESSION['tokenFormAuthentification'] == $req->getParams()['valueKey']){
+                $user = User::where('name', $req->getParams()['login'])->first();
+                if(isset($user->password)){
+                    if($user->passwor == password_verify($req->getParams()['password'], PASSWORD_DEFAULT)){
+                        $this->ListIngredients($req, $resp,$args);
+                        $_SESSION['is_connected'] = $user->id;
+                    }else{
+                        echo "Mot de passe incorrecte.";
+                        $this->authentificationForm($req, $resp, $args);
+                    }
+                }else{
+                    echo "Utilisateur inconnu.";
+                    $this->authentificationForm($req, $resp, $args);
+                }
+            }else{
+                echo "une erreur est survenue";
+                $this->authentificationForm($req, $resp, $args);
+            }
+
+        }
+
+    }
+
+>>>>>>> fe9c6475669683ee1b812d6e05809c6bb1acf38f
 }

@@ -1,7 +1,7 @@
 <?php
 
 /* authentification.html */
-class __TwigTemplate_5bbae3a4e44b356b5c585d3aa9edf37455be1341b60e8cf165acaeeae58fc6b7 extends Twig_Template
+class __TwigTemplate_4d94f8dab6934600509c1c2fecdeb72ece2ccce85ebe24257beee302a1b4a058 extends Twig_Template
 {
     public function __construct(Twig_Environment $env)
     {
@@ -26,12 +26,8 @@ class __TwigTemplate_5bbae3a4e44b356b5c585d3aa9edf37455be1341b60e8cf165acaeeae58
 \t<form method=\"POST\" action=\"#\">
 \t\t<input type=\"text\" name=\"login\" placeholder=\"login\">
 \t\t<input type=\"password\" name=\"password\" placeholder=\"mot de passe\">
-\t\t<input type=\"hidden\" name=\"nameKey\" value=\"";
-        // line 11
-        echo twig_escape_filter($this->env, $this->getAttribute(($context["token"] ?? null), "nameKey", array()), "html", null, true);
-        echo "\">
 \t\t<input type=\"hidden\" name=\"valueKey\" value=\"";
-        // line 12
+        // line 11
         echo twig_escape_filter($this->env, $this->getAttribute(($context["token"] ?? null), "valueKey", array()), "html", null, true);
         echo "\">
 \t\t<button>Connexion</button>
@@ -53,7 +49,7 @@ class __TwigTemplate_5bbae3a4e44b356b5c585d3aa9edf37455be1341b60e8cf165acaeeae58
 
     public function getDebugInfo()
     {
-        return array (  35 => 12,  31 => 11,  19 => 1,);
+        return array (  31 => 11,  19 => 1,);
     }
 
     /** @deprecated since 1.27 (to be removed in 2.0). Use getSourceContext() instead */
@@ -76,7 +72,6 @@ class __TwigTemplate_5bbae3a4e44b356b5c585d3aa9edf37455be1341b60e8cf165acaeeae58
 \t<form method=\"POST\" action=\"#\">
 \t\t<input type=\"text\" name=\"login\" placeholder=\"login\">
 \t\t<input type=\"password\" name=\"password\" placeholder=\"mot de passe\">
-\t\t<input type=\"hidden\" name=\"nameKey\" value=\"{{token.nameKey}}\">
 \t\t<input type=\"hidden\" name=\"valueKey\" value=\"{{token.valueKey}}\">
 \t\t<button>Connexion</button>
 \t</form>
