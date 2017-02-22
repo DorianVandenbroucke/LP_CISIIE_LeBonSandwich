@@ -52,35 +52,52 @@ class DashBoardController extends AbstractController
     }
 
     public function authentificationForm($req, $resp, $args){
-        $slimGuard = new \Slim\Csrf\Guard;
-        $slimGuard->validateStorage();
-        $key = $slimGuard->generateToken();
-        $nameKey = $key['csrf_name'] = "tokenFormAuthentification";
-        $valueKey = $key['csrf_value'];
-        $_SESSION[$nameKey] = $valueKey;
-        $data = [
-                    "token" => [
-                                "nameKey" => $nameKey,
-                                "valueKey" => $valueKey
-                               ]
-                ];
-        return $this->request->view->render($resp, "authentification.html", $data);
+
+        if(isset($_SESSION['is_connected'])){
+            $this->ListIngredients($req, $resp, $args);
+        }else{
+            $slimGuard = new \Slim\Csrf\Guard;
+            $slimGuard->validateStorage();
+            $key = $slimGuard->generateToken();
+            $nameKey = $key['csrf_name'] = "tokenFormAuthentification";
+            $valueKey = $key['csrf_value'];
+            $_SESSION[$nameKey] = $valueKey;
+            $data = [
+                        "token" => [
+                                    "nameKey" => $nameKey,
+                                    "valueKey" => $valueKey
+                                   ]
+                    ];
+            return $this->request->view->render($resp, "authentification.html", $data);
+        }
     }
 
     public function authentificationVerify($req, $resp, $args){
-        if($_SESSION['tokenFormAuthentification'] == $req->getParams()['valueKey']){
-            $user = User::where('name', $req->getParams()['login'])->first();
-            if(isset($user->password)){
-                if($user->passwor == password_verify($req->getParams()['password'], PASSWORD_DEFAULT)){
-                    $this->ListIngredients($req, $resp,$args);
+        if(isset($_SESSION['is_connected'])){
+            $this->ListIngredients($req, $resp, $args);
+        }else{
+
+            if($_SESSION['tokenFormAuthentification'] == $req->getParams()['valueKey']){
+                $user = User::where('name', $req->getParams()['login'])->first();
+                if(isset($user->password)){
+                    if($user->passwor == password_verify($req->getParams()['password'], PASSWORD_DEFAULT)){
+                        $this->ListIngredients($req, $resp,$args);
+                        $_SESSION['is_connected'] = $user->id;
+                    }else{
+                        echo "Mot de passe incorrecte.";
+                        $this->authentificationForm($req, $resp, $args);
+                    }
                 }else{
-                    echo "Mot de passe incorrecte.";
+                    echo "Utilisateur inconnu.";
                     $this->authentificationForm($req, $resp, $args);
                 }
             }else{
-                echo "Utilisateur inconnu.";
+                echo "une erreur est survenue";
                 $this->authentificationForm($req, $resp, $args);
             }
+
         }
+
     }
+
 }
