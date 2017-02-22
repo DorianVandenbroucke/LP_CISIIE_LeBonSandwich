@@ -12,11 +12,11 @@ class Ingredient extends Model{
   public $timestamps = false;
 
   public function getCategory(){
-<<<<<<< HEAD
     return $this->belongsTo("\src\models\Categorie", "cat_id");
-=======
-    return $this->belongsTo("src\models\Categorie", "cat_id");
->>>>>>> developp
+  }
+
+   public function sandwichs(){
+    return $this->belongsToMany("src\models\Sandwich", "ingredient_sandwich", "id_ingredient", "id_sandwich");
   }
 
 }

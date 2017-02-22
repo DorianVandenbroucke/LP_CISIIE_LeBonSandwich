@@ -4,13 +4,14 @@
 
 namespace Composer\Autoload;
 
-class ComposerStaticInit64a6abd5b972fef15a6368fd14ffad7b
+class ComposerStaticInitb73b498fdf53bd984000d453bd5f4080
 {
     public static $files = array (
         '0e6d7bf4a5811bfa5cf40c5ccd6fae6a' => __DIR__ . '/..' . '/symfony/polyfill-mbstring/bootstrap.php',
         '65fec9ebcfbb3cbb4fd0d519687aea01' => __DIR__ . '/..' . '/danielstjules/stringy/src/Create.php',
-        '72579e7bd17821bb1321b87411366eae' => __DIR__ . '/..' . '/illuminate/support/helpers.php',
         '253c157292f75eb38082b5acb06f3f01' => __DIR__ . '/..' . '/nikic/fast-route/src/functions.php',
+        '72579e7bd17821bb1321b87411366eae' => __DIR__ . '/..' . '/illuminate/support/helpers.php',
+        '5255c38a0faeba867671b61dfda6d864' => __DIR__ . '/..' . '/paragonie/random_compat/lib/random.php',
     );
 
     public static $prefixLengthsPsr4 = array (
@@ -19,6 +20,8 @@ class ComposerStaticInit64a6abd5b972fef15a6368fd14ffad7b
             'Symfony\\Polyfill\\Mbstring\\' => 26,
             'Symfony\\Component\\Translation\\' => 30,
             'Stringy\\' => 8,
+            'Slim\\Views\\' => 11,
+            'Slim\\Csrf\\' => 10,
             'Slim\\' => 5,
         ),
         'P' => 
@@ -55,6 +58,14 @@ class ComposerStaticInit64a6abd5b972fef15a6368fd14ffad7b
         'Stringy\\' => 
         array (
             0 => __DIR__ . '/..' . '/danielstjules/stringy/src',
+        ),
+        'Slim\\Views\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/slim/twig-view/src',
+        ),
+        'Slim\\Csrf\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/slim/csrf/src',
         ),
         'Slim\\' => 
         array (
@@ -102,6 +113,27 @@ class ComposerStaticInit64a6abd5b972fef15a6368fd14ffad7b
                 0 => __DIR__ . '/../..' . '/',
             ),
         ),
+        'T' => 
+        array (
+            'Twig_' => 
+            array (
+                0 => __DIR__ . '/..' . '/twig/twig/lib',
+            ),
+        ),
+        'S' => 
+        array (
+            'SecurityLib' => 
+            array (
+                0 => __DIR__ . '/..' . '/ircmaxell/security-lib/lib',
+            ),
+        ),
+        'R' => 
+        array (
+            'RandomLib' => 
+            array (
+                0 => __DIR__ . '/..' . '/ircmaxell/random-lib/lib',
+            ),
+        ),
         'P' => 
         array (
             'Pimple' => 
@@ -121,9 +153,9 @@ class ComposerStaticInit64a6abd5b972fef15a6368fd14ffad7b
     public static function getInitializer(ClassLoader $loader)
     {
         return \Closure::bind(function () use ($loader) {
-            $loader->prefixLengthsPsr4 = ComposerStaticInit64a6abd5b972fef15a6368fd14ffad7b::$prefixLengthsPsr4;
-            $loader->prefixDirsPsr4 = ComposerStaticInit64a6abd5b972fef15a6368fd14ffad7b::$prefixDirsPsr4;
-            $loader->prefixesPsr0 = ComposerStaticInit64a6abd5b972fef15a6368fd14ffad7b::$prefixesPsr0;
+            $loader->prefixLengthsPsr4 = ComposerStaticInitb73b498fdf53bd984000d453bd5f4080::$prefixLengthsPsr4;
+            $loader->prefixDirsPsr4 = ComposerStaticInitb73b498fdf53bd984000d453bd5f4080::$prefixDirsPsr4;
+            $loader->prefixesPsr0 = ComposerStaticInitb73b498fdf53bd984000d453bd5f4080::$prefixesPsr0;
 
         }, null, ClassLoader::class);
     }

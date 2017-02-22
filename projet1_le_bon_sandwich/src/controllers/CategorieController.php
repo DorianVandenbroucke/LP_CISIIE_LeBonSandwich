@@ -7,23 +7,17 @@ use src\models\Ingredient as Ingredient;
 
 class CategorieController extends AbstractController{
 
-  private $request = null;
-  private $auth;
-
-  public function __construct(HttpRequest $http_req){
-    $this->request = $http_req;
-    $this->auth = new Authentification();
-  }
-
-  static public function listCategories(){
+  public function listCategories($resp){
     $categories = Categorie::select("id", "nom")->orderBy("nom")->get();
     $nb_categories = $categories->count();
 
     $categories_tab = [];
     foreach($categories as $c){
+      $url = $this->request->router->PathFor('category', array('id' => $c->id));
       $lien = array(
-                  "nom" => $c->nom,
-                  "lien" => "/categories/$c->id");
+                      "nom" => $c->nom,
+                      "liks" => ["self" => $url]
+                    );
       array_push($categories_tab, $lien);
     }
 
@@ -31,46 +25,56 @@ class CategorieController extends AbstractController{
                 "nombre_de_categories" => $nb_categories,
                 "categories" => $categories_tab
               ];
-    return $chaine;
+    return $this->responseJSON(200, $chaine);
   }
 
-  static public function detailCategory($id){
-    $category = Categorie::findOrFail($id);
-    $chaine = [
-                "id" => $category->id,
-                "nom" => $category->nom,
-                "description" => $category->description,
-                "lien" => "/categories/$category->id/ingredients",
-              ];
-    return $chaine;
-  }
-
-  static public function ingredientsByCategorie($id){
-    $categorie = Categorie::findOrFail($id);
-    $ingredients = Ingredient::where("cat_id", $id)->orderBy("nom")->get();
-    $nb_ingredients = $ingredients->count();
-
-    $ingredients_tab = [];
-    foreach($ingredients as $i){
-      array_push(
-                  $ingredients_tab,
-                  [
-                    "id" => $i->id,
-                    "nom" => $i->nom,
-                    "cat_id" => $i->cat_id,
-                    "description" => $i->description,
-                    "fournisseur" => $i->fournisseur,
-                    "img" => $i->img,
-                    "lien" => "/ingredients/$i->id"
-                  ]
-                );
+  public function detailCategory($resp, $id){
+     try{
+        $category = Categorie::findOrFail($id);
+        $url = $this->request->router->PathFor('categories_ingredients', array('id' => $category->id));
+        $lien_ingredients = ["ingredients" => $url];
+        $chaine = [
+                    "id" => $category->id,
+                    "nom" => $category->nom,
+                    "description" => $category->description,
+                    "links" => $lien_ingredients
+                  ];
+        return $this->responseJSON(200, $chaine);
+    }catch(\Illuminate\Database\Eloquent\ModelNotFoundException $e){
+        $chaine = ["error" => "Categorie $id introuvable."];
+        return $this->responseJSON(404, $chaine);
     }
+  }
 
-    $chaine = [
-                "nombre_d_ingredient " => $nb_ingredients,
-                "ingredients" => $ingredients_tab
-              ];
-    return $chaine;
+  public function ingredientsByCategorie($resp, $id){
+      try{
+        $categorie = Categorie::findOrFail($id);
+        $ingredients = Ingredient::where("cat_id", $id)->orderBy("nom")->get();
+        $nb_ingredients = $ingredients->count();
+
+        $ingredients_tab = [];
+        foreach($ingredients as $i){
+          $url = $this->request->router->PathFor('ingredient', array('id' => $i->id));
+          array_push(
+                      $ingredients_tab,
+                      [
+                        "id" => $i->id,
+                        "nom" => $i->nom,
+                        "links" => ["self" => $url]
+                      ]
+                    );
+        }
+
+        $chaine = [
+                    "nombre_d_ingredient" => $nb_ingredients,
+                    "ingredients" => $ingredients_tab
+                  ];
+        return $this->responseJSON(200, $chaine);
+
+      }catch(\Illuminate\Database\Eloquent\ModelNotFoundException $e){
+        $chaine = ["error" => "Categorie d'ingrédients $id introuvable."];
+        return $this->responseJSON(404, $chaine);
+      }
   }
 
   static public function addCategorie(){
