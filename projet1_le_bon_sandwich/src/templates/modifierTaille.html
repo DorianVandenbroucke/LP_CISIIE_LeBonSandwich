@@ -6,9 +6,10 @@
 <body>
     <h1>Modifier la taille du sandwich n° {{taille.id}}</h1>
     <ul>
-        <form method= "post" action="http://localhost/LeBonSandwich/LP_CISIIE_LeBonSandwich/projet1_le_bon_sandwich/private/taille/">
+        <form method= "POST" action="http://localhost/LeBonSandwich/LP_CISIIE_LeBonSandwich/projet1_le_bon_sandwich/private/taille/{{taille.id}}">
             <li> <span>description : {{ taille.description }}</span><span><input type="text" name="description"/></span></li>
-            <li><span>prix : {{ taille.prix }}</span><span><input type="text" name="prix"/></li> 
+            <li><span>prix : {{ taille.prix }}</span><span><input type="text" name="prix"/></li>
+            <input type="hidden" name="_METHOD" value="PUT"/> 
             <li><button value="submit">modifier</button></li>   
         <form>
     </ul>
