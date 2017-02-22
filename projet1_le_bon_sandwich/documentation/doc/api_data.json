@@ -1344,12 +1344,78 @@
   },
   {
     "group": "Sandwichs",
+    "name": "listIngredients",
+    "version": "0.1.0",
+    "type": "get",
+    "url": "/commandes/{id}/sandwichs/{id_sandwich}/ingredients[/]",
+    "title": "Afficher",
+    "description": "<p>On affiche les ingrédients d'un sandwich</p> <p>Retourne une représentation json de la ressource</p>",
+    "success": {
+      "fields": {
+        "Succès : 200": [
+          {
+            "group": "Succès : 200",
+            "type": "Number",
+            "optional": false,
+            "field": "nb_ingredients",
+            "description": "<p>Nombre d'ingrédients dans le sandwich</p>"
+          },
+          {
+            "group": "Succès : 200",
+            "type": "Array",
+            "optional": false,
+            "field": "ingredients",
+            "description": "<p>Tableau contenant les ingrédients liés au sandwich</p>"
+          },
+          {
+            "group": "Succès : 200",
+            "type": "String",
+            "optional": false,
+            "field": "nom",
+            "description": "<p>Nom de l'ingrédient</p>"
+          },
+          {
+            "group": "Succès : 200",
+            "type": "Link",
+            "optional": false,
+            "field": "links",
+            "description": "<p>Lien de l'ingrédient</p>"
+          }
+        ]
+      },
+      "examples": [
+        {
+          "title": "Exemple de réponse en cas de succès",
+          "content": " HTTP/1.1 200 OK\n{\n  \"nb_ingredients\": 3,\n  \"ingredients\": [\n    {\n      \"nom\": \"laitue\",\n      \"links\": {\n        \"self\": \"/ingredients/1\"\n      }\n    },\n    {\n        ...\n    }\n  ]\n}",
+          "type": "json"
+        }
+      ]
+    },
+    "filename": "input/doc.php",
+    "groupTitle": "Sandwichs"
+  },
+  {
+    "group": "Sandwichs",
     "name": "modifyIngredient",
     "version": "0.1.0",
     "type": "put",
     "url": "/commandes/sandwichs/{id_sandwich}/ingredients/{id_ingredient}[/]",
-    "title": "Modifier ingrédients",
-    "description": "<p>On ajoute ou supprime un ingrédient dans un sandwich si celui-ci existe déjà</p> <p>Retourne une représentation json de la ressource</p>",
+    "title": "Modifier ingrédient",
+    "description": "<p>On ajoute un ingrédient si celui-ci n'est pas encore présent dans le sandwich ou on supprime un ingrédient dans un sandwich si celui-ci existe déjà</p> <p>Retourne une représentation json</p>",
+    "success": {
+      "examples": [
+        {
+          "title": "Exemple de réponse en cas de succès",
+          "content": " HTTP/1.1 200 OK\n{\n  \"Succès\": \"Ingrédient ajouté avec succès.\"\n}",
+          "type": "json"
+        },
+        {
+          "title": "Exemple de réponse en cas de succès",
+          "content": " HTTP/1.1 200 OK\n{\n  \"Succès\": \"Ingrédient supprimé avec succès.\"\n}",
+          "type": "json"
+        }
+      ]
+    },
     "filename": "input/doc.php",
     "groupTitle": "Sandwichs"
   },
@@ -1361,6 +1427,40 @@
     "url": "/commandes/{id_commande}/sandwichs/{id_sandwich}[/]",
     "title": "Modifier sandwich",
     "description": "<p>On modifie un sandwich</p> <p>Retourne une représentation json de la ressource</p>",
+    "success": {
+      "fields": {
+        "Succès : 200": [
+          {
+            "group": "Succès : 200",
+            "type": "String",
+            "optional": false,
+            "field": "taille",
+            "description": "<p>Nouvelle taille du sandwich</p>"
+          },
+          {
+            "group": "Succès : 200",
+            "type": "String",
+            "optional": false,
+            "field": "type",
+            "description": "<p>Nouveau type du sandwich</p>"
+          },
+          {
+            "group": "Succès : 200",
+            "type": "Link",
+            "optional": false,
+            "field": "links",
+            "description": "<p>Lien vers les ingrédients du sandwich</p>"
+          }
+        ]
+      },
+      "examples": [
+        {
+          "title": "Exemple de réponse en cas de succès",
+          "content": " HTTP/1.1 200 OK\n{\n  \"taille\": \"grosse faim\",\n  \"type\": \"blanc\",\n  \"lien_modification_ingredients\": \"/commandes/1/sandwichs/8/ingredients\"\n}",
+          "type": "json"
+        }
+      ]
+    },
     "error": {
       "fields": {
         "Erreur : 400": [
@@ -1375,7 +1475,7 @@
       "examples": [
         {
           "title": "Exemple de réponse en cas d'erreur",
-          "content": " HTTP/1.1 400 BadRequest\n\n{\n  \"Erreur\": \"Impossible de modifier le sandwich\"\n}",
+          "content": " HTTP/1.1 400 BadRequest\n\n{\n  \"Erreur\": \"Impossible de modifier le sandwich car la commande à déjà été payée ou livrée\"\n}",
           "type": "json"
         }
       ]

@@ -746,11 +746,23 @@
 * @apiName modifyIngredient
 * @apiVersion 0.1.0
 *
-* @api {put} /commandes/sandwichs/{id_sandwich}/ingredients/{id_ingredient}[/]  Modifier ingrédients
+* @api {put} /commandes/sandwichs/{id_sandwich}/ingredients/{id_ingredient}[/]  Modifier ingrédient
 *
-* @apiDescription On ajoute ou supprime un ingrédient dans un sandwich si celui-ci existe déjà
+* @apiDescription On ajoute un ingrédient si celui-ci n'est pas encore présent dans le sandwich ou on supprime un ingrédient dans un sandwich si celui-ci existe déjà
 *
-* Retourne une représentation json de la ressource
+* Retourne une représentation json
+*
+* @apiSuccessExample {json} Exemple de réponse en cas de succès
+*     HTTP/1.1 200 OK
+*    {
+*      "Succès": "Ingrédient ajouté avec succès."
+*    }
+*
+* @apiSuccessExample {json} Exemple de réponse en cas de succès
+*     HTTP/1.1 200 OK
+*    {
+*      "Succès": "Ingrédient supprimé avec succès."
+*    }
 *
 */
 
@@ -765,14 +777,62 @@
 *
 * Retourne une représentation json de la ressource
 *
+* @apiSuccess (Succès : 200) {String} taille Nouvelle taille du sandwich
+* @apiSuccess (Succès : 200) {String} type Nouveau type du sandwich
+* @apiSuccess (Succès : 200) {Link} links Lien vers les ingrédients du sandwich
+*
+* @apiSuccessExample {json} Exemple de réponse en cas de succès
+*     HTTP/1.1 200 OK
+*    {
+*      "taille": "grosse faim",
+*      "type": "blanc",
+*      "lien_modification_ingredients": "/commandes/1/sandwichs/8/ingredients"
+*    }
+*
 * @apiError (Erreur : 400) BadRequest Requete invalide
 *
 * @apiErrorExample {json} Exemple de réponse en cas d'erreur
 *     HTTP/1.1 400 BadRequest
 *
 *    {
-*      "Erreur": "Impossible de modifier le sandwich"
+*      "Erreur": "Impossible de modifier le sandwich car la commande à déjà été payée ou livrée"
 *    }
 *
+*
+*/
+
+/**
+* @apiGroup Sandwichs
+* @apiName listIngredients
+* @apiVersion 0.1.0
+*
+* @api {get} /commandes/{id}/sandwichs/{id_sandwich}/ingredients[/]  Afficher
+*
+* @apiDescription On affiche les ingrédients d'un sandwich
+*
+* Retourne une représentation json de la ressource
+*
+*
+* @apiSuccess (Succès : 200) {Number} nb_ingredients Nombre d'ingrédients dans le sandwich
+* @apiSuccess (Succès : 200) {Array} ingredients Tableau contenant les ingrédients liés au sandwich
+* @apiSuccess (Succès : 200) {String} nom Nom de l'ingrédient
+* @apiSuccess (Succès : 200) {Link} links Lien de l'ingrédient
+*
+* @apiSuccessExample {json} Exemple de réponse en cas de succès
+*     HTTP/1.1 200 OK
+*    {
+*      "nb_ingredients": 3,
+*      "ingredients": [
+*        {
+*          "nom": "laitue",
+*          "links": {
+*            "self": "/ingredients/1"
+*          }
+*        },
+*        {
+*            ...
+*        }
+*      ]
+*    }
 *
 */
