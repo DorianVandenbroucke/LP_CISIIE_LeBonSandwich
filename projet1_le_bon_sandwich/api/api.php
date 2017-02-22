@@ -140,7 +140,7 @@ $app->put("/commandes/{id_commande}/sandwichs/{id_sandwich}[/]",
 );
 
 // On affiche les ingrédients d'un sandwich
-$app->get("/commandes/{id}/sandwichs/{id_sandwich}/ingredients/[/]",
+$app->get("/commandes/{id}/sandwichs/{id_sandwich}/ingredients[/]",
     function(Request $req, Response $resp, $args){
       return (new SandwichController($this))->listIngredients($req, $resp, $args);
     }
