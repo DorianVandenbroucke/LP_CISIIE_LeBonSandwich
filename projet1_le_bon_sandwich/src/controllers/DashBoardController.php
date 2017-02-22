@@ -69,10 +69,9 @@ class DashBoardController extends AbstractController
 
     public function authentificationVerify($req, $resp, $args){
         if($_SESSION['tokenFormAuthentification'] == $req->getParams()['valueKey']){
-            $user = User::where('name', $req->getParams()['login'])->get();
-            var_dump($user);die;
+            $user = User::where('name', $req->getParams()['login'])->first();
             if(isset($user->password)){
-                if($user->passwor == password_verify($req->getParams()['password'])){
+                if($user->passwor == password_verify($req->getParams()['password'], PASSWORD_DEFAULT)){
                     $this->ListIngredients($req, $resp,$args);
                 }else{
                     echo "Mot de passe incorrecte.";
