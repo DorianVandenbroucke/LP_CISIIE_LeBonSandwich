@@ -5,12 +5,12 @@ use \Psr\Http\Message\ServerRequestInterface as Request;
 use \Psr\Http\Message\ResponseInterface as Response;
 use src\models\Ingredient;
 use src\models\Categorie;
-<<<<<<< HEAD
+
 use src\models\Taille as Taille;
 
-=======
+
 use src\models\User;
->>>>>>> fe9c6475669683ee1b812d6e05809c6bb1acf38f
+
 
 class DashBoardController extends AbstractController
 {
@@ -77,7 +77,6 @@ class DashBoardController extends AbstractController
         }
     }
 
-<<<<<<< HEAD
     public function modifierTaille(Request $req, Response $resp, $args){
         
         try{
@@ -97,17 +96,7 @@ class DashBoardController extends AbstractController
             echo "Page d'erreur en cours d'elaboration";
         }
        
-         /*foreach ($requestbody as $key => $value) {
-                        if(in_array($key,$taille->getFillable()))
-                        {
-                            $taille->$key = filter_var($value, FILTER_SANITIZE_STRING);
-                        }
-                        else
-                        {
-                            $data[] =  ["Warning" => "Il manque une valeur à l'attribut $key"];
-                        }
-        }
-        var_dump($requestbody);*/
+        
         $taille->save();
         
 
@@ -115,7 +104,7 @@ class DashBoardController extends AbstractController
 
       
     }
-=======
+
     public function authentificationVerify($req, $resp, $args){
         if(isset($_SESSION['is_connected'])){
             $this->ListIngredients($req, $resp, $args);
@@ -144,5 +133,4 @@ class DashBoardController extends AbstractController
 
     }
 
->>>>>>> fe9c6475669683ee1b812d6e05809c6bb1acf38f
 }
