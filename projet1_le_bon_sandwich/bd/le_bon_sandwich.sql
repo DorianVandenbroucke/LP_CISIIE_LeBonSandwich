@@ -3,7 +3,7 @@
 -- http://www.phpmyadmin.net
 --
 -- Client :  127.0.0.1
--- Généré le :  Mar 21 Février 2017 à 20:46
+-- Généré le :  Mer 22 Février 2017 à 21:45
 -- Version du serveur :  5.7.11
 -- Version de PHP :  7.0.4
 
@@ -19,6 +19,8 @@ SET time_zone = "+00:00";
 --
 -- Base de données :  `le_bon_sandwich`
 --
+CREATE DATABASE IF NOT EXISTS `le_bon_sandwich` DEFAULT CHARACTER SET latin1 COLLATE latin1_swedish_ci;
+USE `le_bon_sandwich`;
 
 -- --------------------------------------------------------
 
