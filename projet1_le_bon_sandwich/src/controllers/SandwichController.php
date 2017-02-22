@@ -104,21 +104,21 @@ class SandwichController extends AbstractController{
             $id_commande = $sandwich->id_commande;
             $commande = Commande::findOrfail($id_commande);
 
-          if($commande->etat == PAID || $commande->etat == CREATED){
-
-              $taille = $sandwich->taille;
-              $type_de_pain = $sandwich->type_de_pain;
+          if($commande->etat == CREATED){
+              $taille = $req->getParams()['taille'];
+              $type_de_pain = $req->getParams()['type'];
+              $sandwich->type_de_pain = $type_de_pain;
+              $sandwich->taille = $taille;
               $sandwich->save();
               $chaine = [
                   "taille"=> $taille,
                   "type"=> $type_de_pain,
-                  "lien_modification_ingredients"=> DIR."/commandes
-                  /$id_commande/sandwichs/$id_sandwich/ingredients"
+                  "lien_modification_ingredients"=> DIR."/commandes/$id_commande/sandwichs/$id_sandwich/ingredients"
               ];
               return $this->responseJSON(200, $chaine);
           }
           else{
-            $chaine = ["Erreur" => "Impossible de modifier le sandwich"];
+            $chaine = ["Erreur" => "Impossible de modifier le sandwich car la commande à déjà été payée ou livrée"];
             return $this->responseJSON(400, $chaine);
 
           }
