@@ -493,6 +493,21 @@
 *      "Erreur": "La commande a déjà été payée ou livrée"
 *    }
 *
+* @apiError (Erreur : 403) Forbidden Accès interdit
+*
+* @apiErrorExample {json} Exemple de réponse en cas d'erreur
+*     HTTP/1.1 403 Forbidden
+*
+*    {
+*      "Error": "No token"
+*    }
+*
+* @apiErrorExample {json} Exemple de réponse en cas d'erreur
+*     HTTP/1.1 403 Forbidden
+*
+*    {
+*      "Error": "Invalid token"
+*    }
 *
 */
 
@@ -510,6 +525,22 @@
 *     HTTP/1.1 200 OK
 *    {
 *      "Success": "La commande a été correctement supprimée"
+*    }
+*
+* @apiError (Erreur : 403) Forbidden Accès interdit
+*
+* @apiErrorExample {json} Exemple de réponse en cas d'erreur
+*     HTTP/1.1 403 Forbidden
+*
+*    {
+*      "Error": "No token"
+*    }
+*
+* @apiErrorExample {json} Exemple de réponse en cas d'erreur
+*     HTTP/1.1 403 Forbidden
+*
+*    {
+*      "Error": "Invalid token"
 *    }
 *
 */
@@ -551,6 +582,22 @@
 *
 *    {
 *      "Erreur": "La commande a déjà été payée ou livrée"
+*    }
+*
+* @apiError (Erreur : 403) Forbidden Accès interdit
+*
+* @apiErrorExample {json} Exemple de réponse en cas d'erreur
+*     HTTP/1.1 403 Forbidden
+*
+*    {
+*      "Error": "No token"
+*    }
+*
+* @apiErrorExample {json} Exemple de réponse en cas d'erreur
+*     HTTP/1.1 403 Forbidden
+*
+*    {
+*      "Error": "Invalid token"
 *    }
 *
 */
@@ -605,6 +652,22 @@
 *
 *    {
 *      "Erreur": "Impossible d'obtenir une facture, la commande n'a pas encore été livrée"
+*    }
+*
+* @apiError (Erreur : 403) Forbidden Accès interdit
+*
+* @apiErrorExample {json} Exemple de réponse en cas d'erreur
+*     HTTP/1.1 403 Forbidden
+*
+*    {
+*      "Error": "No token"
+*    }
+*
+* @apiErrorExample {json} Exemple de réponse en cas d'erreur
+*     HTTP/1.1 403 Forbidden
+*
+*    {
+*      "Error": "Invalid token"
 *    }
 *
 */
@@ -764,6 +827,22 @@
 *      "Succès": "Ingrédient supprimé avec succès."
 *    }
 *
+* @apiError (Erreur : 403) Forbidden Accès interdit
+*
+* @apiErrorExample {json} Exemple de réponse en cas d'erreur
+*     HTTP/1.1 403 Forbidden
+*
+*    {
+*      "Error": "No token"
+*    }
+*
+* @apiErrorExample {json} Exemple de réponse en cas d'erreur
+*     HTTP/1.1 403 Forbidden
+*
+*    {
+*      "Error": "Invalid token"
+*    }
+*
 */
 
 /**
@@ -833,6 +912,22 @@
 *            ...
 *        }
 *      ]
+*    }
+*
+* @apiError (Erreur : 403) Forbidden Accès interdit
+*
+* @apiErrorExample {json} Exemple de réponse en cas d'erreur
+*     HTTP/1.1 403 Forbidden
+*
+*    {
+*      "Error": "No token"
+*    }
+*
+* @apiErrorExample {json} Exemple de réponse en cas d'erreur
+*     HTTP/1.1 403 Forbidden
+*
+*    {
+*      "Error": "Invalid token"
 *    }
 *
 */
